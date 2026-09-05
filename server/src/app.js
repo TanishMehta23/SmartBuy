@@ -13,6 +13,9 @@ dotenv.config();
 
 const app = express();
 
+// Enable trust proxy for reverse proxies like Render/Cloudflare/Heroku
+app.set('trust proxy', 1);
+
 // Security HTTP headers with Helmet
 app.use(
   helmet({
@@ -50,6 +53,21 @@ app.use(cookieParser());
 
 // General rate limiter on all API routes
 app.use('/api', generalApiLimiter);
+
+// Root welcome endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Store Catalog API is online and healthy.',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      products: '/api/products',
+      categories: '/api/categories',
+    },
+  });
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
