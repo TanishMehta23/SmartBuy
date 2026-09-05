@@ -134,13 +134,6 @@ export const AdminLogin = () => {
             </button>
           </form>
 
-          {/* Quick Demo Hint */}
-          <div className="mt-6 pt-4 border-t border-slate-700/60 text-center">
-            <p className="text-[11px] text-slate-400">
-              Default Seed Account:{' '}
-              <span className="font-mono text-emerald-400">admin@storecatalog.com</span>
-            </p>
-          </div>
         </div>
       </div>
     </div>
