@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { Pagination } from '../components/Pagination';
+import { LoadingScreen } from '../components/LoadingScreen';
 import { productService, categoryService } from '../services/catalogService';
 import { useDebounce } from '../hooks/useDebounce';
 import { ArrowUpDown, Layers, AlertCircle, Loader2 } from 'lucide-react';
@@ -21,6 +22,7 @@ export const CustomerCatalog = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [error, setError] = useState(null);
 
   const debouncedSearch = useDebounce(searchInput, 400);
@@ -62,6 +64,7 @@ export const CustomerCatalog = () => {
         if (res.success) {
           setProducts(res.data);
           setPaginationInfo(res.pagination);
+          setHasLoadedOnce(true);
         }
       } catch (err) {
         setError(err.userFriendlyMessage || 'Could not fetch catalog items.');
@@ -72,6 +75,11 @@ export const CustomerCatalog = () => {
 
     fetchProducts();
   }, [currentPage, debouncedSearch, selectedCategoryId, sortOption]);
+
+  // Show full loading screen on initial catalog load or when backend is waking up
+  if (!hasLoadedOnce && loading && !error) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -89,15 +97,20 @@ export const CustomerCatalog = () => {
         {/* Controls Ribbon: Active Filter Summary & Sorting Dropdown */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-slate-200/80">
           <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-              {selectedCategoryId === 'all'
-                ? debouncedSearch
-                  ? `Search results for "${debouncedSearch}"`
-                  : 'All Products'
-                : categories.find((c) => c.id === selectedCategoryId)?.name || 'Category Products'}
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+              <span>
+                {selectedCategoryId === 'all'
+                  ? debouncedSearch
+                    ? `Search results for "${debouncedSearch}"`
+                    : 'All Products'
+                  : categories.find((c) => c.id === selectedCategoryId)?.name || 'Category Products'}
+              </span>
+              {loading && <Loader2 className="w-4 h-4 text-emerald-600 animate-spin" />}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              {selectedCategoryId !== 'all' || debouncedSearch
+              {loading && products.length === 0
+                ? 'Updating catalog...'
+                : selectedCategoryId !== 'all' || debouncedSearch
                 ? `Showing ${paginationInfo.totalProducts} product${paginationInfo.totalProducts === 1 ? '' : 's'} matching criteria`
                 : `${paginationInfo.totalProducts} total products available in store`}
             </p>
@@ -123,10 +136,10 @@ export const CustomerCatalog = () => {
           </div>
         </div>
 
-        {/* Loading State Skeleton Grid */}
+        {/* Loading State Skeleton Grid when filtering/changing page after initial load */}
         {loading && (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 sm:gap-5">
-            {Array.from({ length: 10 }).map((_, index) => (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 sm:gap-5 opacity-60 pointer-events-none transition-opacity">
+            {Array.from({ length: products.length || 10 }).map((_, index) => (
               <div
                 key={`skeleton-${index}`}
                 className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-soft animate-pulse"
@@ -147,7 +160,10 @@ export const CustomerCatalog = () => {
             <h3 className="text-base font-bold text-slate-800 mb-1">Failed to load catalog</h3>
             <p className="text-sm text-slate-500 mb-4">{error}</p>
             <button
-              onClick={() => setCurrentPage(1)}
+              onClick={() => {
+                setLoading(true);
+                setCurrentPage(1);
+              }}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-xs transition-colors"
             >
               Try Again
