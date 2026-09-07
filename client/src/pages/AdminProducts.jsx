@@ -37,42 +37,57 @@ const AdminProductRow = ({ product, displayCat, onEdit, onDelete }) => {
     };
   }, [product.name, isPortuguese, language]);
 
+  const formattedDate = new Date(product.createdAt).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
   return (
-    <tr className="hover:bg-sky-50/60 transition-colors group">
-      <td className="py-3.5 px-6">
-        <div className="flex items-center gap-3">
+    <tr className="hover:bg-sky-50/60 transition-colors group border-b border-sky-50/80">
+      <td className="py-3 px-3 sm:px-6">
+        <div className="flex items-center gap-2.5 sm:gap-3.5">
           <img
             src={product.imageUrl}
             alt={displayName}
-            className="w-10 h-10 rounded-xl object-cover border border-sky-100 bg-sky-50 shrink-0"
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl object-cover border border-sky-100 bg-sky-50 shrink-0 shadow-2xs"
           />
-          <span className="font-bold text-slate-800 line-clamp-1">{displayName}</span>
+          <div className="min-w-0 pr-1">
+            <span className="font-bold text-slate-800 text-xs sm:text-sm line-clamp-2 leading-snug">
+              {displayName}
+            </span>
+            {/* Mobile-only info row: Category badge & Added Date */}
+            <div className="md:hidden flex items-center gap-2 mt-1 flex-wrap">
+              <span className="inline-block text-[10px] font-bold text-sky-800 bg-sky-100/80 px-2 py-0.5 rounded-full border border-sky-200/60">
+                {displayCat}
+              </span>
+              <span className="text-[10px] font-semibold text-slate-600">
+                {formattedDate}
+              </span>
+            </div>
+          </div>
         </div>
       </td>
-      <td className="py-3.5 px-6">
+      <td className="hidden md:table-cell py-3.5 px-6">
         <span className="inline-block text-[11px] font-bold text-sky-800 bg-sky-100/70 px-2.5 py-0.5 rounded-full border border-sky-200/50">
           {displayCat}
         </span>
       </td>
-      <td className="py-3.5 px-6 text-xs text-sky-700/70 font-semibold">
-        {new Date(product.createdAt).toLocaleDateString(undefined, {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        })}
+      <td className="hidden md:table-cell py-3.5 px-6 text-xs text-sky-700/70 font-semibold whitespace-nowrap">
+        {formattedDate}
       </td>
-      <td className="py-3.5 px-6 text-right">
-        <div className="flex items-center justify-end gap-1">
+      <td className="py-3 px-3 sm:px-6 text-right shrink-0 whitespace-nowrap w-24">
+        <div className="flex items-center justify-end gap-1 sm:gap-1.5">
           <button
             onClick={() => onEdit(product)}
-            className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl text-sky-700 hover:text-cyan-600 hover:bg-sky-100 transition-colors cursor-pointer"
             title="Edit"
           >
             <Edit2 className="w-4 h-4" />
           </button>
           <button
             onClick={() => onDelete(product)}
-            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
@@ -258,12 +273,12 @@ export const AdminProducts = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className="space-y-5 sm:space-y-6 max-w-7xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">{t('productManagementTitle')}</h1>
-          <p className="text-sm text-sky-800/70 font-medium mt-1">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{t('productManagementTitle')}</h1>
+          <p className="text-xs sm:text-sm text-sky-800/70 font-medium mt-0.5 sm:mt-1">
             {t('productManagementSubtitle')}
           </p>
         </div>
@@ -277,7 +292,7 @@ export const AdminProducts = () => {
       </div>
 
       {/* Filters Bar */}
-      <div className="relative z-30 bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-sky-100 shadow-soft flex flex-col sm:flex-row items-center gap-4">
+      <div className="relative z-30 bg-white/90 backdrop-blur-md p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-sky-100 shadow-soft flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 absolute inset-y-0 left-3 my-auto text-sky-400 pointer-events-none" />
           <input
@@ -285,7 +300,7 @@ export const AdminProducts = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('searchProductsByName')}
-            className="w-full pl-9 pr-4 py-2.5 bg-sky-50/70 border border-sky-200/70 rounded-2xl text-xs sm:text-sm font-medium focus:outline-none focus:border-cyan-500 focus:bg-white transition-all shadow-inner shadow-sky-100/40"
+            className="w-full pl-9 pr-4 py-2 sm:py-2.5 bg-sky-50/70 border border-sky-200/70 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-medium focus:outline-none focus:border-cyan-500 focus:bg-white transition-all shadow-inner shadow-sky-100/40"
           />
         </div>
 
@@ -305,14 +320,14 @@ export const AdminProducts = () => {
             }}
             placeholder={t('allCategoriesFilter')}
             className="w-full"
-            buttonClassName="w-full justify-between"
+            buttonClassName="w-full justify-between py-2 sm:py-2.5 text-xs sm:text-sm"
             align="right"
           />
         </div>
       </div>
 
       {/* Products Table / Cards */}
-      <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-sky-100 shadow-soft overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-sky-100 shadow-soft overflow-hidden">
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center text-slate-400">
             <Loader2 className="w-8 h-8 text-cyan-500 animate-spin mb-2" />
@@ -327,14 +342,14 @@ export const AdminProducts = () => {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="w-full overflow-hidden">
+            <table className="w-full text-left border-collapse table-fixed">
               <thead>
                 <tr className="border-b border-sky-100 bg-sky-50/70 text-sky-800 text-[11px] uppercase tracking-wider font-bold">
-                  <th className="py-3.5 px-6">{t('productHeader')}</th>
-                  <th className="py-3.5 px-6">{t('categoryHeader')}</th>
-                  <th className="py-3.5 px-6">{t('addedDateHeader')}</th>
-                  <th className="py-3.5 px-6 text-right">{t('actionsHeader')}</th>
+                  <th className="py-3 px-3 sm:px-6">{t('productHeader')}</th>
+                  <th className="hidden md:table-cell py-3.5 px-6 w-44">{t('categoryHeader')}</th>
+                  <th className="hidden md:table-cell py-3.5 px-6 w-36">{t('addedDateHeader')}</th>
+                  <th className="py-3 px-3 sm:px-6 text-right w-20 sm:w-28">{t('actionsHeader')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-sky-50 text-sm">
@@ -361,7 +376,7 @@ export const AdminProducts = () => {
 
         {/* Pagination */}
         {!loading && products.length > 0 && (
-          <div className="px-6 pb-2">
+          <div className="px-4 sm:px-6 pb-2 pt-1 border-t border-sky-50">
             <Pagination
               currentPage={pagination.page}
               totalPages={pagination.totalPages}

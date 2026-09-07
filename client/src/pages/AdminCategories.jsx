@@ -12,7 +12,6 @@ import {
   AlertTriangle,
   ArrowUp,
   ArrowDown,
-  ArrowUpDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -155,14 +154,14 @@ export const AdminCategories = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-5 sm:space-y-6 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             {t('categoryManagementTitle')}
           </h1>
-          <p className="text-sm text-sky-800/70 font-medium mt-1">
+          <p className="text-xs sm:text-sm text-sky-800/70 font-medium mt-0.5 sm:mt-1">
             {t('categoryManagementSubtitle')}
           </p>
         </div>
@@ -176,7 +175,7 @@ export const AdminCategories = () => {
       </div>
 
       {/* Categories Table */}
-      <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-sky-100 shadow-soft overflow-hidden">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-sky-100 shadow-soft overflow-hidden">
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center text-slate-400">
             <Loader2 className="w-8 h-8 text-cyan-500 animate-spin mb-2" />
@@ -189,83 +188,101 @@ export const AdminCategories = () => {
             <p className="text-xs text-sky-700/70 mt-1 font-medium">{t('clickToCreateCategory')}</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="w-full overflow-hidden">
+            <table className="w-full text-left border-collapse table-fixed">
               <thead>
                 <tr className="border-b border-sky-100 bg-sky-50/70 text-sky-800 text-[11px] uppercase tracking-wider font-bold">
-                  <th className="py-3.5 px-4 w-28 text-center">{t('sequenceHeader')}</th>
-                  <th className="py-3.5 px-6">{t('categoryNameHeader')}</th>
-                  <th className="py-3.5 px-6">{t('productsCountHeader')}</th>
-                  <th className="py-3.5 px-6">{t('createdDateHeader')}</th>
-                  <th className="py-3.5 px-6 text-right">{t('actionsHeader')}</th>
+                  <th className="py-3 px-2 sm:px-4 w-16 sm:w-24 text-center">{t('sequenceHeader')}</th>
+                  <th className="py-3 px-2 sm:px-6">{t('categoryNameHeader')}</th>
+                  <th className="hidden sm:table-cell py-3.5 px-6 w-36">{t('createdDateHeader')}</th>
+                  <th className="py-3 px-2 sm:px-6 text-right w-20 sm:w-28">{t('actionsHeader')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-sky-50 text-sm">
-                {categories.map((category, index) => (
-                  <tr key={category.id} className="hover:bg-sky-50/50 transition-colors group">
-                    {/* Sequence reorder controls */}
-                    <td className="py-4 px-4">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <span className="w-6 text-center font-extrabold text-xs text-sky-900/60 bg-sky-100/60 rounded-md py-0.5">
-                          {index + 1}
-                        </span>
-                        <div className="flex flex-col gap-0.5">
+                {categories.map((category, index) => {
+                  const formattedDate = new Date(category.createdAt).toLocaleDateString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  });
+
+                  return (
+                    <tr key={category.id} className="hover:bg-sky-50/50 transition-colors group">
+                      {/* Sequence reorder controls */}
+                      <td className="py-3 sm:py-4 px-2 sm:px-4">
+                        <div className="flex items-center justify-center gap-1 sm:gap-1.5">
+                          <span className="w-5 sm:w-6 text-center font-extrabold text-[11px] sm:text-xs text-sky-900/60 bg-sky-100/60 rounded-md py-0.5">
+                            {index + 1}
+                          </span>
+                          <div className="flex flex-col gap-0.5">
+                            <button
+                              type="button"
+                              disabled={index === 0 || reordering}
+                              onClick={() => handleMove(index, -1)}
+                              className="p-0.5 sm:p-1 rounded-md text-sky-700 hover:bg-sky-200/60 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
+                              title={t('moveUp')}
+                              aria-label={`${t('moveUp')} ${category.name}`}
+                            >
+                              <ArrowUp className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={index === categories.length - 1 || reordering}
+                              onClick={() => handleMove(index, 1)}
+                              className="p-0.5 sm:p-1 rounded-md text-sky-700 hover:bg-sky-200/60 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
+                              title={t('moveDown')}
+                              aria-label={`${t('moveDown')} ${category.name}`}
+                            >
+                              <ArrowDown className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Category Name & Products Count (with Date on Mobile) */}
+                      <td className="py-3 sm:py-4 px-2 sm:px-6 min-w-0">
+                        <div className="flex flex-col">
+                          <span className="font-bold text-slate-900 text-xs sm:text-sm line-clamp-1">
+                            {getDisplayName(category.name)}
+                          </span>
+                          <div className="flex items-center gap-2 mt-1 flex-wrap">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100/80 text-sky-800 border border-sky-200/60 whitespace-nowrap">
+                              {category.productCount} {category.productCount === 1 ? 'product' : 'products'}
+                            </span>
+                            <span className="sm:hidden text-[10px] font-semibold text-slate-600">
+                              {formattedDate}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Created Date for Desktop / Tablet */}
+                      <td className="hidden sm:table-cell py-4 px-6 text-xs text-sky-700/80 font-medium whitespace-nowrap">
+                        {formattedDate}
+                      </td>
+
+                      {/* Action buttons */}
+                      <td className="py-3 sm:py-4 px-2 sm:px-6 text-right shrink-0 whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1 sm:gap-1.5">
                           <button
-                            type="button"
-                            disabled={index === 0 || reordering}
-                            onClick={() => handleMove(index, -1)}
-                            className="p-1 rounded-md text-sky-700 hover:bg-sky-200/60 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
-                            title={t('moveUp')}
-                            aria-label={`${t('moveUp')} ${category.name}`}
+                            onClick={() => handleOpenEditModal(category)}
+                            className="p-1.5 sm:p-2 rounded-xl text-sky-700 hover:text-cyan-600 hover:bg-sky-100/80 transition-colors cursor-pointer"
+                            title={t('editCategory')}
                           >
-                            <ArrowUp className="w-3.5 h-3.5" />
+                            <Edit2 className="w-4 h-4" />
                           </button>
                           <button
-                            type="button"
-                            disabled={index === categories.length - 1 || reordering}
-                            onClick={() => handleMove(index, 1)}
-                            className="p-1 rounded-md text-sky-700 hover:bg-sky-200/60 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
-                            title={t('moveDown')}
-                            aria-label={`${t('moveDown')} ${category.name}`}
+                            onClick={() => handleOpenDeleteDialog(category)}
+                            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            title={t('deleteCategoryTitle', { name: category.name })}
                           >
-                            <ArrowDown className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 font-bold text-slate-900">
-                      {getDisplayName(category.name)}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-sky-100/80 text-sky-800 border border-sky-200/50">
-                        {category.productCount} {category.productCount === 1 ? 'product' : 'products'}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-xs text-sky-700/80 font-medium">
-                      {new Date(category.createdAt).toLocaleDateString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </td>
-                    <td className="py-4 px-6 text-right space-x-2">
-                      <button
-                        onClick={() => handleOpenEditModal(category)}
-                        className="p-2 rounded-xl text-sky-700 hover:text-cyan-600 hover:bg-sky-100/80 transition-colors cursor-pointer"
-                        title={t('editCategory')}
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleOpenDeleteDialog(category)}
-                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                        title={t('deleteCategoryTitle', { name: category.name })}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

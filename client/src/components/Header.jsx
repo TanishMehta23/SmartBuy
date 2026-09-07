@@ -21,7 +21,7 @@ export const Header = ({
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-xl border-b border-sky-100/80 shadow-xs transition-all">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-sky-200/80 shadow-sm transition-all">
       {/* Top Navigation Bar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2.5 sm:py-3.5 gap-2.5 sm:gap-4">
@@ -58,7 +58,7 @@ export const Header = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={t('searchPlaceholder')}
-                className="w-full pl-10 pr-9 py-2 sm:py-2.5 bg-sky-50/70 hover:bg-sky-50/90 focus:bg-white text-xs sm:text-sm text-slate-800 placeholder-slate-400 rounded-xl sm:rounded-2xl border border-sky-200/70 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all outline-none shadow-inner shadow-sky-100/50"
+                className="w-full pl-10 pr-9 py-2 sm:py-2.5 bg-sky-50/70 hover:bg-sky-50/90 focus:bg-white text-xs sm:text-sm text-slate-800 placeholder-slate-400 rounded-xl sm:rounded-2xl border border-sky-200/80 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all outline-none shadow-inner shadow-sky-100/50"
               />
               {Boolean(searchQuery) && (
                 <button
@@ -79,7 +79,7 @@ export const Header = ({
         </div>
 
         {/* Category Filter Pills Ribbon with Visual Scroll Indicator & Arrows */}
-        <div className="relative border-t border-sky-100/60 py-2 group/ribbon">
+        <div className="relative border-t border-sky-100/80 py-2 group/ribbon">
           {/* Scrollable Container */}
           <div
             id="category-ribbon"
@@ -87,10 +87,11 @@ export const Header = ({
           >
             <button
               onClick={() => onSelectCategory('all')}
-              className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shrink-0 ${selectedCategoryId === 'all'
+              className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shrink-0 ${
+                selectedCategoryId === 'all'
                   ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/40'
-                  : 'bg-white/90 hover:bg-sky-50 text-slate-600 hover:text-sky-700 border border-sky-200/60 shadow-xs'
-                }`}
+                  : 'bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-sky-200/80 shadow-xs'
+              }`}
             >
               <span>{t('allProducts')}</span>
             </button>
@@ -101,18 +102,20 @@ export const Header = ({
                 <button
                   key={category.id}
                   onClick={() => onSelectCategory(category.id)}
-                  className={`px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shrink-0 ${isSelected
+                  className={`px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shrink-0 ${
+                    isSelected
                       ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/40'
-                      : 'bg-white/90 hover:bg-sky-50 text-slate-600 hover:text-sky-700 border border-sky-200/60 shadow-xs'
-                    }`}
+                      : 'bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-sky-200/80 shadow-xs'
+                  }`}
                 >
                   <span>{getCategoryDisplayName(category.name)}</span>
                   {category.productCount !== undefined && (
                     <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${isSelected
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${
+                        isSelected
                           ? 'bg-sky-900/30 text-white border border-white/20'
                           : 'bg-sky-100 text-sky-700'
-                        }`}
+                      }`}
                     >
                       {category.productCount}
                     </span>
