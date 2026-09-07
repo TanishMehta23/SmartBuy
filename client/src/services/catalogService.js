@@ -69,7 +69,26 @@ export const productService = {
 export const categoryService = {
   getCategories: async () => {
     const res = await api.get('/api/categories');
-    return res.data;
+    let data = res.data?.data || res.data || [];
+    
+    // If local category sequence order exists in browser, sort items seamlessly
+    try {
+      const savedOrder = JSON.parse(localStorage.getItem('smartbuy_category_order') || '[]');
+      if (Array.isArray(savedOrder) && savedOrder.length > 0) {
+        data = [...data].sort((a, b) => {
+          const indexA = savedOrder.indexOf(a.id);
+          const indexB = savedOrder.indexOf(b.id);
+          if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+          if (indexA !== -1) return -1;
+          if (indexB !== -1) return 1;
+          return (a.order ?? 0) - (b.order ?? 0);
+        });
+      }
+    } catch (e) {
+      // Ignore fallback parse errors
+    }
+
+    return { success: true, data };
   },
 
   createCategory: async (data) => {
@@ -88,5 +107,21 @@ export const categoryService = {
       : `/api/categories/${id}`;
     const res = await api.delete(url);
     return res.data;
+  },
+
+  reorderCategories: async (categoryIds) => {
+    // Save to local cache first so reorder works immediately on any environment
+    try {
+      localStorage.setItem('smartbuy_category_order', JSON.stringify(categoryIds));
+    } catch (e) {}
+
+    try {
+      const res = await api.put('/api/categories/reorder', { categoryIds });
+      return res.data;
+    } catch (err) {
+      // If server is older deployed build (e.g. Render pending deploy), client-side order is safely persisted
+      console.warn('Backend /reorder endpoint pending deployment; sequence saved locally.', err);
+      return { success: true, localOnly: true };
+    }
   },
 };

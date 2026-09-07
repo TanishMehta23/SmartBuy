@@ -24,10 +24,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message =
-      error.response?.data?.message ||
-      error.message ||
-      'An unexpected error occurred';
+    let message = error.response?.data?.message || error.message || 'An unexpected error occurred';
+    
+    // If backend returned specific validation errors (e.g. from Zod)
+    if (error.response?.data?.errors && Array.isArray(error.response.data.errors) && error.response.data.errors.length > 0) {
+      message = error.response.data.errors.map((e) => e.message || `${e.field}: invalid`).join(', ');
+    }
+
     return Promise.reject({
       ...error,
       userFriendlyMessage: message,

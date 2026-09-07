@@ -10,12 +10,16 @@ import {
   Loader2,
   FolderTree,
   AlertTriangle,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reordering, setReordering] = useState(false);
 
   const { t, isPortuguese } = useLanguage();
 
@@ -31,8 +35,8 @@ export const AdminCategories = () => {
   const [reassignTargetId, setReassignTargetId] = useState('');
   const [deleting, setDeleting] = useState(false);
 
-  const fetchCategories = async () => {
-    setLoading(true);
+  const fetchCategories = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     try {
       const res = await categoryService.getCategories();
       if (res.success) {
@@ -41,13 +45,38 @@ export const AdminCategories = () => {
     } catch (err) {
       toast.error(err.userFriendlyMessage || t('failedToLoadCategories'));
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  const handleMove = async (index, direction) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= categories.length) return;
+
+    const newCategories = [...categories];
+    const [moved] = newCategories.splice(index, 1);
+    newCategories.splice(targetIndex, 0, moved);
+
+    // Optimistic UI update
+    setCategories(newCategories);
+    setReordering(true);
+
+    try {
+      const categoryIds = newCategories.map((c) => c.id);
+      await categoryService.reorderCategories(categoryIds);
+      toast.success(t('sequenceUpdated') || 'Category sequence updated successfully!');
+    } catch (err) {
+      toast.error(err.userFriendlyMessage || 'Failed to update category sequence');
+      // Revert on error
+      fetchCategories(false);
+    } finally {
+      setReordering(false);
+    }
+  };
 
   const handleOpenCreateModal = () => {
     setModalMode('create');
@@ -80,7 +109,7 @@ export const AdminCategories = () => {
         toast.success(t('categoryUpdatedSuccess'));
       }
       setIsModalOpen(false);
-      fetchCategories();
+      fetchCategories(false);
     } catch (err) {
       toast.error(err.userFriendlyMessage || t('operationFailed'));
     } finally {
@@ -110,7 +139,7 @@ export const AdminCategories = () => {
       );
       toast.success(t('categoryRemovedSuccess'));
       setCategoryToDelete(null);
-      fetchCategories();
+      fetchCategories(false);
     } catch (err) {
       toast.error(err.userFriendlyMessage || t('failedToDeleteCategory'));
     } finally {
@@ -130,17 +159,19 @@ export const AdminCategories = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Category Management</h1>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            {t('categoryManagementTitle')}
+          </h1>
           <p className="text-sm text-sky-800/70 font-medium mt-1">
-            Organize catalog inventory by managing dynamic product categories
+            {t('categoryManagementSubtitle')}
           </p>
         </div>
         <button
           onClick={handleOpenCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold rounded-xl shadow-md shadow-cyan-500/20 transition-all self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold rounded-xl shadow-md shadow-cyan-500/20 transition-all self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>Add New Category</span>
+          <span>{t('addNewCategory')}</span>
         </button>
       </div>
 
@@ -149,28 +180,59 @@ export const AdminCategories = () => {
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center text-slate-400">
             <Loader2 className="w-8 h-8 text-cyan-500 animate-spin mb-2" />
-            <p className="text-xs font-semibold text-sky-800/70">Loading categories...</p>
+            <p className="text-xs font-semibold text-sky-800/70">{t('loadingCategories')}</p>
           </div>
         ) : categories.length === 0 ? (
           <div className="py-16 text-center text-slate-400">
             <FolderTree className="w-12 h-12 mx-auto mb-3 text-sky-300" />
-            <p className="text-sm font-bold text-slate-800">No categories created</p>
-            <p className="text-xs text-sky-700/70 mt-1 font-medium">Click above to add your first category.</p>
+            <p className="text-sm font-bold text-slate-800">{t('noCategoriesCreated')}</p>
+            <p className="text-xs text-sky-700/70 mt-1 font-medium">{t('clickToCreateCategory')}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-sky-100 bg-sky-50/70 text-sky-800 text-[11px] uppercase tracking-wider font-bold">
-                  <th className="py-3.5 px-6">Category Name</th>
-                  <th className="py-3.5 px-6">Products Count</th>
-                  <th className="py-3.5 px-6">Created Date</th>
-                  <th className="py-3.5 px-6 text-right">Actions</th>
+                  <th className="py-3.5 px-4 w-28 text-center">{t('sequenceHeader')}</th>
+                  <th className="py-3.5 px-6">{t('categoryNameHeader')}</th>
+                  <th className="py-3.5 px-6">{t('productsCountHeader')}</th>
+                  <th className="py-3.5 px-6">{t('createdDateHeader')}</th>
+                  <th className="py-3.5 px-6 text-right">{t('actionsHeader')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-sky-50 text-sm">
-                {categories.map((category) => (
-                  <tr key={category.id} className="hover:bg-sky-50/50 transition-colors">
+                {categories.map((category, index) => (
+                  <tr key={category.id} className="hover:bg-sky-50/50 transition-colors group">
+                    {/* Sequence reorder controls */}
+                    <td className="py-4 px-4">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <span className="w-6 text-center font-extrabold text-xs text-sky-900/60 bg-sky-100/60 rounded-md py-0.5">
+                          {index + 1}
+                        </span>
+                        <div className="flex flex-col gap-0.5">
+                          <button
+                            type="button"
+                            disabled={index === 0 || reordering}
+                            onClick={() => handleMove(index, -1)}
+                            className="p-1 rounded-md text-sky-700 hover:bg-sky-200/60 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
+                            title={t('moveUp')}
+                            aria-label={`${t('moveUp')} ${category.name}`}
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={index === categories.length - 1 || reordering}
+                            onClick={() => handleMove(index, 1)}
+                            className="p-1 rounded-md text-sky-700 hover:bg-sky-200/60 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
+                            title={t('moveDown')}
+                            aria-label={`${t('moveDown')} ${category.name}`}
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
                     <td className="py-4 px-6 font-bold text-slate-900">
                       {getDisplayName(category.name)}
                     </td>

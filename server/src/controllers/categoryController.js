@@ -5,14 +5,17 @@ import {
 } from '../utils/validators.js';
 
 /**
- * Get all categories with product counts
+ * Get all categories with product counts (ordered by custom order, then name)
  * GET /api/categories
  * Public
  */
 export const getCategories = async (req, res, next) => {
   try {
     const categories = await prisma.category.findMany({
-      orderBy: { name: 'asc' },
+      orderBy: [
+        { order: 'asc' },
+        { name: 'asc' },
+      ],
       include: {
         _count: {
           select: { products: true },
@@ -23,6 +26,7 @@ export const getCategories = async (req, res, next) => {
     const formattedCategories = categories.map((cat) => ({
       id: cat.id,
       name: cat.name,
+      order: cat.order,
       productCount: cat._count.products,
       createdAt: cat.createdAt,
       updatedAt: cat.updatedAt,
@@ -31,6 +35,42 @@ export const getCategories = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       data: formattedCategories,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Reorder categories in bulk
+ * PUT /api/categories/reorder
+ * Admin only
+ * Body: { categoryIds: [id1, id2, id3, ...] }
+ */
+export const reorderCategories = async (req, res, next) => {
+  try {
+    const { categoryIds } = req.body;
+
+    if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'categoryIds array is required',
+      });
+    }
+
+    // Update each category with its new sequence index
+    const updates = categoryIds.map((id, index) =>
+      prisma.category.update({
+        where: { id },
+        data: { order: index },
+      })
+    );
+
+    await prisma.$transaction(updates);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Category sequence updated successfully',
     });
   } catch (error) {
     next(error);

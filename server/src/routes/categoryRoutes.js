@@ -4,6 +4,7 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  reorderCategories,
 } from '../controllers/categoryController.js';
 import { protectAdmin } from '../middleware/authMiddleware.js';
 
@@ -13,6 +14,7 @@ const router = express.Router();
 router.get('/', getCategories);
 
 // Admin-only protected routes
+router.put('/reorder', protectAdmin, reorderCategories);
 router.post('/', protectAdmin, createCategory);
 router.put('/:id', protectAdmin, updateCategory);
 router.delete('/:id', protectAdmin, deleteCategory);

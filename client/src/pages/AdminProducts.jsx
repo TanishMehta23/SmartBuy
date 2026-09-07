@@ -4,6 +4,7 @@ import { useDebounce } from '../hooks/useDebounce';
 import { useLanguage } from '../context/LanguageContext';
 import { categoryTranslations } from '../utils/translations';
 import { Pagination } from '../components/Pagination';
+import { CustomSelect } from '../components/CustomSelect';
 import {
   Plus,
   Search,
@@ -276,7 +277,7 @@ export const AdminProducts = () => {
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-sky-100 shadow-soft flex flex-col sm:flex-row items-center gap-4">
+      <div className="relative z-30 bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-sky-100 shadow-soft flex flex-col sm:flex-row items-center gap-4">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 absolute inset-y-0 left-3 my-auto text-sky-400 pointer-events-none" />
           <input
@@ -289,21 +290,24 @@ export const AdminProducts = () => {
         </div>
 
         <div className="w-full sm:w-64">
-          <select
+          <CustomSelect
+            options={[
+              { value: '', label: t('allCategoriesFilter') },
+              ...categories.map((cat) => ({
+                value: cat.id,
+                label: `${getCategoryName(cat.name)} (${cat.productCount ?? 0})`,
+              })),
+            ]}
             value={selectedCategory}
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
+            onChange={(val) => {
+              setSelectedCategory(val);
               setCurrentPage(1);
             }}
-            className="w-full py-2.5 px-3 bg-sky-50/70 border border-sky-200/70 rounded-2xl text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:border-cyan-500 focus:bg-white transition-all cursor-pointer"
-          >
-            <option value="">{t('allCategoriesFilter')}</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {getCategoryName(cat.name)} ({cat.productCount ?? 0})
-              </option>
-            ))}
-          </select>
+            placeholder={t('allCategoriesFilter')}
+            className="w-full"
+            buttonClassName="w-full justify-between"
+            align="right"
+          />
         </div>
       </div>
 

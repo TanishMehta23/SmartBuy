@@ -3,6 +3,8 @@ import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { Pagination } from '../components/Pagination';
 import { LoadingScreen } from '../components/LoadingScreen';
+import { Footer } from '../components/Footer';
+import { CustomSelect } from '../components/CustomSelect';
 import { productService, categoryService } from '../services/catalogService';
 import { useDebounce } from '../hooks/useDebounce';
 import { useLanguage } from '../context/LanguageContext';
@@ -105,7 +107,7 @@ export const CustomerCatalog = () => {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
         {/* Controls Ribbon: Active Filter Summary & Sorting Dropdown */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-sky-200/60">
+        <div className="relative z-30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-sky-200/60">
           <div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
               <span>
@@ -128,23 +130,22 @@ export const CustomerCatalog = () => {
             </p>
           </div>
 
-          {/* Sort Dropdown */}
-          <div className="flex items-center gap-2 self-start sm:self-auto bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-sky-100 shadow-xs">
-            <label htmlFor="catalog-sort" className="text-xs font-bold text-sky-700 flex items-center gap-1">
-              <ArrowUpDown className="w-3.5 h-3.5 text-cyan-600" />
-              <span>{t('sortLabel')}</span>
-            </label>
-            <select
-              id="catalog-sort"
+          {/* Filter / Sort Dropdown */}
+          <div className="self-start sm:self-auto">
+            <CustomSelect
+              options={[
+                { value: 'newest', label: t('sortNewest') },
+                { value: 'oldest', label: t('sortOldest') },
+                { value: 'name_asc', label: t('sortNameAsc') },
+                { value: 'name_desc', label: t('sortNameDesc') },
+              ]}
               value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-              className="bg-sky-50/80 border border-sky-200 rounded-xl px-2.5 py-1 text-xs sm:text-sm font-semibold text-slate-700 hover:border-cyan-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all cursor-pointer"
-            >
-              <option value="newest">{t('sortNewest')}</option>
-              <option value="oldest">{t('sortOldest')}</option>
-              <option value="name_asc">{t('sortNameAsc')}</option>
-              <option value="name_desc">{t('sortNameDesc')}</option>
-            </select>
+              onChange={(val) => setSortOption(val)}
+              icon={ArrowUpDown}
+              label={t('filterLabel')}
+              align="right"
+              placeholder={t('filterLabel')}
+            />
           </div>
         </div>
 
@@ -233,14 +234,8 @@ export const CustomerCatalog = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white/70 backdrop-blur-md border-t border-sky-100/80 py-6 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-xs text-sky-700/60 font-medium">
-            {t('footerText', { year: new Date().getFullYear() })}
-          </p>
-        </div>
-      </footer>
+      {/* Professional Footer */}
+      <Footer />
     </div>
   );
 };
