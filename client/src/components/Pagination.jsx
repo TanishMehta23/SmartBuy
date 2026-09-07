@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Pagination = ({
   currentPage,
@@ -8,6 +9,8 @@ export const Pagination = ({
   limit,
   onPageChange,
 }) => {
+  const { t } = useLanguage();
+
   if (totalPages <= 1 && totalProducts === 0) return null;
 
   const startItem = totalProducts === 0 ? 0 : (currentPage - 1) * limit + 1;
@@ -37,9 +40,7 @@ export const Pagination = ({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-8 border-t border-sky-200/60 mt-4">
       <div className="text-sm text-sky-800/80 font-medium">
-        Showing <span className="font-bold text-sky-950">{startItem}</span> to{' '}
-        <span className="font-bold text-sky-950">{endItem}</span> of{' '}
-        <span className="font-bold text-sky-950">{totalProducts}</span> products
+        {t('showingItems', { start: startItem, end: endItem, total: totalProducts })}
       </div>
 
       <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white/70 backdrop-blur-md p-1.5 rounded-2xl border border-sky-100 shadow-xs">
@@ -48,7 +49,7 @@ export const Pagination = ({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className="inline-flex items-center justify-center p-2 rounded-xl text-sky-800 hover:bg-sky-100/80 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-          aria-label="Previous page"
+          aria-label={t('previousPage')}
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -87,7 +88,7 @@ export const Pagination = ({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
           className="inline-flex items-center justify-center p-2 rounded-xl text-sky-800 hover:bg-sky-100/80 disabled:opacity-30 disabled:pointer-events-none transition-colors"
-          aria-label="Next page"
+          aria-label={t('nextPage')}
         >
           <ChevronRight className="w-5 h-5" />
         </button>

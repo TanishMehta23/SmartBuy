@@ -1,5 +1,8 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageSelector } from './LanguageSelector';
+import { categoryTranslations } from '../utils/translations';
 
 export const Header = ({
   searchQuery,
@@ -8,6 +11,15 @@ export const Header = ({
   selectedCategoryId,
   onSelectCategory,
 }) => {
+  const { t, isPortuguese } = useLanguage();
+
+  const getCategoryDisplayName = (name) => {
+    if (isPortuguese && categoryTranslations[name]) {
+      return categoryTranslations[name];
+    }
+    return name;
+  };
+
   return (
     <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-sky-100/80 shadow-xs transition-all">
       {/* Top Navigation Bar */}
@@ -23,21 +35,21 @@ export const Header = ({
             <div className="flex flex-col justify-center">
               <div className="flex items-center gap-2">
                 <span className="text-xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-sky-950 to-cyan-900 bg-clip-text text-transparent">
-                  Smart Buy
+                  {t('storeTitle')}
                 </span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 tracking-wide shadow-xs shadow-cyan-400/30 border border-cyan-300/40">
                   NIPC 518263606
                 </span>
               </div>
               <span className="text-[10px] sm:text-[11px] font-bold text-sky-600/90 tracking-widest uppercase">
-                ONESHOP FOR SMART BUYERS
+                {t('motto')}
               </span>
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="flex-1 max-w-lg mx-2 sm:mx-4">
-            <div className="relative group">
+          {/* Search Bar & Language Selector */}
+          <div className="flex items-center gap-3 flex-1 justify-end max-w-xl">
+            <div className="relative group flex-1">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-400 group-focus-within:text-cyan-500 transition-colors">
                 <Search className="w-4 h-4" />
               </div>
@@ -45,18 +57,23 @@ export const Header = ({
                 type="text"
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Search products or category..."
+                placeholder={t('searchPlaceholder')}
                 className="w-full pl-10 pr-9 py-2.5 bg-sky-50/70 hover:bg-sky-50/90 focus:bg-white text-sm text-slate-800 placeholder-slate-400 rounded-2xl border border-sky-200/70 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all outline-none shadow-inner shadow-sky-100/50"
               />
               {Boolean(searchQuery) && (
                 <button
                   onClick={() => onSearchChange('')}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-sky-600 transition-colors"
-                  title="Clear search"
+                  title={t('clearSearch')}
                 >
                   <X className="w-4 h-4" />
                 </button>
               )}
+            </div>
+
+            {/* Language Switcher */}
+            <div className="shrink-0">
+              <LanguageSelector />
             </div>
           </div>
         </div>
@@ -71,7 +88,7 @@ export const Header = ({
                 : 'bg-white/80 hover:bg-sky-50 text-slate-600 hover:text-sky-700 border border-sky-200/60 shadow-xs'
             }`}
           >
-            <span>All Products</span>
+            <span>{t('allProducts')}</span>
           </button>
 
           {categories.map((category) => {
@@ -86,7 +103,7 @@ export const Header = ({
                     : 'bg-white/80 hover:bg-sky-50 text-slate-600 hover:text-sky-700 border border-sky-200/60 shadow-xs'
                 }`}
               >
-                <span>{category.name}</span>
+                <span>{getCategoryDisplayName(category.name)}</span>
                 {category.productCount !== undefined && (
                   <span
                     className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${

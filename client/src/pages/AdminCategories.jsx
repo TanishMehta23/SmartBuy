@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { categoryService } from '../services/catalogService';
+import { useLanguage } from '../context/LanguageContext';
+import { categoryTranslations } from '../utils/translations';
 import {
   Plus,
   Edit2,
@@ -14,6 +16,8 @@ import { toast } from 'sonner';
 export const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { t, isPortuguese } = useLanguage();
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +39,7 @@ export const AdminCategories = () => {
         setCategories(res.data);
       }
     } catch (err) {
-      toast.error(err.userFriendlyMessage || 'Failed to load categories');
+      toast.error(err.userFriendlyMessage || t('failedToLoadCategories'));
     } finally {
       setLoading(false);
     }
@@ -62,7 +66,7 @@ export const AdminCategories = () => {
   const handleSaveCategory = async (e) => {
     e.preventDefault();
     if (!categoryName.trim()) {
-      toast.error('Category name is required');
+      toast.error(t('categoryNameRequired'));
       return;
     }
 
@@ -70,15 +74,15 @@ export const AdminCategories = () => {
     try {
       if (modalMode === 'create') {
         await categoryService.createCategory({ name: categoryName.trim() });
-        toast.success('Category created successfully');
+        toast.success(t('categoryCreatedSuccess'));
       } else {
         await categoryService.updateCategory(editingCategoryId, { name: categoryName.trim() });
-        toast.success('Category updated successfully');
+        toast.success(t('categoryUpdatedSuccess'));
       }
       setIsModalOpen(false);
       fetchCategories();
     } catch (err) {
-      toast.error(err.userFriendlyMessage || 'Operation failed');
+      toast.error(err.userFriendlyMessage || t('operationFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -86,7 +90,6 @@ export const AdminCategories = () => {
 
   const handleOpenDeleteDialog = (category) => {
     setCategoryToDelete(category);
-    // Find a fallback default reassignment target (first other category)
     const otherCat = categories.find((c) => c.id !== category.id);
     setReassignTargetId(otherCat ? otherCat.id : '');
   };
@@ -94,9 +97,8 @@ export const AdminCategories = () => {
   const handleDeleteCategory = async () => {
     if (!categoryToDelete) return;
 
-    // If category has products and no reassign target selected
     if (categoryToDelete.productCount > 0 && !reassignTargetId) {
-      toast.error('Please select a replacement category to reassign existing products.');
+      toast.error(t('pleaseSelectReplacement'));
       return;
     }
 
@@ -104,16 +106,23 @@ export const AdminCategories = () => {
     try {
       await categoryService.deleteCategory(
         categoryToDelete.id,
-        categoryToDelete.productCount > 0 ? reassignTargetId : null
+        categoryToDelete.productCount > 0 ? reassignTargetId : undefined
       );
-      toast.success('Category deleted successfully');
+      toast.success(t('categoryRemovedSuccess'));
       setCategoryToDelete(null);
       fetchCategories();
     } catch (err) {
-      toast.error(err.userFriendlyMessage || 'Failed to delete category');
+      toast.error(err.userFriendlyMessage || t('failedToDeleteCategory'));
     } finally {
       setDeleting(false);
     }
+  };
+
+  const getDisplayName = (name) => {
+    if (isPortuguese && categoryTranslations[name]) {
+      return categoryTranslations[name];
+    }
+    return name;
   };
 
   return (
@@ -163,11 +172,11 @@ export const AdminCategories = () => {
                 {categories.map((category) => (
                   <tr key={category.id} className="hover:bg-sky-50/50 transition-colors">
                     <td className="py-4 px-6 font-bold text-slate-900">
-                      {category.name}
+                      {getDisplayName(category.name)}
                     </td>
                     <td className="py-4 px-6">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-sky-100/80 text-sky-800 border border-sky-200/50">
-                        {category.productCount} product{category.productCount === 1 ? '' : 's'}
+                        {category.productCount} {category.productCount === 1 ? 'product' : 'products'}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-xs text-sky-700/80 font-medium">
@@ -180,15 +189,15 @@ export const AdminCategories = () => {
                     <td className="py-4 px-6 text-right space-x-2">
                       <button
                         onClick={() => handleOpenEditModal(category)}
-                        className="p-2 rounded-xl text-sky-700 hover:text-cyan-600 hover:bg-sky-100/80 transition-colors"
-                        title="Edit category"
+                        className="p-2 rounded-xl text-sky-700 hover:text-cyan-600 hover:bg-sky-100/80 transition-colors cursor-pointer"
+                        title={t('editCategory')}
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleOpenDeleteDialog(category)}
-                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                        title="Delete category"
+                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                        title={t('deleteCategoryTitle', { name: category.name })}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -207,11 +216,11 @@ export const AdminCategories = () => {
           <div className="bg-white rounded-3xl max-w-sm w-full shadow-2xl overflow-hidden border border-sky-100 animate-in fade-in zoom-in-95 duration-200">
             <div className="p-6 border-b border-sky-100 flex items-center justify-between">
               <h3 className="text-base font-black text-slate-900">
-                {modalMode === 'create' ? 'Add New Category' : 'Edit Category'}
+                {modalMode === 'create' ? t('addNewCategory') : t('editCategory')}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-sky-50"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-sky-50 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -220,7 +229,7 @@ export const AdminCategories = () => {
             <form onSubmit={handleSaveCategory} className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Category Name <span className="text-rose-500">*</span>
+                  {t('categoryNameLabel')} <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -237,17 +246,17 @@ export const AdminCategories = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-sky-50 rounded-xl transition-colors"
+                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-sky-50 rounded-xl transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-cyan-500/20 flex items-center gap-1.5 transition-all"
+                  className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-cyan-500/20 flex items-center gap-1.5 transition-all cursor-pointer"
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{modalMode === 'create' ? 'Create' : 'Save'}</span>
+                  <span>{modalMode === 'create' ? t('createCategory') : t('saveCategory')}</span>
                 </button>
               </div>
             </form>
@@ -264,33 +273,29 @@ export const AdminCategories = () => {
             </div>
 
             <h3 className="text-base font-bold text-slate-900 text-center">
-              Delete Category: &quot;{categoryToDelete.name}&quot;?
+              {t('deleteCategoryTitle', { name: categoryToDelete.name })}
             </h3>
 
             {categoryToDelete.productCount > 0 ? (
               <div className="my-4 space-y-3">
                 <p className="text-xs text-slate-600 text-center">
-                  This category contains{' '}
-                  <span className="font-bold text-rose-600">
-                    {categoryToDelete.productCount} product(s)
-                  </span>
-                  . To protect database integrity, please select another category to move these products into:
+                  {t('reassignNotice', { count: categoryToDelete.productCount })}
                 </p>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Reassign products to:
+                    {t('reassignTo')}
                   </label>
                   <select
                     value={reassignTargetId}
                     onChange={(e) => setReassignTargetId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-sky-50/50 border border-sky-200 rounded-2xl text-xs font-semibold focus:outline-none focus:border-cyan-500 focus:bg-white"
+                    className="w-full px-3.5 py-2.5 bg-sky-50/50 border border-sky-200 rounded-2xl text-xs font-semibold focus:outline-none focus:border-cyan-500 focus:bg-white cursor-pointer"
                   >
                     {categories
                       .filter((c) => c.id !== categoryToDelete.id)
                       .map((c) => (
                         <option key={c.id} value={c.id}>
-                          {c.name}
+                          {getDisplayName(c.name)}
                         </option>
                       ))}
                   </select>
@@ -298,24 +303,24 @@ export const AdminCategories = () => {
               </div>
             ) : (
               <p className="text-xs text-slate-500 text-center mt-1 mb-6">
-                Are you sure you want to delete this category? This action cannot be undone.
+                {t('deleteCategoryConfirm')}
               </p>
             )}
 
             <div className="flex items-center justify-end gap-3 mt-6">
               <button
                 onClick={() => setCategoryToDelete(null)}
-                className="w-1/2 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+                className="w-1/2 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 onClick={handleDeleteCategory}
                 disabled={deleting}
-                className="w-1/2 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md shadow-rose-600/20 flex items-center justify-center gap-1.5 transition-all"
+                className="w-1/2 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md shadow-rose-600/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
                 {deleting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                <span>{categoryToDelete.productCount > 0 ? 'Reassign & Delete' : 'Delete Category'}</span>
+                <span>{categoryToDelete.productCount > 0 ? t('reassignAndDelete') : t('delete')}</span>
               </button>
             </div>
           </div>

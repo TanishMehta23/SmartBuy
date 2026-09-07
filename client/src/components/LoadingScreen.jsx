@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, Server } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
-export const LoadingScreen = ({
-  title = 'Loading Product Catalog',
-  message = 'Connecting to catalog services...',
-}) => {
+export const LoadingScreen = () => {
   const [secondsElapsed, setSecondsElapsed] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -17,23 +16,23 @@ export const LoadingScreen = ({
   const getDynamicStatus = () => {
     if (secondsElapsed < 4) {
       return {
-        step: 'Fetching latest products and categories...',
-        hint: 'Loading fresh catalog items',
+        step: t('fetchStep1'),
+        hint: t('fetchHint1'),
       };
     } else if (secondsElapsed < 10) {
       return {
-        step: 'Waking up cloud server...',
-        hint: 'Render instances take a few seconds to spin up on initial load.',
+        step: t('wakeServerStep'),
+        hint: t('wakeServerHint'),
       };
     } else if (secondsElapsed < 20) {
       return {
-        step: 'Establishing database connection...',
-        hint: 'Almost ready, streaming product showcase data...',
+        step: t('dbConnectStep'),
+        hint: t('dbConnectHint'),
       };
     } else {
       return {
-        step: 'Finishing up loading...',
-        hint: 'Thank you for your patience! Products will appear shortly.',
+        step: t('finishStep'),
+        hint: t('finishHint'),
       };
     }
   };
@@ -59,10 +58,10 @@ export const LoadingScreen = ({
 
         {/* Store Title */}
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 mb-1">
-          Smart Buy
+          {t('storeTitle')}
         </h1>
         <p className="text-xs font-bold uppercase tracking-widest text-sky-600 mb-2">
-          ONESHOP FOR SMART BUYERS
+          {t('motto')}
         </p>
         <span className="inline-block px-3 py-1 mb-6 rounded-full text-xs font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 shadow-xs border border-cyan-300/50">
           NIPC 518263606
@@ -88,13 +87,13 @@ export const LoadingScreen = ({
           {secondsElapsed >= 4 && (
             <div className="mt-2 flex items-center gap-1.5 text-[11px] text-sky-700 font-medium bg-sky-50 border border-sky-200/80 rounded-full px-3 py-1 animate-in fade-in duration-300">
               <Server className="w-3.5 h-3.5 text-cyan-600" />
-              <span>Server wake up in progress ({secondsElapsed}s)</span>
+              <span>{t('serverWakeInProgress', { seconds: secondsElapsed })}</span>
             </div>
           )}
         </div>
 
         <p className="text-[11px] text-sky-600/70 mt-6 font-semibold">
-          Fast &bull; Secure &bull; High Quality Catalog
+          {t('loadingBadge')}
         </p>
       </div>
     </div>

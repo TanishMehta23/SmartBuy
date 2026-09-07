@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 // Pages
@@ -14,10 +15,11 @@ import { AdminLayout } from './layouts/AdminLayout';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        {/* Modern Toast notifications */}
-        <Toaster position="top-right" richColors closeButton expand={false} />
+    <LanguageProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          {/* Modern Toast notifications */}
+          <Toaster position="top-right" richColors closeButton expand={false} />
 
         <Routes>
           {/* Public Customer Portal */}
@@ -46,5 +48,6 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </LanguageProvider>
   );
 }

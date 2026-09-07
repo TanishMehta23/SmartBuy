@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageSelector } from '../components/LanguageSelector';
 import {
   LayoutDashboard,
   Package,
@@ -15,19 +17,20 @@ import { toast } from 'sonner';
 
 export const AdminLayout = () => {
   const { admin, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
-    toast.success('Logged out successfully.');
+    toast.success(t('loggedOutSuccess'));
     navigate('/admin/login');
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Products', path: '/admin/products', icon: Package },
-    { name: 'Categories', path: '/admin/categories', icon: FolderTree },
+    { name: t('dashboard'), path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: t('products'), path: '/admin/products', icon: Package },
+    { name: t('categories'), path: '/admin/categories', icon: FolderTree },
   ];
 
   return (
@@ -36,14 +39,17 @@ export const AdminLayout = () => {
       <div className="md:hidden bg-slate-900 text-white px-4 py-3.5 flex items-center justify-between sticky top-0 z-40 border-b border-sky-950">
         <div className="flex items-center gap-2.5">
           <img src="/logo.png" alt="Smart Buy" className="w-8 h-8 object-contain" />
-          <span className="font-extrabold text-sm tracking-tight text-white">Smart Buy Admin</span>
+          <span className="font-extrabold text-sm tracking-tight text-white">{t('adminPortal')}</span>
         </div>
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800"
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <LanguageSelector variant="dark" />
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Sidebar for Desktop / Dropdown for Mobile */}
@@ -51,20 +57,27 @@ export const AdminLayout = () => {
         className={`${mobileMenuOpen ? 'block' : 'hidden'} md:flex flex-col w-full md:w-64 bg-slate-900 text-slate-300 md:min-h-screen p-4 md:sticky md:top-0 md:h-screen z-30 border-r border-sky-950/60`}
       >
         {/* Brand */}
-        <div className="hidden md:flex items-center gap-3 px-2 py-3 mb-6 border-b border-slate-800/80">
-          <div className="relative w-11 h-11 flex items-center justify-center shrink-0">
-            <img
-              src="/logo.png"
-              alt="Smart Buy"
-              className="w-11 h-11 object-contain drop-shadow-md"
-            />
+        <div className="hidden md:flex items-center justify-between px-2 py-3 mb-6 border-b border-slate-800/80">
+          <div className="flex items-center gap-3">
+            <div className="relative w-11 h-11 flex items-center justify-center shrink-0">
+              <img
+                src="/logo.png"
+                alt="Smart Buy"
+                className="w-11 h-11 object-contain drop-shadow-md"
+              />
+            </div>
+            <div>
+              <h1 className="font-black text-sm text-white tracking-wide">{t('storeTitle').toUpperCase()} ADMIN</h1>
+              <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-bold">
+                {t('managementPortal')}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-black text-sm text-white tracking-wide">SMART BUY ADMIN</h1>
-            <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-bold">
-              Management Portal
-            </p>
-          </div>
+        </div>
+
+        {/* Language selector in sidebar for desktop */}
+        <div className="hidden md:block mb-4 px-2">
+          <LanguageSelector variant="dark" />
         </div>
 
         {/* Navigation Links */}
@@ -98,7 +111,7 @@ export const AdminLayout = () => {
             >
               <div className="flex items-center gap-3">
                 <Store className="w-4 h-4 text-cyan-400" />
-                <span>View Live Store</span>
+                <span>{t('viewLiveStore')}</span>
               </div>
               <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-300" />
             </Link>
@@ -108,17 +121,17 @@ export const AdminLayout = () => {
         {/* Admin User Info & Logout Button */}
         <div className="pt-4 mt-auto border-t border-slate-800">
           <div className="px-3 py-2 mb-2 bg-slate-800/50 rounded-xl border border-slate-700/50">
-            <p className="text-[10px] uppercase tracking-wider text-cyan-400 font-bold">Logged in as</p>
+            <p className="text-[10px] uppercase tracking-wider text-cyan-400 font-bold">{t('loggedInAs')}</p>
             <p className="text-xs font-semibold text-slate-200 truncate" title={admin?.email}>
               {admin?.email || 'admin@storecatalog.com'}
             </p>
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors"
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
-            <span>Sign Out</span>
+            <span>{t('signOut')}</span>
           </button>
         </div>
       </aside>

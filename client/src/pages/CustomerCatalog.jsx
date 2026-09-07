@@ -5,6 +5,8 @@ import { Pagination } from '../components/Pagination';
 import { LoadingScreen } from '../components/LoadingScreen';
 import { productService, categoryService } from '../services/catalogService';
 import { useDebounce } from '../hooks/useDebounce';
+import { useLanguage } from '../context/LanguageContext';
+import { categoryTranslations } from '../utils/translations';
 import { ArrowUpDown, Layers, AlertCircle, Loader2 } from 'lucide-react';
 
 export const CustomerCatalog = () => {
@@ -25,6 +27,7 @@ export const CustomerCatalog = () => {
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [error, setError] = useState(null);
 
+  const { t, isPortuguese } = useLanguage();
   const debouncedSearch = useDebounce(searchInput, 400);
 
   // Load categories once
@@ -81,6 +84,13 @@ export const CustomerCatalog = () => {
     return <LoadingScreen />;
   }
 
+  const selectedCategoryObj = categories.find((c) => c.id === selectedCategoryId);
+  const categoryDisplayName = selectedCategoryObj
+    ? isPortuguese && categoryTranslations[selectedCategoryObj.name]
+      ? categoryTranslations[selectedCategoryObj.name]
+      : selectedCategoryObj.name
+    : t('categoryProducts');
+
   return (
     <div className="min-h-screen flex flex-col bg-theme-bluish relative">
       {/* Header with Search and Categories */}
@@ -101,18 +111,20 @@ export const CustomerCatalog = () => {
               <span>
                 {selectedCategoryId === 'all'
                   ? debouncedSearch
-                    ? `Search results for "${debouncedSearch}"`
-                    : 'All Products'
-                  : categories.find((c) => c.id === selectedCategoryId)?.name || 'Category Products'}
+                    ? `${t('searchResultsFor')} "${debouncedSearch}"`
+                    : t('allProducts')
+                  : categoryDisplayName}
               </span>
               {loading && <Loader2 className="w-4 h-4 text-cyan-500 animate-spin" />}
             </h1>
             <p className="text-xs sm:text-sm text-sky-700/80 font-medium mt-0.5">
               {loading && products.length === 0
-                ? 'Updating catalog...'
+                ? t('updatingCatalog')
                 : selectedCategoryId !== 'all' || debouncedSearch
-                ? `Showing ${paginationInfo.totalProducts} product${paginationInfo.totalProducts === 1 ? '' : 's'} matching criteria`
-                : `${paginationInfo.totalProducts} total products available in store`}
+                ? paginationInfo.totalProducts === 1
+                  ? t('matchingProductsCount', { count: paginationInfo.totalProducts })
+                  : t('matchingProductsCountPlural', { count: paginationInfo.totalProducts })
+                : t('totalProductsCount', { count: paginationInfo.totalProducts })}
             </p>
           </div>
 
@@ -120,7 +132,7 @@ export const CustomerCatalog = () => {
           <div className="flex items-center gap-2 self-start sm:self-auto bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-sky-100 shadow-xs">
             <label htmlFor="catalog-sort" className="text-xs font-bold text-sky-700 flex items-center gap-1">
               <ArrowUpDown className="w-3.5 h-3.5 text-cyan-600" />
-              <span>Sort:</span>
+              <span>{t('sortLabel')}</span>
             </label>
             <select
               id="catalog-sort"
@@ -128,10 +140,10 @@ export const CustomerCatalog = () => {
               onChange={(e) => setSortOption(e.target.value)}
               className="bg-sky-50/80 border border-sky-200 rounded-xl px-2.5 py-1 text-xs sm:text-sm font-semibold text-slate-700 hover:border-cyan-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all cursor-pointer"
             >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="name_asc">Name: A to Z</option>
-              <option value="name_desc">Name: Z to A</option>
+              <option value="newest">{t('sortNewest')}</option>
+              <option value="oldest">{t('sortOldest')}</option>
+              <option value="name_asc">{t('sortNameAsc')}</option>
+              <option value="name_desc">{t('sortNameDesc')}</option>
             </select>
           </div>
         </div>
@@ -157,7 +169,7 @@ export const CustomerCatalog = () => {
         {!loading && error && (
           <div className="my-12 p-8 max-w-lg mx-auto text-center bg-white/90 backdrop-blur-md rounded-3xl border border-rose-200/80 shadow-soft">
             <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-slate-800 mb-1">Failed to load catalog</h3>
+            <h3 className="text-base font-bold text-slate-800 mb-1">{t('failedToLoadCatalog')}</h3>
             <p className="text-sm text-slate-500 mb-4">{error}</p>
             <button
               onClick={() => {
@@ -166,7 +178,7 @@ export const CustomerCatalog = () => {
               }}
               className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold rounded-xl shadow-md shadow-cyan-500/20 transition-all"
             >
-              Try Again
+              {t('tryAgain')}
             </button>
           </div>
         )}
@@ -177,11 +189,11 @@ export const CustomerCatalog = () => {
             <div className="w-14 h-14 bg-sky-50 border border-sky-100 rounded-2xl flex items-center justify-center text-cyan-600 mx-auto mb-4 shadow-inner">
               <Layers className="w-7 h-7" />
             </div>
-            <h3 className="text-lg font-black text-slate-800">No products found</h3>
+            <h3 className="text-lg font-black text-slate-800">{t('noProductsFound')}</h3>
             <p className="text-xs sm:text-sm text-slate-500 mt-1.5 mb-6">
               {debouncedSearch
-                ? `No products matched your search "${debouncedSearch}". Try different keywords or reset filters.`
-                : 'There are no products listed in this category yet.'}
+                ? t('noProductsSearchHint', { query: debouncedSearch })
+                : t('noProductsCategoryHint')}
             </p>
             {(debouncedSearch || selectedCategoryId !== 'all') && (
               <button
@@ -191,7 +203,7 @@ export const CustomerCatalog = () => {
                 }}
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-sky-700 hover:from-cyan-500 hover:to-sky-600 text-white text-xs font-bold rounded-xl shadow-md shadow-sky-600/25 transition-all"
               >
-                Clear all filters
+                {t('clearFilters')}
               </button>
             )}
           </div>
@@ -225,7 +237,7 @@ export const CustomerCatalog = () => {
       <footer className="bg-white/70 backdrop-blur-md border-t border-sky-100/80 py-6 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-xs text-sky-700/60 font-medium">
-            Store Product Catalog &copy; {new Date().getFullYear()} &bull; Browse Only Showcase
+            {t('footerText', { year: new Date().getFullYear() })}
           </p>
         </div>
       </footer>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageSelector } from '../components/LanguageSelector';
 import { Lock, Mail, KeyRound, Loader2, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -11,6 +13,7 @@ export const AdminLogin = () => {
   const [errorMsg, setErrorMsg] = useState('');
 
   const { login } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,7 +31,7 @@ export const AdminLogin = () => {
 
     try {
       await login(email, password);
-      toast.success('Admin authenticated successfully!');
+      toast.success(t('adminAuthenticated'));
       navigate(from, { replace: true });
     } catch (err) {
       const message = err.userFriendlyMessage || 'Invalid email or password';
@@ -45,15 +48,16 @@ export const AdminLogin = () => {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Back to Customer Catalog link */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md px-4 mb-4">
+      {/* Top Header & Back link */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md px-4 mb-4 flex items-center justify-between">
         <button
           onClick={() => navigate('/')}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-400 hover:text-cyan-300 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-400 hover:text-cyan-300 transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Store Catalog</span>
+          <span>{t('backToCatalog')}</span>
         </button>
+        <LanguageSelector variant="dark" />
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md px-4 relative z-10">
@@ -64,10 +68,10 @@ export const AdminLogin = () => {
               <ShieldCheck className="w-7 h-7" />
             </div>
             <h2 className="text-2xl font-black tracking-tight text-white">
-              Admin Portal
+              {t('adminLoginTitle')}
             </h2>
             <p className="text-xs text-sky-400/80 mt-1.5 font-medium">
-              Secure authentication for store management
+              {t('adminLoginSubtitle')}
             </p>
           </div>
 
@@ -83,7 +87,7 @@ export const AdminLogin = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-sky-200 mb-1.5">
-                Admin Email
+                {t('adminEmail')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-500">
@@ -102,7 +106,7 @@ export const AdminLogin = () => {
 
             <div>
               <label className="block text-xs font-bold text-sky-200 mb-1.5">
-                Password
+                {t('password')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-500">
@@ -127,10 +131,10 @@ export const AdminLogin = () => {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Verifying Credentials...</span>
+                  <span>{t('verifyingCredentials')}</span>
                 </>
               ) : (
-                <span>Sign In to Dashboard</span>
+                <span>{t('signInButton')}</span>
               )}
             </button>
           </form>
