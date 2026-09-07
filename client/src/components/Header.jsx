@@ -21,34 +21,34 @@ export const Header = ({
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-sky-100/80 shadow-xs transition-all">
+    <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-xl border-b border-sky-100/80 shadow-xs transition-all">
       {/* Top Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-3.5 gap-4">
-          {/* Logo, Store Title, Moto & NIPC */}
-          <div className="flex items-center gap-3.5 shrink-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2.5 sm:py-3.5 gap-2.5 sm:gap-4">
+          {/* Logo, Store Title, NIPC & Motto - Prominent and Clear */}
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             <img
               src="/logo.png"
               alt="Smart Buy Logo"
-              className="w-12 h-12 object-contain hover:scale-105 transition-transform duration-300"
+              className="w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 object-contain hover:scale-105 transition-transform duration-300"
             />
             <div className="flex flex-col justify-center">
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-sky-950 to-cyan-900 bg-clip-text text-transparent">
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-sky-950 to-cyan-900 bg-clip-text text-transparent whitespace-nowrap">
                   {t('storeTitle')}
                 </span>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 tracking-wide shadow-xs shadow-cyan-400/30 border border-cyan-300/40">
+                <span className="inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-[11px] md:text-xs font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 tracking-wide shadow-xs shadow-cyan-400/30 border border-cyan-300/40 whitespace-nowrap">
                   NIPC 518263606
                 </span>
               </div>
-              <span className="text-[10px] sm:text-[11px] font-bold text-sky-600/90 tracking-widest uppercase">
+              <span className="text-[10px] sm:text-xs md:text-sm font-extrabold text-sky-600/90 tracking-wider sm:tracking-widest uppercase whitespace-nowrap mt-0.5">
                 {t('motto')}
               </span>
             </div>
           </div>
 
-          {/* Search Bar & Language Selector */}
-          <div className="flex items-center gap-3 flex-1 justify-end max-w-xl">
+          {/* Search Bar & Language Switcher in one cohesive row */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end max-w-full md:max-w-xl">
             <div className="relative group flex-1">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-400 group-focus-within:text-cyan-500 transition-colors">
                 <Search className="w-4 h-4" />
@@ -58,7 +58,7 @@ export const Header = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={t('searchPlaceholder')}
-                className="w-full pl-10 pr-9 py-2.5 bg-sky-50/70 hover:bg-sky-50/90 focus:bg-white text-sm text-slate-800 placeholder-slate-400 rounded-2xl border border-sky-200/70 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all outline-none shadow-inner shadow-sky-100/50"
+                className="w-full pl-10 pr-9 py-2 sm:py-2.5 bg-sky-50/70 hover:bg-sky-50/90 focus:bg-white text-xs sm:text-sm text-slate-800 placeholder-slate-400 rounded-xl sm:rounded-2xl border border-sky-200/70 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15 transition-all outline-none shadow-inner shadow-sky-100/50"
               />
               {Boolean(searchQuery) && (
                 <button
@@ -78,46 +78,52 @@ export const Header = ({
           </div>
         </div>
 
-        {/* Category Filter Pills Ribbon */}
-        <div className="py-2.5 overflow-x-auto no-scrollbar flex items-center gap-2 border-t border-sky-100/60">
-          <button
-            onClick={() => onSelectCategory('all')}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 ${
-              selectedCategoryId === 'all'
-                ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/40'
-                : 'bg-white/80 hover:bg-sky-50 text-slate-600 hover:text-sky-700 border border-sky-200/60 shadow-xs'
-            }`}
+        {/* Category Filter Pills Ribbon with Visual Scroll Indicator & Arrows */}
+        <div className="relative border-t border-sky-100/60 py-2 group/ribbon">
+          {/* Scrollable Container */}
+          <div
+            id="category-ribbon"
+            className="overflow-x-auto no-scrollbar flex items-center gap-2 scroll-smooth px-1"
           >
-            <span>{t('allProducts')}</span>
-          </button>
-
-          {categories.map((category) => {
-            const isSelected = selectedCategoryId === category.id;
-            return (
-              <button
-                key={category.id}
-                onClick={() => onSelectCategory(category.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 ${
-                  isSelected
-                    ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/40'
-                    : 'bg-white/80 hover:bg-sky-50 text-slate-600 hover:text-sky-700 border border-sky-200/60 shadow-xs'
+            <button
+              onClick={() => onSelectCategory('all')}
+              className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shrink-0 ${selectedCategoryId === 'all'
+                  ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/40'
+                  : 'bg-white/90 hover:bg-sky-50 text-slate-600 hover:text-sky-700 border border-sky-200/60 shadow-xs'
                 }`}
-              >
-                <span>{getCategoryDisplayName(category.name)}</span>
-                {category.productCount !== undefined && (
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${
-                      isSelected
-                        ? 'bg-sky-900/30 text-white border border-white/20'
-                        : 'bg-sky-100 text-sky-700'
+            >
+              <span>{t('allProducts')}</span>
+            </button>
+
+            {categories.map((category) => {
+              const isSelected = selectedCategoryId === category.id;
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => onSelectCategory(category.id)}
+                  className={`px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shrink-0 ${isSelected
+                      ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/40'
+                      : 'bg-white/90 hover:bg-sky-50 text-slate-600 hover:text-sky-700 border border-sky-200/60 shadow-xs'
                     }`}
-                  >
-                    {category.productCount}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+                >
+                  <span>{getCategoryDisplayName(category.name)}</span>
+                  {category.productCount !== undefined && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${isSelected
+                          ? 'bg-sky-900/30 text-white border border-white/20'
+                          : 'bg-sky-100 text-sky-700'
+                        }`}
+                    >
+                      {category.productCount}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right Gradient Fade to signify more items on the right */}
+          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none flex items-center justify-end pr-1" />
         </div>
       </div>
     </header>

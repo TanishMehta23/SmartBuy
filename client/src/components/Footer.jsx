@@ -99,21 +99,21 @@ export const Footer = () => {
       </div>
 
       {/* Main Footer Links & Contact Info */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
           {/* Brand Column */}
-          <div className="md:col-span-5 space-y-4">
-            <div className="flex items-center gap-3">
+          <div className="sm:col-span-2 md:col-span-5 space-y-3 sm:space-y-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
               <img
                 src="/logo.png"
                 alt="Smart Buy Logo"
-                className="w-10 h-10 object-contain drop-shadow-sm"
+                className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow-sm"
               />
               <div>
-                <span className="text-lg font-black tracking-tight bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-700 bg-clip-text text-transparent">
+                <span className="text-base sm:text-lg font-black tracking-tight bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-700 bg-clip-text text-transparent">
                   {t('storeTitle')}
                 </span>
-                <p className="text-[10px] uppercase tracking-wider font-extrabold text-cyan-600">
+                <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold text-cyan-600">
                   {t('motto')}
                 </p>
               </div>
@@ -123,65 +123,66 @@ export const Footer = () => {
               {t('footerAboutDesc')}
             </p>
 
-            <div className="pt-2 flex items-center gap-3">
+            <div className="pt-1 flex items-center gap-2.5">
               <span className="text-xs font-bold text-sky-800">{t('language')}:</span>
               <LanguageSelector variant="light" />
             </div>
           </div>
 
           {/* Quick Links Column */}
-          <div className="md:col-span-3 space-y-3">
+          <div className="sm:col-span-1 md:col-span-3 space-y-2.5 sm:space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
               <Layers className="w-3.5 h-3.5 text-cyan-600" />
               <span>{t('footerQuickLinks')}</span>
             </h4>
-            <ul className="space-y-2.5 text-xs font-semibold">
-              <li>
+            {/* 2 x 2 grid on mobile, standard list on desktop */}
+            <div className="grid grid-cols-2 md:grid-cols-1 gap-2 sm:gap-2.5 text-xs font-semibold">
+              <div>
                 <button
                   onClick={scrollToTop}
-                  className="text-sky-800/80 hover:text-cyan-600 transition-colors cursor-pointer"
+                  className="text-sky-800/80 hover:text-cyan-600 transition-colors cursor-pointer text-left truncate w-full"
                 >
                   {t('footerExploreCatalog')}
                 </button>
-              </li>
-              <li>
+              </div>
+              <div>
                 <button
                   onClick={scrollToTop}
-                  className="text-sky-800/80 hover:text-cyan-600 transition-colors cursor-pointer"
+                  className="text-sky-800/80 hover:text-cyan-600 transition-colors cursor-pointer text-left truncate w-full"
                 >
                   {t('footerAllCategories')}
                 </button>
-              </li>
-              <li>
+              </div>
+              <div>
                 <button
                   onClick={() => setActiveModal('privacy')}
-                  className="text-sky-800/80 hover:text-cyan-600 transition-colors cursor-pointer"
+                  className="text-sky-800/80 hover:text-cyan-600 transition-colors cursor-pointer text-left truncate w-full"
                 >
                   {t('footerPrivacy')}
                 </button>
-              </li>
-              <li>
+              </div>
+              <div>
                 <button
                   onClick={() => setActiveModal('terms')}
-                  className="text-sky-800/80 hover:text-cyan-600 transition-colors cursor-pointer"
+                  className="text-sky-800/80 hover:text-cyan-600 transition-colors cursor-pointer text-left truncate w-full"
                 >
                   {t('footerTerms')}
                 </button>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
 
           {/* Visit & Contact Information Column */}
-          <div className="md:col-span-4 space-y-3.5">
+          <div className="sm:col-span-1 md:col-span-4 space-y-2.5 sm:space-y-3.5">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-cyan-600" />
               <span>{t('footerContactTitle')}</span>
             </h4>
 
-            <div className="space-y-3 text-xs">
+            <div className="space-y-2.5 text-xs">
               {/* Address */}
-              <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-cyan-600 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2">
+                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-600 shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sky-900 font-semibold leading-snug">
                     {t('footerAddressVal')}
@@ -190,7 +191,7 @@ export const Footer = () => {
                     href={googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-600 hover:text-cyan-700 hover:underline mt-1"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-600 hover:text-cyan-700 hover:underline mt-0.5"
                   >
                     <span>{t('footerViewOnMap')}</span>
                     <ExternalLink className="w-3 h-3" />
@@ -199,8 +200,8 @@ export const Footer = () => {
               </div>
 
               {/* Phone */}
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-cyan-600 shrink-0" />
+              <div className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-600 shrink-0" />
                 <a
                   href="tel:+351214843122"
                   className="text-sky-900 font-bold hover:text-cyan-600 transition-colors"
@@ -210,8 +211,8 @@ export const Footer = () => {
               </div>
 
               {/* Hours */}
-              <div className="flex items-center gap-2.5">
-                <Clock className="w-4 h-4 text-cyan-600 shrink-0" />
+              <div className="flex items-center gap-2">
+                <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-600 shrink-0" />
                 <span className="text-sky-800/80 font-medium">
                   {t('footerHoursVal')}
                 </span>
@@ -222,30 +223,31 @@ export const Footer = () => {
       </div>
 
       {/* Bottom Legal & Back to Top Ribbon */}
-      <div className="border-t border-sky-200/70 bg-white/80 py-5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <div className="flex flex-wrap items-center gap-3 text-sky-800/70 font-medium text-center sm:text-left">
+      <div className="border-t border-sky-200/70 bg-white/80 py-4 sm:py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center sm:justify-start gap-1.5 sm:gap-3 text-sky-800/70 font-medium text-center sm:text-left">
             <span>© {currentYear} <strong>Smart Buy</strong>. {t('footerRights')}</span>
-            <span className="hidden sm:inline text-sky-300">•</span>
-            <button
-              onClick={() => setActiveModal('privacy')}
-              className="hover:text-cyan-600 underline-offset-2 hover:underline cursor-pointer"
-            >
-              {t('footerPrivacy')}
-            </button>
-            <span className="text-sky-300">•</span>
-            <button
-              onClick={() => setActiveModal('terms')}
-              className="hover:text-cyan-600 underline-offset-2 hover:underline cursor-pointer"
-            >
-              {t('footerTerms')}
-            </button>
+            <div className="flex items-center justify-center gap-2">
+              <button
+                onClick={() => setActiveModal('privacy')}
+                className="hover:text-cyan-600 underline-offset-2 hover:underline cursor-pointer font-semibold"
+              >
+                {t('footerPrivacy')}
+              </button>
+              <span className="text-sky-300">•</span>
+              <button
+                onClick={() => setActiveModal('terms')}
+                className="hover:text-cyan-600 underline-offset-2 hover:underline cursor-pointer font-semibold"
+              >
+                {t('footerTerms')}
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center shrink-0 mt-1 sm:mt-0">
             <button
               onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-100 hover:bg-cyan-100 text-sky-800 hover:text-cyan-700 font-bold text-xs transition-colors cursor-pointer border border-sky-200"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-100 hover:bg-cyan-100 text-sky-800 hover:text-cyan-700 font-bold text-xs transition-colors cursor-pointer border border-sky-200 shadow-xs"
               aria-label="Back to top"
             >
               <span>Back to Top</span>

@@ -62,8 +62,8 @@ export const ProductCard = ({ product }) => {
 
         {/* Subtle Category Badge Tag on Image with Glass effect */}
         {displayCategory && (
-          <div className="absolute top-2.5 left-2.5 pointer-events-none">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide bg-white/90 backdrop-blur-md text-sky-800 shadow-sm border border-sky-200/80">
+          <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 pointer-events-none">
+            <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wide bg-white/90 backdrop-blur-md text-sky-800 shadow-sm border border-sky-200/80">
               {displayCategory}
             </span>
           </div>
@@ -74,8 +74,8 @@ export const ProductCard = ({ product }) => {
       </div>
 
       {/* Product Info: Name Only */}
-      <div className="p-4 flex-1 flex items-center justify-center text-center bg-white/60">
-        <h3 className="text-sm md:text-base font-bold text-slate-800 line-clamp-2 transition-colors group-hover:text-sky-600">
+      <div className="p-2.5 sm:p-4 flex-1 flex items-center justify-center text-center bg-white/60">
+        <h3 className="text-xs sm:text-sm md:text-base font-bold text-slate-800 line-clamp-2 transition-colors group-hover:text-sky-600 leading-snug">
           {displayName}
         </h3>
       </div>

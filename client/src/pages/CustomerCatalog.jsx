@@ -18,6 +18,10 @@ export const CustomerCatalog = () => {
   const [searchInput, setSearchInput] = useState('');
   const [sortOption, setSortOption] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // 24 for mobile (perfect 2-col grid), 25 for laptop (perfect 5-col grid)
+  const [itemsPerPage, setItemsPerPage] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 24 : 25));
+
   const [paginationInfo, setPaginationInfo] = useState({
     page: 1,
     limit: 25,
@@ -31,6 +35,18 @@ export const CustomerCatalog = () => {
 
   const { t, isPortuguese } = useLanguage();
   const debouncedSearch = useDebounce(searchInput, 400);
+
+  // Responsive page limit detector
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 768;
+      const targetLimit = isMobile ? 24 : 25;
+      setItemsPerPage((prev) => (prev !== targetLimit ? targetLimit : prev));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Load categories once
   useEffect(() => {
@@ -47,10 +63,10 @@ export const CustomerCatalog = () => {
     fetchCategories();
   }, []);
 
-  // Reset to page 1 when search or category changes
+  // Reset to page 1 when search, category, or limit changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedSearch, selectedCategoryId, sortOption]);
+  }, [debouncedSearch, selectedCategoryId, sortOption, itemsPerPage]);
 
   // Fetch products when params change
   useEffect(() => {
@@ -60,7 +76,7 @@ export const CustomerCatalog = () => {
       try {
         const res = await productService.getProducts({
           page: currentPage,
-          limit: 25,
+          limit: itemsPerPage,
           search: debouncedSearch,
           categoryId: selectedCategoryId,
           sort: sortOption,
@@ -79,7 +95,7 @@ export const CustomerCatalog = () => {
     };
 
     fetchProducts();
-  }, [currentPage, debouncedSearch, selectedCategoryId, sortOption]);
+  }, [currentPage, debouncedSearch, selectedCategoryId, sortOption, itemsPerPage]);
 
   // Show full loading screen on initial catalog load or when backend is waking up
   if (!hasLoadedOnce && loading && !error) {
@@ -107,19 +123,19 @@ export const CustomerCatalog = () => {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
         {/* Controls Ribbon: Active Filter Summary & Sorting Dropdown */}
-        <div className="relative z-30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-sky-200/60">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-              <span>
+        <div className="relative z-30 flex items-center justify-between gap-2.5 sm:gap-4 mb-5 sm:mb-6 pb-3.5 sm:pb-4 border-b border-sky-200/60">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-base sm:text-xl md:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <span className="truncate">
                 {selectedCategoryId === 'all'
                   ? debouncedSearch
                     ? `${t('searchResultsFor')} "${debouncedSearch}"`
                     : t('allProducts')
                   : categoryDisplayName}
               </span>
-              {loading && <Loader2 className="w-4 h-4 text-cyan-500 animate-spin" />}
+              {loading && <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-500 animate-spin shrink-0" />}
             </h1>
-            <p className="text-xs sm:text-sm text-sky-700/80 font-medium mt-0.5">
+            <p className="text-[11px] sm:text-xs md:text-sm text-sky-700/80 font-medium mt-0.5 leading-tight">
               {loading && products.length === 0
                 ? t('updatingCatalog')
                 : selectedCategoryId !== 'all' || debouncedSearch
@@ -130,8 +146,8 @@ export const CustomerCatalog = () => {
             </p>
           </div>
 
-          {/* Filter / Sort Dropdown */}
-          <div className="self-start sm:self-auto">
+          {/* Filter / Sort Dropdown - Compact on Mobile & Full on Desktop */}
+          <div className="shrink-0 ml-auto">
             <CustomSelect
               options={[
                 { value: 'newest', label: t('sortNewest') },
@@ -145,6 +161,7 @@ export const CustomerCatalog = () => {
               label={t('filterLabel')}
               align="right"
               placeholder={t('filterLabel')}
+              buttonClassName="py-1.5 px-2.5 sm:py-2 sm:px-3.5 text-[11px] sm:text-xs md:text-sm"
             />
           </div>
         </div>
@@ -213,7 +230,7 @@ export const CustomerCatalog = () => {
         {/* Product Grid */}
         {!loading && !error && products.length > 0 && (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 sm:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4 md:gap-5">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
