@@ -521,8 +521,4 @@ For Vercel, add a `vercel.json` at `client/vercel.json` to enable SPA routing:
 
 ---
 
-## License
-
-This project is released under the MIT License.
-
 **Disclaimer**: SmartBuy is a catalog display platform. It does not process payments, manage orders, or store customer data. Product inventory and imagery are managed solely by the store administrator through the protected admin portal.
