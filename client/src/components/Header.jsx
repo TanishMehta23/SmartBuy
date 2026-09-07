@@ -20,21 +20,33 @@ export const Header = ({
     return name;
   };
 
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    if (onSelectCategory) onSelectCategory('all');
+    if (onSearchChange) onSearchChange('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-sky-200/80 shadow-sm transition-all">
       {/* Top Navigation Bar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2.5 sm:py-3.5 gap-2.5 sm:gap-4">
-          {/* Logo, Store Title, NIPC & Motto - Prominent and Clear */}
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+          {/* Clickable Brand Logo, Store Title, NIPC & Motto */}
+          <a
+            href="/"
+            onClick={handleLogoClick}
+            className="flex items-center gap-3 sm:gap-4 shrink-0 group cursor-pointer select-none transition-transform active:scale-98"
+            title="Smart Buy - Back to Top"
+          >
             <img
               src="/logo.png"
               alt="Smart Buy Logo"
-              className="w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 object-contain hover:scale-105 transition-transform duration-300"
+              className="w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 object-contain group-hover:scale-105 transition-transform duration-300"
             />
             <div className="flex flex-col justify-center">
               <div className="flex items-center gap-2 sm:gap-2.5">
-                <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-sky-950 to-cyan-900 bg-clip-text text-transparent whitespace-nowrap">
+                <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-sky-950 to-cyan-900 bg-clip-text text-transparent whitespace-nowrap group-hover:from-cyan-600 group-hover:to-sky-700 transition-colors">
                   {t('storeTitle')}
                 </span>
                 <span className="inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-[11px] md:text-xs font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 tracking-wide shadow-xs shadow-cyan-400/30 border border-cyan-300/40 whitespace-nowrap">
@@ -45,7 +57,7 @@ export const Header = ({
                 {t('motto')}
               </span>
             </div>
-          </div>
+          </a>
 
           {/* Search Bar & Language Switcher in one cohesive row */}
           <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end max-w-full md:max-w-xl">
@@ -85,16 +97,34 @@ export const Header = ({
             id="category-ribbon"
             className="overflow-x-auto no-scrollbar flex items-center gap-2 scroll-smooth px-1"
           >
-            <button
-              onClick={() => onSelectCategory('all')}
-              className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shrink-0 ${
-                selectedCategoryId === 'all'
-                  ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/40'
-                  : 'bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-sky-200/80 shadow-xs'
-              }`}
-            >
-              <span>{t('allProducts')}</span>
-            </button>
+            {/* All Products Pill */}
+            {(() => {
+              const totalAllProducts = categories.reduce((sum, cat) => sum + (cat.productCount || 0), 0);
+              const isSelected = selectedCategoryId === 'all';
+              return (
+                <button
+                  onClick={() => onSelectCategory('all')}
+                  className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shrink-0 ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/40'
+                      : 'bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-sky-200/80 shadow-xs'
+                  }`}
+                >
+                  <span>{t('allProducts')}</span>
+                  {totalAllProducts > 0 && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${
+                        isSelected
+                          ? 'bg-sky-900/30 text-white border border-white/20'
+                          : 'bg-sky-100 text-sky-700'
+                      }`}
+                    >
+                      {totalAllProducts}
+                    </span>
+                  )}
+                </button>
+              );
+            })()}
 
             {categories.map((category) => {
               const isSelected = selectedCategoryId === category.id;

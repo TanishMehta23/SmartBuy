@@ -125,7 +125,7 @@ export const CustomerCatalog = () => {
         {/* Controls Ribbon: Active Filter Summary & Sorting Dropdown */}
         <div className="relative z-30 flex items-center justify-between gap-2.5 sm:gap-4 mb-5 sm:mb-6 pb-3.5 sm:pb-4 border-b border-sky-200/60">
           <div className="min-w-0 flex-1">
-            <h1 className="text-base sm:text-xl md:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <h1 className="font-display text-base sm:text-xl md:text-2xl lg:text-[1.75rem] font-black text-slate-900 tracking-tight flex items-center gap-2">
               <span className="truncate">
                 {selectedCategoryId === 'all'
                   ? debouncedSearch
