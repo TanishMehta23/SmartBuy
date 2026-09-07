@@ -1,6 +1,5 @@
 import React from 'react';
-import { Search, X, Store, Lock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Search, X } from 'lucide-react';
 
 export const Header = ({
   searchQuery,
@@ -12,19 +11,26 @@ export const Header = ({
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
       {/* Top Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 py-3 gap-4">
-          {/* Logo & Store Title */}
-          <div className="flex items-center space-x-3 shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
-              <Store className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                STORE CATALOG
-              </span>
-              <span className="hidden sm:block text-[11px] font-medium text-slate-400 -mt-1 tracking-wider uppercase">
-                Direct Product Showcase
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:kx-8">
+        <div className="flex items-center justify-between py-3 gap-4">
+          {/* Logo, Store Title, Moto & NIPC */}
+          <div className="flex items-center gap-3.5 shrink-0">
+            <img
+              src="/logo.png"
+              alt="Smart Buy Logo"
+              className="w-12 h-12 object-contain drop-shadow-sm hover:scale-105 transition-transform"
+            />
+            <div className="flex flex-col justify-center">
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-extrabold tracking-tight text-slate-800">
+                  Smart Buy
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-cyan-400 text-slate-900 tracking-wide shadow-xs">
+                  NIPC 518263606
+                </span>
+              </div>
+              <span className="text-[11px] font-semibold text-slate-500 tracking-wider uppercase">
+                ONESHOP FOR SMART BUYERS
               </span>
             </div>
           </div>
@@ -37,12 +43,12 @@ export const Header = ({
               </div>
               <input
                 type="text"
-                value={searchQuery}
+                value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search products or category..."
-                className="w-full pl-10 pr-9 py-2 bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-sm text-slate-800 placeholder-slate-400 rounded-full border border-slate-200/60 focus:border-emerald-500 focus:ring-3 focus:ring-emerald-500/15 transition-all outline-none"
+                className="w-full pl-10 pr-9 py-2 bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-sm text-slate-800 placeholder-slate-400 rounded-full border border-slate-200/60 focus:border-cyan-500 focus:ring-3 focus:ring-cyan-500/15 transition-all outline-none"
               />
-              {searchQuery && (
+              {Boolean(searchQuery) && (
                 <button
                   onClick={() => onSearchChange('')}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
@@ -53,8 +59,6 @@ export const Header = ({
               )}
             </div>
           </div>
-
-          {/* Admin Portal is private, accessible via /admin/login */}
         </div>
 
         {/* Category Filter Pills Ribbon */}
@@ -63,7 +67,7 @@ export const Header = ({
             onClick={() => onSelectCategory('all')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
               selectedCategoryId === 'all'
-                ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/25'
+                ? 'bg-cyan-600 text-white shadow-sm shadow-cyan-600/25'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800'
             }`}
           >
@@ -78,15 +82,15 @@ export const Header = ({
                 onClick={() => onSelectCategory(category.id)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                   isSelected
-                    ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/25'
+                    ? 'bg-cyan-600 text-white shadow-sm shadow-cyan-600/25'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800'
                 }`}
               >
                 {category.name}
                 {category.productCount !== undefined && (
                   <span
-                    className={`ml-1.5 text-[10px] px-1.5 py-0.2 rounded-full ${
-                      isSelected ? 'bg-emerald-700/60 text-white' : 'bg-slate-200/80 text-slate-500'
+                    className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full ${
+                      isSelected ? 'bg-cyan-700/60 text-white' : 'bg-slate-200/80 text-slate-500'
                     }`}
                   >
                     {category.productCount}

@@ -9,7 +9,6 @@ import {
   Store,
   Menu,
   X,
-  ShieldCheck,
   ExternalLink,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -35,11 +34,9 @@ export const AdminLayout = () => {
     <div className="min-h-screen bg-slate-100 flex flex-col md:flex-row text-slate-800">
       {/* Mobile Top Navigation Bar */}
       <div className="md:hidden bg-slate-900 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-40">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold">
-            <ShieldCheck className="w-5 h-5" />
-          </div>
-          <span className="font-bold text-sm tracking-tight">Admin Console</span>
+        <div className="flex items-center gap-2.5">
+          <img src="/logo.png" alt="Smart Buy" className="w-8 h-8 object-contain" />
+          <span className="font-bold text-sm tracking-tight">Smart Buy Admin</span>
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -51,18 +48,20 @@ export const AdminLayout = () => {
 
       {/* Sidebar for Desktop / Dropdown for Mobile */}
       <aside
-        className={`${
-          mobileMenuOpen ? 'block' : 'hidden'
-        } md:flex flex-col w-full md:w-64 bg-slate-900 text-slate-300 md:min-h-screen p-4 md:sticky md:top-0 md:h-screen z-30`}
+        className={`${mobileMenuOpen ? 'block' : 'hidden'} md:flex flex-col w-full md:w-64 bg-slate-900 text-slate-300 md:min-h-screen p-4 md:sticky md:top-0 md:h-screen z-30`}
       >
         {/* Brand */}
-        <div className="hidden md:flex items-center gap-3 px-3 py-4 mb-6 border-b border-slate-800">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 shadow-md shadow-emerald-500/20">
-            <ShieldCheck className="w-5 h-5" />
+        <div className="hidden md:flex items-center gap-3 px-2 py-3 mb-6 border-b border-slate-800">
+          <div className="relative w-11 h-11 flex items-center justify-center shrink-0">
+            <img
+              src="/logo.png"
+              alt="Smart Buy"
+              className="w-11 h-11 object-contain drop-shadow-sm"
+            />
           </div>
           <div>
-            <h1 className="font-extrabold text-sm text-white tracking-wide">STORE ADMIN</h1>
-            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">
+            <h1 className="font-extrabold text-sm text-white tracking-wide">SMART BUY ADMIN</h1>
+            <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-semibold">
               Management Portal
             </p>
           </div>
@@ -82,8 +81,7 @@ export const AdminLayout = () => {
                     isActive
                       ? 'bg-emerald-600 text-white font-semibold shadow-md shadow-emerald-600/25'
                       : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                  }`
-                }
+                  }`}
               >
                 <Icon className="w-4 h-4" />
                 <span>{item.name}</span>
