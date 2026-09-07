@@ -31,16 +31,16 @@ export const AdminLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col md:flex-row text-slate-800">
+    <div className="min-h-screen bg-theme-bluish flex flex-col md:flex-row text-slate-800 relative">
       {/* Mobile Top Navigation Bar */}
-      <div className="md:hidden bg-slate-900 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+      <div className="md:hidden bg-slate-900 text-white px-4 py-3.5 flex items-center justify-between sticky top-0 z-40 border-b border-sky-950">
         <div className="flex items-center gap-2.5">
           <img src="/logo.png" alt="Smart Buy" className="w-8 h-8 object-contain" />
-          <span className="font-bold text-sm tracking-tight">Smart Buy Admin</span>
+          <span className="font-extrabold text-sm tracking-tight text-white">Smart Buy Admin</span>
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800"
+          className="p-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800"
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -48,20 +48,20 @@ export const AdminLayout = () => {
 
       {/* Sidebar for Desktop / Dropdown for Mobile */}
       <aside
-        className={`${mobileMenuOpen ? 'block' : 'hidden'} md:flex flex-col w-full md:w-64 bg-slate-900 text-slate-300 md:min-h-screen p-4 md:sticky md:top-0 md:h-screen z-30`}
+        className={`${mobileMenuOpen ? 'block' : 'hidden'} md:flex flex-col w-full md:w-64 bg-slate-900 text-slate-300 md:min-h-screen p-4 md:sticky md:top-0 md:h-screen z-30 border-r border-sky-950/60`}
       >
         {/* Brand */}
-        <div className="hidden md:flex items-center gap-3 px-2 py-3 mb-6 border-b border-slate-800">
+        <div className="hidden md:flex items-center gap-3 px-2 py-3 mb-6 border-b border-slate-800/80">
           <div className="relative w-11 h-11 flex items-center justify-center shrink-0">
             <img
               src="/logo.png"
               alt="Smart Buy"
-              className="w-11 h-11 object-contain drop-shadow-sm"
+              className="w-11 h-11 object-contain drop-shadow-md"
             />
           </div>
           <div>
-            <h1 className="font-extrabold text-sm text-white tracking-wide">SMART BUY ADMIN</h1>
-            <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-semibold">
+            <h1 className="font-black text-sm text-white tracking-wide">SMART BUY ADMIN</h1>
+            <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-bold">
               Management Portal
             </p>
           </div>
@@ -77,10 +77,10 @@ export const AdminLayout = () => {
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                  `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                     isActive
-                      ? 'bg-emerald-600 text-white font-semibold shadow-md shadow-emerald-600/25'
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                      ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/20 ring-1 ring-cyan-400/30'
+                      : 'text-slate-400 hover:bg-slate-800/80 hover:text-cyan-300'
                   }`}
               >
                 <Icon className="w-4 h-4" />
@@ -94,22 +94,22 @@ export const AdminLayout = () => {
               to="/"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white transition-all group"
+              className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800 hover:text-cyan-300 transition-all group"
             >
               <div className="flex items-center gap-3">
-                <Store className="w-4 h-4 text-emerald-400" />
+                <Store className="w-4 h-4 text-cyan-400" />
                 <span>View Live Store</span>
               </div>
-              <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300" />
+              <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-300" />
             </Link>
           </div>
         </nav>
 
         {/* Admin User Info & Logout Button */}
         <div className="pt-4 mt-auto border-t border-slate-800">
-          <div className="px-3 py-2 mb-2">
-            <p className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Logged in as</p>
-            <p className="text-xs font-medium text-slate-200 truncate" title={admin?.email}>
+          <div className="px-3 py-2 mb-2 bg-slate-800/50 rounded-xl border border-slate-700/50">
+            <p className="text-[10px] uppercase tracking-wider text-cyan-400 font-bold">Logged in as</p>
+            <p className="text-xs font-semibold text-slate-200 truncate" title={admin?.email}>
               {admin?.email || 'admin@storecatalog.com'}
             </p>
           </div>

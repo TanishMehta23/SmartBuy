@@ -35,19 +35,19 @@ export const Pagination = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-8 border-t border-slate-200/80">
-      <div className="text-sm text-slate-500 font-medium">
-        Showing <span className="font-semibold text-slate-700">{startItem}</span> to{' '}
-        <span className="font-semibold text-slate-700">{endItem}</span> of{' '}
-        <span className="font-semibold text-slate-700">{totalProducts}</span> products
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-8 border-t border-sky-200/60 mt-4">
+      <div className="text-sm text-sky-800/80 font-medium">
+        Showing <span className="font-bold text-sky-950">{startItem}</span> to{' '}
+        <span className="font-bold text-sky-950">{endItem}</span> of{' '}
+        <span className="font-bold text-sky-950">{totalProducts}</span> products
       </div>
 
-      <div className="flex items-center space-x-1 sm:space-x-2">
+      <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white/70 backdrop-blur-md p-1.5 rounded-2xl border border-sky-100 shadow-xs">
         {/* Previous Button */}
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="inline-flex items-center justify-center p-2 rounded-xl text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          className="inline-flex items-center justify-center p-2 rounded-xl text-sky-800 hover:bg-sky-100/80 disabled:opacity-30 disabled:pointer-events-none transition-colors"
           aria-label="Previous page"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -59,7 +59,7 @@ export const Pagination = ({
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="px-3 py-1.5 text-slate-400 font-medium select-none"
+                className="px-2.5 py-1.5 text-sky-400 font-bold select-none"
               >
                 ...
               </span>
@@ -71,10 +71,10 @@ export const Pagination = ({
             <button
               key={`page-${pageNum}`}
               onClick={() => onPageChange(pageNum)}
-              className={`min-w-[36px] h-9 px-3 rounded-xl text-sm font-semibold transition-all ${
+              className={`min-w-[36px] h-9 px-3 rounded-xl text-xs font-bold transition-all ${
                 isActive
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/25 ring-2 ring-cyan-400/40'
+                  : 'text-sky-900 hover:bg-sky-100/70 hover:text-sky-950'
               }`}
             >
               {pageNum}
@@ -86,7 +86,7 @@ export const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className="inline-flex items-center justify-center p-2 rounded-xl text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          className="inline-flex items-center justify-center p-2 rounded-xl text-sky-800 hover:bg-sky-100/80 disabled:opacity-30 disabled:pointer-events-none transition-colors"
           aria-label="Next page"
         >
           <ChevronRight className="w-5 h-5" />

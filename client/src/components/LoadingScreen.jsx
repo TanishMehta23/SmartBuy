@@ -9,7 +9,7 @@ export const LoadingScreen = ({
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setSecondsElapsed[(prev) => prev + 1];
+      setSecondsElapsed((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -41,59 +41,60 @@ export const LoadingScreen = ({
   const status = getDynamicStatus();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-cyan-50/30 to-slate-100 flex flex-col items-center justify-center p-4 select-none">
-      <div className="max-w-md w-full text-center flex flex-col items-center">
+    <div className="min-h-screen bg-theme-bluish flex flex-col items-center justify-center p-4 select-none relative overflow-hidden">
+      {/* Background ambient lighting */}
+      <div className="absolute w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none -top-20 -right-20 animate-pulse" />
+      <div className="absolute w-96 h-96 bg-sky-400/20 rounded-full blur-3xl pointer-events-none -bottom-20 -left-20 animate-pulse" />
+
+      <div className="max-w-md w-full text-center flex flex-col items-center relative z-10">
         {/* Animated Brand Emblem */}
         <div className="relative mb-6 flex items-center justify-center">
-          <div className="absolute w-28 h-28 rounded-full bg-cyan-400/20 animate-ping opacity-75" />
-          <div className="relative w-24 h-24 flex items-center justify-center">
-            <img
-              src="/logo.png"
-              alt="Smart Buy"
-              className="w-24 h-24 object-contain animate-bounce"
-              style={{ animationDuration: '2s' }}
-            />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Smart Buy"
+            className="w-24 h-24 object-contain animate-bounce"
+            style={{ animationDuration: '2s' }}
+          />
         </div>
 
         {/* Store Title */}
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 mb-1">
           Smart Buy
         </h1>
-        <p className="text-xs font-bold uppercase tracking-widest text-cyan-600 mb-2">
+        <p className="text-xs font-bold uppercase tracking-widest text-sky-600 mb-2">
           ONESHOP FOR SMART BUYERS
         </p>
-        <span className="inline-block px-3 py-1 mb-6 rounded-md text-xs font-bold bg-cyan-400 text-slate-900 shadow-xs">
+        <span className="inline-block px-3 py-1 mb-6 rounded-full text-xs font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 shadow-xs border border-cyan-300/50">
           NIPC 518263606
         </span>
 
         {/* Loading Card */}
-        <div className="w-full bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-slate-200/80 shadow-xl shadow-slate-200/50 flex flex-col items-center">
-          <div className="flex items-center gap-3 text-slate-800 font-semibold text-sm sm:text-base mb-2">
-            <Loader2 className="w-5 h-5 text-cyan-600 animate-spin shrink-0" />
+        <div className="w-full bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-sky-100 shadow-xl shadow-sky-200/40 flex flex-col items-center">
+          <div className="flex items-center gap-3 text-slate-900 font-bold text-sm sm:text-base mb-2">
+            <Loader2 className="w-5 h-5 text-cyan-500 animate-spin shrink-0" />
             <span>{status.step}</span>
           </div>
 
-          <p className="text-xs text-slate-500 text-center mb-5 max-w-xs">
+          <p className="text-xs text-sky-800/70 font-medium text-center mb-5 max-w-xs">
             {status.hint}
           </p>
 
           {/* Animated Gradient Progress Indicator */}
-          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden relative mb-3">
-            <div className="h-full bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-500 rounded-full animate-pulse w-full" />
+          <div className="w-full bg-sky-100/70 h-2.5 rounded-full overflow-hidden relative mb-3 p-0.5">
+            <div className="h-full bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 rounded-full animate-pulse w-full shadow-xs" />
           </div>
 
           {/* Cloud Server Info Badge */}
           {secondsElapsed >= 4 && (
-            <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-400 bg-slate-50 border border-slate-200/60 rounded-full px-3 py-1 animate-in fade-in duration-300">
-              <Server className="w-3.5 h-3.5 text-cyan-500" />
+            <div className="mt-2 flex items-center gap-1.5 text-[11px] text-sky-700 font-medium bg-sky-50 border border-sky-200/80 rounded-full px-3 py-1 animate-in fade-in duration-300">
+              <Server className="w-3.5 h-3.5 text-cyan-600" />
               <span>Server wake up in progress ({secondsElapsed}s)</span>
             </div>
           )}
         </div>
 
-        <p className="text-[11px] text-slate-400 mt-6 font-medium">
-          Fast &vull; Secure &bull; High Quality Catalog
+        <p className="text-[11px] text-sky-600/70 mt-6 font-semibold">
+          Fast &bull; Secure &bull; High Quality Catalog
         </p>
       </div>
     </div>
