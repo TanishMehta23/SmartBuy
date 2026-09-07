@@ -73,14 +73,14 @@ export const AdminLayout = () => {
       {/* Mobile Backdrop Overlay */}
       <div
         onClick={() => setMobileMenuOpen(false)}
-        className={`md:hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-30 transition-opacity duration-300 ${
+        className={`md:hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 transition-opacity duration-300 ${
           mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       />
 
       {/* Fixed Sticky Sidebar for Desktop / Animated Slide Drawer for Mobile */}
       <aside
-        className={`fixed md:relative top-[57px] md:top-0 left-0 right-0 md:right-auto h-[calc(100vh-57px)] md:h-screen w-full md:w-64 bg-slate-900 text-slate-300 z-30 border-r border-sky-950/60 shadow-2xl md:shadow-lg flex flex-col p-4 shrink-0 transition-all duration-300 ease-in-out overflow-y-auto ${
+        className={`fixed md:relative top-[57px] md:top-0 left-0 right-0 md:right-auto h-[calc(100vh-57px)] md:h-screen w-full md:w-64 bg-slate-900 text-slate-300 z-50 md:z-30 border-r border-sky-950/60 shadow-2xl md:shadow-lg flex flex-col p-4 shrink-0 transition-all duration-300 ease-in-out overflow-y-auto ${
           mobileMenuOpen
             ? 'translate-y-0 opacity-100 pointer-events-auto'
             : '-translate-y-4 md:translate-y-0 opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto max-h-0 md:max-h-none overflow-hidden md:overflow-y-auto'
