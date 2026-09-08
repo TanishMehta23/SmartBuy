@@ -168,9 +168,6 @@ export const Header = ({
               );
             })}
           </div>
-
-          {/* Right Gradient Fade to signify more items on the right */}
-          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white via-white/80 dark:from-slate-900 dark:via-slate-900/80 to-transparent pointer-events-none flex items-center justify-end pr-1" />
         </div>
       </div>
     </header>

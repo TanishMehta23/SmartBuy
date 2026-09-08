@@ -110,7 +110,7 @@ export const CustomerCatalog = () => {
     : t('categoryProducts');
 
   return (
-    <div className="min-h-screen flex flex-col bg-theme-bluish relative w-full transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-theme-bluish relative w-full overflow-x-hidden transition-colors duration-200">
       {/* Header with Search and Categories */}
       <Header
         searchQuery={searchInput}
