@@ -41,7 +41,7 @@ export const Footer = () => {
   const googleMapsUrl = 'https://www.google.com/maps/place/Smart+Buy+Supermercado/data=!4m2!3m1!1s0x0:0x3b8e9bda4f2f79c5?sa=X&ved=1t:2428&ictx=111';
 
   return (
-    <footer className="relative mt-auto border-t border-sky-200/80 bg-gradient-to-b from-sky-50/90 via-sky-100/50 to-white/95 backdrop-blur-xl text-slate-700">
+    <footer className="relative mt-auto border-t border-sky-200/80 bg-gradient-to-b from-sky-50/90 via-sky-100/50 to-white/95 backdrop-blur-xl text-slate-700 w-full overflow-hidden">
       {/* Decorative ambient background blur orbs */}
       <div className="absolute top-0 left-1/4 w-96 h-48 bg-cyan-300/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-48 bg-sky-400/15 rounded-full blur-3xl pointer-events-none" />

@@ -31,36 +31,36 @@ export const Header = ({
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-sky-200/80 shadow-sm transition-all">
       {/* Top Navigation Bar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2.5 sm:py-3.5 gap-2.5 sm:gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between py-2 sm:py-3.5 gap-2 sm:gap-4">
           {/* Clickable Brand Logo, Store Title, NIPC & Motto */}
           <a
             href="/"
             onClick={handleLogoClick}
-            className="flex items-center gap-3 sm:gap-4 shrink-0 group cursor-pointer select-none transition-transform active:scale-98"
+            className="flex items-center gap-2.5 sm:gap-4 shrink-0 group cursor-pointer select-none transition-transform active:scale-98 min-w-0"
             title="Smart Buy - Back to Top"
           >
             <img
               src="/logo.png"
               alt="Smart Buy Logo"
-              className="w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 object-contain group-hover:scale-105 transition-transform duration-300"
+              className="w-10 h-10 sm:w-13 sm:h-13 md:w-14 md:h-14 object-contain group-hover:scale-105 transition-transform duration-300 shrink-0"
             />
-            <div className="flex flex-col justify-center">
-              <div className="flex items-center gap-2 sm:gap-2.5">
-                <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-sky-950 to-cyan-900 bg-clip-text text-transparent whitespace-nowrap group-hover:from-cyan-600 group-hover:to-sky-700 transition-colors">
+            <div className="flex flex-col justify-center min-w-0">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5">
+                <span className="text-lg sm:text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-sky-950 to-cyan-900 bg-clip-text text-transparent group-hover:from-cyan-600 group-hover:to-sky-700 transition-colors">
                   {t('storeTitle')}
                 </span>
-                <span className="inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-[11px] md:text-xs font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 tracking-wide shadow-xs shadow-cyan-400/30 border border-cyan-300/40 whitespace-nowrap">
+                <span className="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-[11px] md:text-xs font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 tracking-wide shadow-xs shadow-cyan-400/30 border border-cyan-300/40 shrink-0">
                   NIPC 518263606
                 </span>
               </div>
-              <span className="text-[10px] sm:text-xs md:text-sm font-extrabold text-sky-600/90 tracking-wider sm:tracking-widest uppercase whitespace-nowrap mt-0.5">
+              <span className="text-[9px] sm:text-xs md:text-sm font-extrabold text-sky-600/90 tracking-wider sm:tracking-widest uppercase truncate mt-0.5">
                 {t('motto')}
               </span>
             </div>
           </a>
 
           {/* Search Bar & Language Switcher in one cohesive row */}
-          <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end max-w-full md:max-w-xl">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end max-w-full md:max-w-xl min-w-0">
             <div className="relative group flex-1">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-400 group-focus-within:text-cyan-500 transition-colors">
                 <Search className="w-4 h-4" />
