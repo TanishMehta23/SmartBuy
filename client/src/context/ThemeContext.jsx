@@ -4,14 +4,11 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    // Check saved local storage preference or system preference
+    // Check saved local storage preference (defaults to light mode if not set)
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('smartbuy_theme');
       if (savedTheme === 'dark' || savedTheme === 'light') {
         return savedTheme;
-      }
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
       }
     }
     return 'light';
