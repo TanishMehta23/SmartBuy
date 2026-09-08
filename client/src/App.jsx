@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ScrollToTop } from './components/ScrollToTop';
 
 // Pages
 import { CustomerCatalog } from './pages/CustomerCatalog';
@@ -19,6 +20,9 @@ export default function App() {
     <LanguageProvider>
       <AuthProvider>
         <BrowserRouter>
+          {/* Automatically scroll to top on page navigation */}
+          <ScrollToTop />
+
           {/* Vercel Analytics */}
           <Analytics />
 
