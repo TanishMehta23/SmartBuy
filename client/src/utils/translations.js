@@ -99,6 +99,10 @@ export const translations = {
     serverWakeInProgress: 'Server wake up in progress ({seconds}s)',
     loadingBadge: 'Fast • Secure • High Quality Catalog',
 
+    // Theme Mode Switcher
+    switchToDarkMode: 'Switch to dark mode',
+    switchToLightMode: 'Switch to light mode',
+
     // Language Selector
     language: 'Language',
     english: 'English',
@@ -297,6 +301,10 @@ export const translations = {
     finishHint: 'Obrigado pela sua paciência! Os produtos aparecerão em instantes.',
     serverWakeInProgress: 'Inicialização do servidor em andamento ({seconds}s)',
     loadingBadge: 'Rápido • Seguro • Catálogo de Alta Qualidade',
+
+    // Theme Mode Switcher
+    switchToDarkMode: 'Mudar para modo escuro',
+    switchToLightMode: 'Mudar para modo claro',
 
     // Language Selector
     language: 'Idioma',

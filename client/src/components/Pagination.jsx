@@ -38,17 +38,17 @@ export const Pagination = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-8 border-t border-sky-200/60 mt-4">
-      <div className="text-sm text-sky-800/80 font-medium">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-8 border-t border-sky-200/60 dark:border-slate-800/80 mt-4">
+      <div className="text-sm text-sky-800/80 dark:text-sky-300 font-medium">
         {t('showingItems', { start: startItem, end: endItem, total: totalProducts })}
       </div>
 
-      <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white/70 backdrop-blur-md p-1.5 rounded-2xl border border-sky-100 shadow-xs">
+      <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white/70 dark:bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-sky-100 dark:border-slate-800 shadow-xs">
         {/* Previous Button */}
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="inline-flex items-center justify-center p-2 rounded-xl text-sky-800 hover:bg-sky-100/80 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          className="inline-flex items-center justify-center p-2 rounded-xl text-sky-800 dark:text-slate-300 hover:bg-sky-100/80 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
           aria-label={t('previousPage')}
         >
           <ChevronLeft className="w-5 h-5" />
@@ -60,7 +60,7 @@ export const Pagination = ({
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="px-2.5 py-1.5 text-sky-400 font-bold select-none"
+                className="px-2.5 py-1.5 text-sky-400 dark:text-slate-600 font-bold select-none"
               >
                 ...
               </span>
@@ -72,10 +72,10 @@ export const Pagination = ({
             <button
               key={`page-${pageNum}`}
               onClick={() => onPageChange(pageNum)}
-              className={`min-w-[36px] h-9 px-3 rounded-xl text-xs font-bold transition-all ${
+              className={`min-w-[36px] h-9 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/25 ring-2 ring-cyan-400/40'
-                  : 'text-sky-900 hover:bg-sky-100/70 hover:text-sky-950'
+                  ? 'bg-gradient-to-r from-cyan-500 to-sky-600 dark:from-cyan-500 dark:to-sky-500 text-white shadow-md shadow-cyan-500/25 ring-2 ring-cyan-400/40'
+                  : 'text-sky-900 dark:text-slate-300 hover:bg-sky-100/70 dark:hover:bg-slate-800 hover:text-sky-950 dark:hover:text-white'
               }`}
             >
               {pageNum}
@@ -87,7 +87,7 @@ export const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className="inline-flex items-center justify-center p-2 rounded-xl text-sky-800 hover:bg-sky-100/80 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+          className="inline-flex items-center justify-center p-2 rounded-xl text-sky-800 dark:text-slate-300 hover:bg-sky-100/80 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
           aria-label={t('nextPage')}
         >
           <ChevronRight className="w-5 h-5" />

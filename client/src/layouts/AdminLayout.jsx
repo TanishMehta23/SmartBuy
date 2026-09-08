@@ -3,6 +3,7 @@ import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSelector } from '../components/LanguageSelector';
+import { ThemeToggle } from '../components/ThemeToggle';
 import {
   LayoutDashboard,
   Package,
@@ -35,7 +36,7 @@ export const AdminLayout = () => {
   ];
 
   return (
-    <div className="h-screen w-full bg-theme-bluish flex flex-col md:flex-row text-slate-800 overflow-hidden">
+    <div className="h-screen w-full bg-theme-bluish flex flex-col md:flex-row text-slate-800 dark:text-slate-100 overflow-hidden transition-colors duration-200">
       {/* Mobile Top Navigation Bar */}
       <div className="md:hidden bg-slate-900 text-white px-4 py-3.5 flex items-center justify-between shrink-0 z-40 border-b border-sky-950 shadow-md">
         <div className="flex items-center gap-2.5">
@@ -43,6 +44,7 @@ export const AdminLayout = () => {
           <span className="font-extrabold text-sm tracking-tight text-white">{t('adminPortal')}</span>
         </div>
         <div className="flex items-center gap-2">
+          <ThemeToggle size="sm" />
           <LanguageSelector variant="dark" />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -80,7 +82,7 @@ export const AdminLayout = () => {
 
       {/* Fixed Sticky Sidebar for Desktop / Animated Slide Drawer for Mobile */}
       <aside
-        className={`fixed md:relative top-[57px] md:top-0 left-0 right-0 md:right-auto h-[calc(100vh-57px)] md:h-screen w-full md:w-64 bg-slate-900 text-slate-300 z-50 md:z-30 border-r border-sky-950/60 shadow-2xl md:shadow-lg flex flex-col p-4 shrink-0 transition-all duration-300 ease-in-out overflow-y-auto ${
+        className={`fixed md:relative top-[57px] md:top-0 left-0 right-0 md:right-auto h-[calc(100vh-57px)] md:h-screen w-full md:w-64 bg-slate-900 text-slate-300 z-50 md:z-30 border-r border-sky-950/60 dark:border-slate-800/80 shadow-2xl md:shadow-lg flex flex-col p-4 shrink-0 transition-all duration-300 ease-in-out overflow-y-auto ${
           mobileMenuOpen
             ? 'translate-y-0 opacity-100 pointer-events-auto'
             : '-translate-y-4 md:translate-y-0 opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto max-h-0 md:max-h-none overflow-hidden md:overflow-y-auto'
@@ -105,9 +107,10 @@ export const AdminLayout = () => {
           </div>
         </div>
 
-        {/* Language selector in sidebar for desktop */}
-        <div className="hidden md:block mb-4 px-2 shrink-0">
+        {/* Language selector & Theme Toggle in sidebar for desktop */}
+        <div className="hidden md:flex items-center gap-2 mb-4 px-2 shrink-0">
           <LanguageSelector variant="dark" />
+          <ThemeToggle size="sm" />
         </div>
 
         {/* Navigation Links */}
@@ -179,16 +182,16 @@ export const AdminLayout = () => {
       {/* Sign Out Confirmation Modal */}
       {isSignOutModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-sky-100 text-center animate-in zoom-in-95 duration-200">
-            <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-rose-100 shadow-inner">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-sky-100 dark:border-slate-800 text-center animate-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-rose-100 dark:border-rose-900/50 shadow-inner">
               <AlertCircle className="w-6 h-6" />
             </div>
             
-            <h3 className="text-base font-black text-slate-900">
+            <h3 className="text-base font-black text-slate-900 dark:text-white">
               {t('confirmSignOutTitle') || 'Sign Out of Admin?'}
             </h3>
             
-            <p className="text-xs text-slate-600 font-medium mt-1.5 mb-6 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1.5 mb-6 leading-relaxed">
               {t('confirmSignOutDesc') || 'Are you sure you want to end your session? You will need to enter your credentials again to access store management.'}
             </p>
 
@@ -196,7 +199,7 @@ export const AdminLayout = () => {
               <button
                 type="button"
                 onClick={() => setIsSignOutModalOpen(false)}
-                className="w-1/2 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                className="w-1/2 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
               >
                 {t('cancel')}
               </button>

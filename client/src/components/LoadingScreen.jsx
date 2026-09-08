@@ -40,10 +40,10 @@ export const LoadingScreen = () => {
   const status = getDynamicStatus();
 
   return (
-    <div className="min-h-screen bg-theme-bluish flex flex-col items-center justify-center p-4 select-none relative overflow-hidden">
+    <div className="min-h-screen bg-theme-bluish flex flex-col items-center justify-center p-4 select-none relative overflow-hidden transition-colors duration-200">
       {/* Background ambient lighting */}
-      <div className="absolute w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none -top-20 -right-20 animate-pulse" />
-      <div className="absolute w-96 h-96 bg-sky-400/20 rounded-full blur-3xl pointer-events-none -bottom-20 -left-20 animate-pulse" />
+      <div className="absolute w-96 h-96 bg-cyan-400/20 dark:bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -top-20 -right-20 animate-pulse" />
+      <div className="absolute w-96 h-96 bg-sky-400/20 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none -bottom-20 -left-20 animate-pulse" />
 
       <div className="max-w-md w-full text-center flex flex-col items-center relative z-10">
         {/* Animated Brand Emblem */}
@@ -57,10 +57,10 @@ export const LoadingScreen = () => {
         </div>
 
         {/* Store Title */}
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 mb-1">
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-1">
           {t('storeTitle')}
         </h1>
-        <p className="text-xs font-bold uppercase tracking-widest text-sky-600 mb-2">
+        <p className="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-cyan-400 mb-2">
           {t('motto')}
         </p>
         <span className="inline-block px-3 py-1 mb-6 rounded-full text-xs font-black bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 shadow-xs border border-cyan-300/50">
@@ -68,31 +68,31 @@ export const LoadingScreen = () => {
         </span>
 
         {/* Loading Card */}
-        <div className="w-full bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-sky-100 shadow-xl shadow-sky-200/40 flex flex-col items-center">
-          <div className="flex items-center gap-3 text-slate-900 font-bold text-sm sm:text-base mb-2">
+        <div className="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-6 border border-sky-100 dark:border-slate-800 shadow-xl shadow-sky-200/40 dark:shadow-slate-950/50 flex flex-col items-center">
+          <div className="flex items-center gap-3 text-slate-900 dark:text-white font-bold text-sm sm:text-base mb-2">
             <Loader2 className="w-5 h-5 text-cyan-500 animate-spin shrink-0" />
             <span>{status.step}</span>
           </div>
 
-          <p className="text-xs text-sky-800/70 font-medium text-center mb-5 max-w-xs">
+          <p className="text-xs text-sky-800/70 dark:text-slate-400 font-medium text-center mb-5 max-w-xs">
             {status.hint}
           </p>
 
           {/* Animated Gradient Progress Indicator */}
-          <div className="w-full bg-sky-100/70 h-2.5 rounded-full overflow-hidden relative mb-3 p-0.5">
+          <div className="w-full bg-sky-100/70 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden relative mb-3 p-0.5">
             <div className="h-full bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 rounded-full animate-pulse w-full shadow-xs" />
           </div>
 
           {/* Cloud Server Info Badge */}
           {secondsElapsed >= 4 && (
-            <div className="mt-2 flex items-center gap-1.5 text-[11px] text-sky-700 font-medium bg-sky-50 border border-sky-200/80 rounded-full px-3 py-1 animate-in fade-in duration-300">
-              <Server className="w-3.5 h-3.5 text-cyan-600" />
+            <div className="mt-2 flex items-center gap-1.5 text-[11px] text-sky-700 dark:text-cyan-300 font-medium bg-sky-50 dark:bg-slate-800 border border-sky-200/80 dark:border-slate-700 rounded-full px-3 py-1 animate-in fade-in duration-300">
+              <Server className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
               <span>{t('serverWakeInProgress', { seconds: secondsElapsed })}</span>
             </div>
           )}
         </div>
 
-        <p className="text-[11px] text-sky-600/70 mt-6 font-semibold">
+        <p className="text-[11px] text-sky-600/70 dark:text-slate-400 mt-6 font-semibold">
           {t('loadingBadge')}
         </p>
       </div>

@@ -158,10 +158,10 @@ export const AdminCategories = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             {t('categoryManagementTitle')}
           </h1>
-          <p className="text-xs sm:text-sm text-sky-800/70 font-medium mt-0.5 sm:mt-1">
+          <p className="text-xs sm:text-sm text-sky-800/70 dark:text-slate-400 font-medium mt-0.5 sm:mt-1">
             {t('categoryManagementSubtitle')}
           </p>
         </div>
@@ -175,30 +175,30 @@ export const AdminCategories = () => {
       </div>
 
       {/* Categories Table */}
-      <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-sky-100 shadow-soft overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-sky-100 dark:border-slate-800 shadow-soft dark:shadow-slate-950/40 overflow-hidden">
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center text-slate-400">
             <Loader2 className="w-8 h-8 text-cyan-500 animate-spin mb-2" />
-            <p className="text-xs font-semibold text-sky-800/70">{t('loadingCategories')}</p>
+            <p className="text-xs font-semibold text-sky-800/70 dark:text-slate-400">{t('loadingCategories')}</p>
           </div>
         ) : categories.length === 0 ? (
           <div className="py-16 text-center text-slate-400">
-            <FolderTree className="w-12 h-12 mx-auto mb-3 text-sky-300" />
-            <p className="text-sm font-bold text-slate-800">{t('noCategoriesCreated')}</p>
-            <p className="text-xs text-sky-700/70 mt-1 font-medium">{t('clickToCreateCategory')}</p>
+            <FolderTree className="w-12 h-12 mx-auto mb-3 text-sky-300 dark:text-slate-600" />
+            <p className="text-sm font-bold text-slate-800 dark:text-white">{t('noCategoriesCreated')}</p>
+            <p className="text-xs text-sky-700/70 dark:text-slate-400 mt-1 font-medium">{t('clickToCreateCategory')}</p>
           </div>
         ) : (
           <div className="w-full overflow-hidden">
             <table className="w-full text-left border-collapse table-fixed">
               <thead>
-                <tr className="border-b border-sky-100 bg-sky-50/70 text-sky-800 text-[11px] uppercase tracking-wider font-bold">
+                <tr className="border-b border-sky-100 dark:border-slate-800 bg-sky-50/70 dark:bg-slate-800/70 text-sky-800 dark:text-cyan-300 text-[11px] uppercase tracking-wider font-bold">
                   <th className="py-3 px-2 sm:px-4 w-16 sm:w-24 text-center">{t('sequenceHeader')}</th>
                   <th className="py-3 px-2 sm:px-6">{t('categoryNameHeader')}</th>
                   <th className="hidden sm:table-cell py-3.5 px-6 w-36">{t('createdDateHeader')}</th>
                   <th className="py-3 px-2 sm:px-6 text-right w-20 sm:w-28">{t('actionsHeader')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-sky-50 text-sm">
+              <tbody className="divide-y divide-sky-50 dark:divide-slate-800/70 text-sm">
                 {categories.map((category, index) => {
                   const formattedDate = new Date(category.createdAt).toLocaleDateString(undefined, {
                     month: 'short',
@@ -207,11 +207,11 @@ export const AdminCategories = () => {
                   });
 
                   return (
-                    <tr key={category.id} className="hover:bg-sky-50/50 transition-colors group">
+                    <tr key={category.id} className="hover:bg-sky-50/50 dark:hover:bg-slate-800/50 transition-colors group">
                       {/* Sequence reorder controls */}
                       <td className="py-3 sm:py-4 px-2 sm:px-4">
                         <div className="flex items-center justify-center gap-1 sm:gap-1.5">
-                          <span className="w-5 sm:w-6 text-center font-extrabold text-[11px] sm:text-xs text-sky-900/60 bg-sky-100/60 rounded-md py-0.5">
+                          <span className="w-5 sm:w-6 text-center font-extrabold text-[11px] sm:text-xs text-sky-900/60 dark:text-slate-400 bg-sky-100/60 dark:bg-slate-800 rounded-md py-0.5">
                             {index + 1}
                           </span>
                           <div className="flex flex-col gap-0.5">
@@ -219,7 +219,7 @@ export const AdminCategories = () => {
                               type="button"
                               disabled={index === 0 || reordering}
                               onClick={() => handleMove(index, -1)}
-                              className="p-0.5 sm:p-1 rounded-md text-sky-700 hover:bg-sky-200/60 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
+                              className="p-0.5 sm:p-1 rounded-md text-sky-700 dark:text-cyan-400 hover:bg-sky-200/60 dark:hover:bg-slate-700 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
                               title={t('moveUp')}
                               aria-label={`${t('moveUp')} ${category.name}`}
                             >
@@ -229,7 +229,7 @@ export const AdminCategories = () => {
                               type="button"
                               disabled={index === categories.length - 1 || reordering}
                               onClick={() => handleMove(index, 1)}
-                              className="p-0.5 sm:p-1 rounded-md text-sky-700 hover:bg-sky-200/60 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
+                              className="p-0.5 sm:p-1 rounded-md text-sky-700 dark:text-cyan-400 hover:bg-sky-200/60 dark:hover:bg-slate-700 disabled:opacity-20 disabled:hover:bg-transparent transition-all cursor-pointer"
                               title={t('moveDown')}
                               aria-label={`${t('moveDown')} ${category.name}`}
                             >
@@ -242,14 +242,14 @@ export const AdminCategories = () => {
                       {/* Category Name & Products Count (with Date on Mobile) */}
                       <td className="py-3 sm:py-4 px-2 sm:px-6 min-w-0">
                         <div className="flex flex-col">
-                          <span className="font-bold text-slate-900 text-xs sm:text-sm line-clamp-1">
+                          <span className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm line-clamp-1">
                             {getDisplayName(category.name)}
                           </span>
                           <div className="flex items-center gap-2 mt-1 flex-wrap">
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100/80 text-sky-800 border border-sky-200/60 whitespace-nowrap">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100/80 dark:bg-slate-800 text-sky-800 dark:text-cyan-300 border border-sky-200/60 dark:border-slate-700 whitespace-nowrap">
                               {category.productCount} {category.productCount === 1 ? 'product' : 'products'}
                             </span>
-                            <span className="sm:hidden text-[10px] font-semibold text-slate-600">
+                            <span className="sm:hidden text-[10px] font-semibold text-slate-600 dark:text-slate-400">
                               {formattedDate}
                             </span>
                           </div>
@@ -257,7 +257,7 @@ export const AdminCategories = () => {
                       </td>
 
                       {/* Created Date for Desktop / Tablet */}
-                      <td className="hidden sm:table-cell py-4 px-6 text-xs text-sky-700/80 font-medium whitespace-nowrap">
+                      <td className="hidden sm:table-cell py-4 px-6 text-xs text-sky-700/80 dark:text-slate-400 font-medium whitespace-nowrap">
                         {formattedDate}
                       </td>
 
@@ -266,14 +266,14 @@ export const AdminCategories = () => {
                         <div className="flex items-center justify-end gap-1 sm:gap-1.5">
                           <button
                             onClick={() => handleOpenEditModal(category)}
-                            className="p-1.5 sm:p-2 rounded-xl text-sky-700 hover:text-cyan-600 hover:bg-sky-100/80 transition-colors cursor-pointer"
+                            className="p-1.5 sm:p-2 rounded-xl text-sky-700 dark:text-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-300 hover:bg-sky-100/80 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                             title={t('editCategory')}
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleOpenDeleteDialog(category)}
-                            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                             title={t('deleteCategoryTitle', { name: category.name })}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -292,14 +292,14 @@ export const AdminCategories = () => {
       {/* Add / Edit Category Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-sm w-full shadow-2xl overflow-hidden border border-sky-100 animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-sky-100 flex items-center justify-between">
-              <h3 className="text-base font-black text-slate-900">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full shadow-2xl overflow-hidden border border-sky-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-sky-100 dark:border-slate-800 flex items-center justify-between">
+              <h3 className="text-base font-black text-slate-900 dark:text-white">
                 {modalMode === 'create' ? t('addNewCategory') : t('editCategory')}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-sky-50 cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -307,7 +307,7 @@ export const AdminCategories = () => {
 
             <form onSubmit={handleSaveCategory} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('categoryNameLabel')} <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -317,7 +317,7 @@ export const AdminCategories = () => {
                   value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
                   placeholder="e.g. Organic Produce"
-                  className="w-full px-3.5 py-2.5 bg-sky-50/50 border border-sky-200 rounded-2xl text-sm font-medium focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-4 focus:ring-cyan-500/10 transition-all"
+                  className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-2xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/10 transition-all"
                 />
               </div>
 
@@ -325,7 +325,7 @@ export const AdminCategories = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-sky-50 rounded-xl transition-colors cursor-pointer"
+                  className="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
                 >
                   {t('cancel')}
                 </button>
@@ -346,34 +346,34 @@ export const AdminCategories = () => {
       {/* Delete / Reassign Category Modal */}
       {categoryToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-sky-100 animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-rose-100">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-sky-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-rose-100 dark:border-rose-900/50">
               <AlertTriangle className="w-6 h-6" />
             </div>
 
-            <h3 className="text-base font-bold text-slate-900 text-center">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white text-center">
               {t('deleteCategoryTitle', { name: categoryToDelete.name })}
             </h3>
 
             {categoryToDelete.productCount > 0 ? (
               <div className="my-4 space-y-3">
-                <p className="text-xs text-slate-600 text-center">
+                <p className="text-xs text-slate-600 dark:text-slate-400 text-center">
                   {t('reassignNotice', { count: categoryToDelete.productCount })}
                 </p>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     {t('reassignTo')}
                   </label>
                   <select
                     value={reassignTargetId}
                     onChange={(e) => setReassignTargetId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-sky-50/50 border border-sky-200 rounded-2xl text-xs font-semibold focus:outline-none focus:border-cyan-500 focus:bg-white cursor-pointer"
+                    className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-2xl text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 focus:bg-white dark:focus:bg-slate-900 cursor-pointer"
                   >
                     {categories
                       .filter((c) => c.id !== categoryToDelete.id)
                       .map((c) => (
-                        <option key={c.id} value={c.id}>
+                        <option key={c.id} value={c.id} className="dark:bg-slate-900">
                           {getDisplayName(c.name)}
                         </option>
                       ))}
@@ -381,7 +381,7 @@ export const AdminCategories = () => {
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-500 text-center mt-1 mb-6">
+              <p className="text-xs text-slate-500 dark:text-slate-400 text-center mt-1 mb-6">
                 {t('deleteCategoryConfirm')}
               </p>
             )}
@@ -389,7 +389,7 @@ export const AdminCategories = () => {
             <div className="flex items-center justify-end gap-3 mt-6">
               <button
                 onClick={() => setCategoryToDelete(null)}
-                className="w-1/2 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                className="w-1/2 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
               >
                 {t('cancel')}
               </button>

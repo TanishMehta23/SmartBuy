@@ -11,22 +11,22 @@ export const LanguageSelector = ({ variant = 'light' }) => {
     <div
       className={`inline-flex items-center p-1 rounded-2xl border transition-all ${
         isLight
-          ? 'bg-white/80 backdrop-blur-md border-sky-200/80 shadow-xs'
+          ? 'bg-white/80 dark:bg-slate-800/90 backdrop-blur-md border-sky-200/80 dark:border-slate-700/80 shadow-xs'
           : 'bg-slate-800/90 border-slate-700/80'
       }`}
     >
-      <div className="flex items-center gap-1.5 px-2 text-xs font-bold text-sky-600">
+      <div className="flex items-center gap-1.5 px-2 text-xs font-bold text-sky-600 dark:text-cyan-400">
         <Globe className="w-3.5 h-3.5 text-cyan-500" />
       </div>
 
       <button
         type="button"
         onClick={() => setLanguage('en')}
-        className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+        className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
           language === 'en'
             ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-xs shadow-cyan-500/20'
             : isLight
-            ? 'text-slate-600 hover:text-sky-800 hover:bg-sky-50'
+            ? 'text-slate-600 dark:text-slate-300 hover:text-sky-800 dark:hover:text-cyan-300 hover:bg-sky-50 dark:hover:bg-slate-700/70'
             : 'text-slate-400 hover:text-white hover:bg-slate-700'
         }`}
         title="English"
@@ -38,11 +38,11 @@ export const LanguageSelector = ({ variant = 'light' }) => {
       <button
         type="button"
         onClick={() => setLanguage('pt')}
-        className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+        className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
           language === 'pt'
             ? 'bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-xs shadow-cyan-500/20'
             : isLight
-            ? 'text-slate-600 hover:text-sky-800 hover:bg-sky-50'
+            ? 'text-slate-600 dark:text-slate-300 hover:text-sky-800 dark:hover:text-cyan-300 hover:bg-sky-50 dark:hover:bg-slate-700/70'
             : 'text-slate-400 hover:text-white hover:bg-slate-700'
         }`}
         title="Português"

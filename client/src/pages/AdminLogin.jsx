@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSelector } from '../components/LanguageSelector';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { Lock, Mail, KeyRound, Loader2, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -57,7 +58,10 @@ export const AdminLogin = () => {
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>{t('backToCatalog')}</span>
         </button>
-        <LanguageSelector variant="dark" />
+        <div className="flex items-center gap-2">
+          <ThemeToggle size="sm" />
+          <LanguageSelector variant="dark" />
+        </div>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md px-4 relative z-10">

@@ -44,24 +44,24 @@ const AdminProductRow = ({ product, displayCat, onEdit, onDelete }) => {
   });
 
   return (
-    <tr className="hover:bg-sky-50/60 transition-colors group border-b border-sky-50/80">
+    <tr className="hover:bg-sky-50/60 dark:hover:bg-slate-800/60 transition-colors group border-b border-sky-50/80 dark:border-slate-800/80">
       <td className="py-3 px-3 sm:px-6">
         <div className="flex items-center gap-2.5 sm:gap-3.5">
           <img
             src={product.imageUrl}
             alt={displayName}
-            className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl object-cover border border-sky-100 bg-sky-50 shrink-0 shadow-2xs"
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl object-cover border border-sky-100 dark:border-slate-700 bg-sky-50 dark:bg-slate-800 shrink-0 shadow-2xs"
           />
           <div className="min-w-0 pr-1">
-            <span className="font-bold text-slate-800 text-xs sm:text-sm line-clamp-2 leading-snug">
+            <span className="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm line-clamp-2 leading-snug">
               {displayName}
             </span>
             {/* Mobile-only info row: Category badge & Added Date */}
             <div className="md:hidden flex items-center gap-2 mt-1 flex-wrap">
-              <span className="inline-block text-[10px] font-bold text-sky-800 bg-sky-100/80 px-2 py-0.5 rounded-full border border-sky-200/60">
+              <span className="inline-block text-[10px] font-bold text-sky-800 dark:text-cyan-300 bg-sky-100/80 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-sky-200/60 dark:border-slate-700">
                 {displayCat}
               </span>
-              <span className="text-[10px] font-semibold text-slate-600">
+              <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-400">
                 {formattedDate}
               </span>
             </div>
@@ -69,25 +69,25 @@ const AdminProductRow = ({ product, displayCat, onEdit, onDelete }) => {
         </div>
       </td>
       <td className="hidden md:table-cell py-3.5 px-6">
-        <span className="inline-block text-[11px] font-bold text-sky-800 bg-sky-100/70 px-2.5 py-0.5 rounded-full border border-sky-200/50">
+        <span className="inline-block text-[11px] font-bold text-sky-800 dark:text-cyan-300 bg-sky-100/70 dark:bg-slate-800 px-2.5 py-0.5 rounded-full border border-sky-200/50 dark:border-slate-700">
           {displayCat}
         </span>
       </td>
-      <td className="hidden md:table-cell py-3.5 px-6 text-xs text-sky-700/70 font-semibold whitespace-nowrap">
+      <td className="hidden md:table-cell py-3.5 px-6 text-xs text-sky-700/70 dark:text-slate-400 font-semibold whitespace-nowrap">
         {formattedDate}
       </td>
       <td className="py-3 px-3 sm:px-6 text-right shrink-0 whitespace-nowrap w-24">
         <div className="flex items-center justify-end gap-1 sm:gap-1.5">
           <button
             onClick={() => onEdit(product)}
-            className="p-1.5 sm:p-2 rounded-xl text-sky-700 hover:text-cyan-600 hover:bg-sky-100 transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl text-sky-700 dark:text-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-300 hover:bg-sky-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             title="Edit"
           >
             <Edit2 className="w-4 h-4" />
           </button>
           <button
             onClick={() => onDelete(product)}
-            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
@@ -277,8 +277,8 @@ export const AdminProducts = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{t('productManagementTitle')}</h1>
-          <p className="text-xs sm:text-sm text-sky-800/70 font-medium mt-0.5 sm:mt-1">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">{t('productManagementTitle')}</h1>
+          <p className="text-xs sm:text-sm text-sky-800/70 dark:text-slate-400 font-medium mt-0.5 sm:mt-1">
             {t('productManagementSubtitle')}
           </p>
         </div>
@@ -292,15 +292,15 @@ export const AdminProducts = () => {
       </div>
 
       {/* Filters Bar */}
-      <div className="relative z-30 bg-white/90 backdrop-blur-md p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-sky-100 shadow-soft flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+      <div className="relative z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-sky-100 dark:border-slate-800 shadow-soft dark:shadow-slate-950/40 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 absolute inset-y-0 left-3 my-auto text-sky-400 pointer-events-none" />
+          <Search className="w-4 h-4 absolute inset-y-0 left-3 my-auto text-sky-400 dark:text-sky-500 pointer-events-none" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('searchProductsByName')}
-            className="w-full pl-9 pr-4 py-2 sm:py-2.5 bg-sky-50/70 border border-sky-200/70 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-medium focus:outline-none focus:border-cyan-500 focus:bg-white transition-all shadow-inner shadow-sky-100/40"
+            className="w-full pl-9 pr-4 py-2 sm:py-2.5 bg-sky-50/70 dark:bg-slate-800/80 border border-sky-200/70 dark:border-slate-700 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-white dark:focus:bg-slate-900 transition-all shadow-inner shadow-sky-100/40 dark:shadow-none"
           />
         </div>
 
@@ -327,17 +327,17 @@ export const AdminProducts = () => {
       </div>
 
       {/* Products Table / Cards */}
-      <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-sky-100 shadow-soft overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-sky-100 dark:border-slate-800 shadow-soft dark:shadow-slate-950/40 overflow-hidden">
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center text-slate-400">
             <Loader2 className="w-8 h-8 text-cyan-500 animate-spin mb-2" />
-            <p className="text-xs font-semibold text-sky-800/70">{t('loadingProducts')}</p>
+            <p className="text-xs font-semibold text-sky-800/70 dark:text-slate-400">{t('loadingProducts')}</p>
           </div>
         ) : products.length === 0 ? (
           <div className="py-16 text-center text-slate-400">
-            <ImageIcon className="w-12 h-12 mx-auto mb-3 text-sky-300" />
-            <p className="text-sm font-bold text-slate-800">{t('noProductsFound')}</p>
-            <p className="text-xs text-sky-700/70 mt-1 font-medium">
+            <ImageIcon className="w-12 h-12 mx-auto mb-3 text-sky-300 dark:text-slate-600" />
+            <p className="text-sm font-bold text-slate-800 dark:text-white">{t('noProductsFound')}</p>
+            <p className="text-xs text-sky-700/70 dark:text-slate-400 mt-1 font-medium">
               {t('noProductsSearchHint', { query: search })}
             </p>
           </div>
@@ -345,14 +345,14 @@ export const AdminProducts = () => {
           <div className="w-full overflow-hidden">
             <table className="w-full text-left border-collapse table-fixed">
               <thead>
-                <tr className="border-b border-sky-100 bg-sky-50/70 text-sky-800 text-[11px] uppercase tracking-wider font-bold">
+                <tr className="border-b border-sky-100 dark:border-slate-800 bg-sky-50/70 dark:bg-slate-800/70 text-sky-800 dark:text-cyan-300 text-[11px] uppercase tracking-wider font-bold">
                   <th className="py-3 px-3 sm:px-6">{t('productHeader')}</th>
                   <th className="hidden md:table-cell py-3.5 px-6 w-44">{t('categoryHeader')}</th>
                   <th className="hidden md:table-cell py-3.5 px-6 w-36">{t('addedDateHeader')}</th>
                   <th className="py-3 px-3 sm:px-6 text-right w-20 sm:w-28">{t('actionsHeader')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-sky-50 text-sm">
+              <tbody className="divide-y divide-sky-50 dark:divide-slate-800/70 text-sm">
                 {products.map((product) => {
                   const catName = product.category?.name;
                   const displayCat = isPortuguese && catName && categoryTranslations[catName]
@@ -376,7 +376,7 @@ export const AdminProducts = () => {
 
         {/* Pagination */}
         {!loading && products.length > 0 && (
-          <div className="px-4 sm:px-6 pb-2 pt-1 border-t border-sky-50">
+          <div className="px-4 sm:px-6 pb-2 pt-1 border-t border-sky-50 dark:border-slate-800">
             <Pagination
               currentPage={pagination.page}
               totalPages={pagination.totalPages}
@@ -391,14 +391,14 @@ export const AdminProducts = () => {
       {/* Add / Edit Product Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-sky-100 animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-sky-100 flex items-center justify-between">
-              <h3 className="text-lg font-black text-slate-900">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-sky-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-sky-100 dark:border-slate-800 flex items-center justify-between">
+              <h3 className="text-lg font-black text-slate-900 dark:text-white">
                 {modalMode === 'create' ? t('addNewProduct') : t('editProduct')}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-sky-50 cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -407,7 +407,7 @@ export const AdminProducts = () => {
             <form onSubmit={handleSaveProduct} className="p-6 space-y-4">
               {/* Product Name */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('productNameLabel')} <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -416,24 +416,24 @@ export const AdminProducts = () => {
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="e.g. Organic Honeycrisp Apples"
-                  className="w-full px-3.5 py-2.5 bg-sky-50/50 border border-sky-200 rounded-2xl text-sm font-medium focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-4 focus:ring-cyan-500/10 transition-all"
+                  className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-2xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/10 transition-all"
                 />
               </div>
 
               {/* Category */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('categoryLabel')} <span className="text-rose-500">*</span>
                 </label>
                 <select
                   required
                   value={formCategoryId}
                   onChange={(e) => setFormCategoryId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-sky-50/50 border border-sky-200 rounded-2xl text-sm font-medium focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-4 focus:ring-cyan-500/10 transition-all cursor-pointer"
+                  className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-2xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-cyan-500/10 transition-all cursor-pointer"
                 >
                   <option value="" disabled>{t('selectCategoryPlaceholder')}</option>
                   {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
+                    <option key={cat.id} value={cat.id} className="dark:bg-slate-900">
                       {getCategoryName(cat.name)}
                     </option>
                   ))}
@@ -442,19 +442,19 @@ export const AdminProducts = () => {
 
               {/* Image Upload Area */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('productImageLabel')} {modalMode === 'create' && <span className="text-rose-500">*</span>}
                 </label>
 
-                <div className="flex flex-col items-center justify-center border-2 border-dashed border-sky-200 hover:border-cyan-500 rounded-3xl p-4 bg-sky-50/40 transition-colors">
+                <div className="flex flex-col items-center justify-center border-2 border-dashed border-sky-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 rounded-3xl p-4 bg-sky-50/40 dark:bg-slate-800/40 transition-colors">
                   {imagePreviewUrl ? (
                     <div className="relative group w-full flex flex-col items-center">
                       <img
                         src={imagePreviewUrl}
                         alt="Preview"
-                        className="w-32 h-32 object-cover rounded-2xl shadow-sm border border-sky-100 mb-3"
+                        className="w-32 h-32 object-cover rounded-2xl shadow-sm border border-sky-100 dark:border-slate-700 mb-3"
                       />
-                      <label className="cursor-pointer text-xs font-bold text-cyan-600 hover:text-cyan-700 flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-sky-200 shadow-2xs">
+                      <label className="cursor-pointer text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 flex items-center gap-1.5 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-full border border-sky-200 dark:border-slate-700 shadow-2xs">
                         <Upload className="w-3.5 h-3.5" />
                         <span>{t('changeImage')}</span>
                         <input
@@ -467,11 +467,11 @@ export const AdminProducts = () => {
                     </div>
                   ) : (
                     <label className="cursor-pointer flex flex-col items-center text-center py-2">
-                      <div className="w-10 h-10 rounded-2xl bg-sky-100 text-cyan-600 flex items-center justify-center mb-2 shadow-inner">
+                      <div className="w-10 h-10 rounded-2xl bg-sky-100 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-2 shadow-inner">
                         <Upload className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-bold text-slate-800">{t('clickToUploadPhoto')}</span>
-                      <span className="text-[11px] text-sky-600/70 mt-0.5 font-medium">{t('imageUploadHint')}</span>
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{t('clickToUploadPhoto')}</span>
+                      <span className="text-[11px] text-sky-600/70 dark:text-slate-400 mt-0.5 font-medium">{t('imageUploadHint')}</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -488,7 +488,7 @@ export const AdminProducts = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-sky-50 rounded-xl transition-colors cursor-pointer"
+                  className="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
                 >
                   {t('cancel')}
                 </button>
@@ -509,19 +509,19 @@ export const AdminProducts = () => {
       {/* Delete Confirmation Modal */}
       {productToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-sky-100 text-center animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-rose-100">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-sky-100 dark:border-slate-800 text-center animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-rose-100 dark:border-rose-900/50">
               <AlertCircle className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900">{t('deleteProductTitle')}</h3>
-            <p className="text-xs text-slate-500 mt-1 mb-6">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">{t('deleteProductTitle')}</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-6">
               {t('deleteProductConfirm', { name: productToDelete.name })}
             </p>
 
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={() => setProductToDelete(null)}
-                className="w-1/2 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                className="w-1/2 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
               >
                 {t('cancel')}
               </button>

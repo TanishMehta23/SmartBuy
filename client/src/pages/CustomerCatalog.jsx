@@ -110,7 +110,7 @@ export const CustomerCatalog = () => {
     : t('categoryProducts');
 
   return (
-    <div className="min-h-screen flex flex-col bg-theme-bluish relative w-full overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-theme-bluish relative w-full transition-colors duration-200">
       {/* Header with Search and Categories */}
       <Header
         searchQuery={searchInput}
@@ -123,9 +123,9 @@ export const CustomerCatalog = () => {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
         {/* Controls Ribbon: Active Filter Summary & Sorting Dropdown */}
-        <div className="relative z-30 flex items-center justify-between gap-2.5 sm:gap-4 mb-5 sm:mb-6 pb-3.5 sm:pb-4 border-b border-sky-200/60">
+        <div className="relative z-30 flex items-center justify-between gap-2.5 sm:gap-4 mb-5 sm:mb-6 pb-3.5 sm:pb-4 border-b border-sky-200/60 dark:border-slate-800/80">
           <div className="min-w-0 flex-1">
-            <h1 className="font-display text-base sm:text-xl md:text-2xl lg:text-[1.75rem] font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <h1 className="font-display text-base sm:text-xl md:text-2xl lg:text-[1.75rem] font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
               <span className="truncate">
                 {selectedCategoryId === 'all'
                   ? debouncedSearch
@@ -135,7 +135,7 @@ export const CustomerCatalog = () => {
               </span>
               {loading && <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-500 animate-spin shrink-0" />}
             </h1>
-            <p className="text-[11px] sm:text-xs md:text-sm text-sky-700/80 font-medium mt-0.5 leading-tight">
+            <p className="text-[11px] sm:text-xs md:text-sm text-sky-700/80 dark:text-cyan-400/80 font-medium mt-0.5 leading-tight">
               {loading && products.length === 0
                 ? t('updatingCatalog')
                 : selectedCategoryId !== 'all' || debouncedSearch
@@ -172,11 +172,11 @@ export const CustomerCatalog = () => {
             {Array.from({ length: products.length || 10 }).map((_, index) => (
               <div
                 key={`skeleton-${index}`}
-                className="bg-white/80 rounded-2xl border border-sky-100 overflow-hidden shadow-soft animate-pulse"
+                className="bg-white/80 dark:bg-slate-900/80 rounded-2xl border border-sky-100 dark:border-slate-800 overflow-hidden shadow-soft animate-pulse"
               >
-                <div className="aspect-square bg-sky-100/70" />
+                <div className="aspect-square bg-sky-100/70 dark:bg-slate-800/70" />
                 <div className="p-4 flex flex-col items-center gap-2">
-                  <div className="h-4 bg-sky-100 rounded-full w-3/4" />
+                  <div className="h-4 bg-sky-100 dark:bg-slate-800 rounded-full w-3/4" />
                 </div>
               </div>
             ))}
@@ -185,16 +185,16 @@ export const CustomerCatalog = () => {
 
         {/* Error State */}
         {!loading && error && (
-          <div className="my-12 p-8 max-w-lg mx-auto text-center bg-white/90 backdrop-blur-md rounded-3xl border border-rose-200/80 shadow-soft">
+          <div className="my-12 p-8 max-w-lg mx-auto text-center bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-3xl border border-rose-200/80 dark:border-rose-900/50 shadow-soft">
             <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-slate-800 mb-1">{t('failedToLoadCatalog')}</h3>
-            <p className="text-sm text-slate-500 mb-4">{error}</p>
+            <h3 className="text-base font-bold text-slate-800 dark:text-white mb-1">{t('failedToLoadCatalog')}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{error}</p>
             <button
               onClick={() => {
                 setLoading(true);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold rounded-xl shadow-md shadow-cyan-500/20 transition-all"
+              className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold rounded-xl shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
             >
               {t('tryAgain')}
             </button>
@@ -203,12 +203,12 @@ export const CustomerCatalog = () => {
 
         {/* Empty State */}
         {!loading && !error && products.length === 0 && (
-          <div className="my-16 py-12 px-6 max-w-md mx-auto text-center bg-white/85 backdrop-blur-md rounded-3xl border border-dashed border-sky-200 shadow-soft">
-            <div className="w-14 h-14 bg-sky-50 border border-sky-100 rounded-2xl flex items-center justify-center text-cyan-600 mx-auto mb-4 shadow-inner">
+          <div className="my-16 py-12 px-6 max-w-md mx-auto text-center bg-white/85 dark:bg-slate-900/85 backdrop-blur-md rounded-3xl border border-dashed border-sky-200 dark:border-slate-800 shadow-soft">
+            <div className="w-14 h-14 bg-sky-50 dark:bg-slate-800 border border-sky-100 dark:border-slate-700 rounded-2xl flex items-center justify-center text-cyan-600 dark:text-cyan-400 mx-auto mb-4 shadow-inner">
               <Layers className="w-7 h-7" />
             </div>
-            <h3 className="text-lg font-black text-slate-800">{t('noProductsFound')}</h3>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1.5 mb-6">
+            <h3 className="text-lg font-black text-slate-800 dark:text-white">{t('noProductsFound')}</h3>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 mb-6">
               {debouncedSearch
                 ? t('noProductsSearchHint', { query: debouncedSearch })
                 : t('noProductsCategoryHint')}
@@ -219,7 +219,7 @@ export const CustomerCatalog = () => {
                   setSearchInput('');
                   setSelectedCategoryId('all');
                 }}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-sky-700 hover:from-cyan-500 hover:to-sky-600 text-white text-xs font-bold rounded-xl shadow-md shadow-sky-600/25 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-sky-700 hover:from-cyan-500 hover:to-sky-600 text-white text-xs font-bold rounded-xl shadow-md shadow-sky-600/25 transition-all cursor-pointer"
               >
                 {t('clearFilters')}
               </button>
