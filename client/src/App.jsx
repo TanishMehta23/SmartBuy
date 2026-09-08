@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -18,6 +19,9 @@ export default function App() {
     <LanguageProvider>
       <AuthProvider>
         <BrowserRouter>
+          {/* Vercel Analytics */}
+          <Analytics />
+
           {/* Modern Toast notifications */}
           <Toaster position="top-right" richColors closeButton expand={false} />
 
