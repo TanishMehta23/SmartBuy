@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Package,
   FolderTree,
+  Image as ImageIcon,
   LogOut,
   Store,
   ExternalLink,
@@ -33,6 +34,8 @@ export const AdminLayout = () => {
     { name: t('dashboard'), path: '/admin/dashboard', icon: LayoutDashboard },
     { name: t('products'), path: '/admin/products', icon: Package },
     { name: t('categories'), path: '/admin/categories', icon: FolderTree },
+    { name: t('banners') || 'Banners', path: '/admin/banners', icon: ImageIcon },
+    { name: t('storeSettings') || 'Store Info & Photos', path: '/admin/store', icon: Store },
   ];
 
   return (

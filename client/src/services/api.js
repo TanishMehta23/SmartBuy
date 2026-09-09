@@ -2,7 +2,8 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '',
-  withCredentials: true, // Send HTTP-only cookies with requests
+  timeout: 8000, // 8-second timeout to prevent indefinite pending requests
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },

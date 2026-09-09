@@ -44,3 +44,19 @@ model Product {
   @@index([createdAt])
   @@map("products")
 }
+
+model Banner {
+  id            String   @id @default(uuid())
+  title         String?
+  linkUrl       String?
+  imageUrl      String
+  imagePublicId String?
+  order         Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@map("banners")
+}

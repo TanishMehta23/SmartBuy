@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import bannerRoutes from './routes/bannerRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { generalApiLimiter } from './middleware/rateLimiter.js';
 
@@ -82,6 +83,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/banners', bannerRoutes);
 
 // Catch-all 404 handler for unknown routes
 app.use('*', (req, res) => {

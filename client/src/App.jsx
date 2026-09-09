@@ -14,6 +14,8 @@ import { AdminLogin } from './pages/AdminLogin';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminProducts } from './pages/AdminProducts';
 import { AdminCategories } from './pages/AdminCategories';
+import { AdminBanners } from './pages/AdminBanners';
+import { AdminStoreSettings } from './pages/AdminStoreSettings';
 import { AdminLayout } from './layouts/AdminLayout';
 
 export default function App() {
@@ -51,6 +53,8 @@ export default function App() {
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="products" element={<AdminProducts />} />
                 <Route path="categories" element={<AdminCategories />} />
+                <Route path="banners" element={<AdminBanners />} />
+                <Route path="store" element={<AdminStoreSettings />} />
               </Route>
 
               {/* Fallback to Customer Catalog */}
