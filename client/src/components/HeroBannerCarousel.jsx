@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Play, Pause, ExternalLink } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export const HeroBannerCarousel = ({ banners = [] }) => {
@@ -11,7 +11,7 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
 
   const activeBanners = banners.filter((b) => b.isActive !== false);
 
-  // Auto-play interval
+  // Auto-play interval: 4 seconds
   useEffect(() => {
     if (activeBanners.length <= 1 || !isPlaying || isHovered) {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -20,7 +20,7 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
 
     timerRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % activeBanners.length);
-    }, 4000); // 4 seconds auto-advance
+    }, 4000);
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -65,15 +65,15 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
 
   return (
     <div
-      className="relative w-full mb-6 sm:mb-8 select-none group"
+      className="relative w-full mb-5 sm:mb-7 select-none group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Outer Banner Card Container with Rounded Borders & Shadow */}
+      {/* Outer Banner Card Container with Modern Rounded Borders & Subtle Elevation */}
       <div
         onClick={handleBannerClick}
-        className={`relative w-full aspect-[21/9] sm:aspect-[24/9] md:aspect-[28/9] max-h-[340px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-sky-100 dark:border-slate-800 transition-all duration-300 ${
-          currentBanner.linkUrl ? 'cursor-pointer hover:shadow-xl hover:scale-[1.005]' : ''
+        className={`relative w-full aspect-[21/9] sm:aspect-[24/9] md:aspect-[28/9] max-h-[360px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-card border border-sky-100/90 dark:border-slate-800 bg-slate-900 transition-all duration-300 ${
+          currentBanner.linkUrl ? 'cursor-pointer hover:shadow-card-hover hover:scale-[1.002]' : ''
         }`}
       >
         {/* Slides Track */}
@@ -96,7 +96,7 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
 
               {/* Gradient overlay for readability if title exists */}
               {banner.title && (
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex items-end p-4 sm:p-6 md:p-8">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-5 sm:p-7 md:p-8">
                   <div className="max-w-xl text-white">
                     <h2 className="text-base sm:text-xl md:text-2xl font-black drop-shadow-md tracking-tight line-clamp-2">
                       {banner.title}
@@ -113,32 +113,32 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
           );
         })}
 
-        {/* Navigation Arrows (Dark rounded buttons matching the reference image) */}
+        {/* Navigation Arrows */}
         {activeBanners.length > 1 && (
           <>
             <button
               type="button"
               onClick={handlePrev}
               aria-label="Previous Slide"
-              className="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/60 hover:bg-slate-900/90 text-white backdrop-blur-xs flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer group-hover:scale-105 active:scale-95"
+              className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-950/60 hover:bg-slate-950/85 text-white backdrop-blur-md flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer hover:scale-105 active:scale-95"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
             <button
               type="button"
               onClick={handleNext}
               aria-label="Next Slide"
-              className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/60 hover:bg-slate-900/90 text-white backdrop-blur-xs flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer group-hover:scale-105 active:scale-95"
+              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-950/60 hover:bg-slate-950/85 text-white backdrop-blur-md flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer hover:scale-105 active:scale-95"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </>
         )}
 
-        {/* Bottom Control Pill (Play/Pause + Dots) exactly like reference UI */}
+        {/* Bottom Control Pill (Play/Pause + Dots) */}
         {activeBanners.length > 1 && (
-          <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-900/60 hover:bg-slate-900/80 backdrop-blur-sm border border-white/10 shadow-md transition-colors">
+          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-950/60 hover:bg-slate-950/80 backdrop-blur-md border border-white/10 shadow-md transition-colors">
             {/* Play/Pause Button */}
             <button
               type="button"

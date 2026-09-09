@@ -105,7 +105,7 @@ export const CustomerCatalog = () => {
           page: currentPage,
           limit: itemsPerPage,
           search: debouncedSearch,
-          categoryId: selectedCategoryId,
+          categoryId: selectedCategoryId === 'all-catalog' ? 'all' : selectedCategoryId,
           sort: sortOption,
         });
 
@@ -130,7 +130,9 @@ export const CustomerCatalog = () => {
   }
 
   const selectedCategoryObj = categories.find((c) => c.id === selectedCategoryId);
-  const categoryDisplayName = selectedCategoryObj
+  const categoryDisplayName = selectedCategoryId === 'all-catalog'
+    ? t('allProducts')
+    : selectedCategoryObj
     ? isPortuguese && categoryTranslations[selectedCategoryObj.name]
       ? categoryTranslations[selectedCategoryObj.name]
       : selectedCategoryObj.name
@@ -139,8 +141,8 @@ export const CustomerCatalog = () => {
   const isHomeView = selectedCategoryId === 'all' && !debouncedSearch;
 
   return (
-    <div className="min-h-screen flex flex-col bg-theme-bluish relative w-full overflow-x-hidden transition-colors duration-200">
-      {/* Header with Search and Categories */}
+    <div className="min-h-screen flex flex-col bg-theme-bluish relative w-full overflow-x-clip transition-colors duration-200">
+      {/* Sticky Header with Search and Brand Controls */}
       <Header
         searchQuery={searchInput}
         onSearchChange={setSearchInput}
@@ -159,18 +161,32 @@ export const CustomerCatalog = () => {
 
         {/* Category Header or Home Showcase */}
         {isHomeView ? (
-          /* HOMEPAGE VIEW: Render each category row with horizontal scroll, distinct card separation and promo breaks */
-          <div className="mt-2 space-y-6 sm:space-y-8">
-            {categories.map((category, index) => {
+          /* HOMEPAGE VIEW: Render All Products starting showcase row + each category row */
+          <div className="mt-1 space-y-4 sm:space-y-6">
+            {/* 1. At Starting: All Products Showcase Row */}
+            {allProductsForHome.length > 0 && (
+              <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-sky-100/90 dark:border-slate-800 shadow-xs hover:shadow-soft dark:hover:shadow-slate-950/30 transition-all">
+                <CategoryShowcaseRow
+                  category={{ id: 'all', name: 'All Products' }}
+                  products={allProductsForHome}
+                  onSeeAll={() => {
+                    setSelectedCategoryId('all-catalog');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              </div>
+            )}
+
+            {/* 2. Individual Categories Rows */}
+            {categories.map((category) => {
               const categoryProducts = allProductsForHome.filter(
                 (p) => p.categoryId === category.id
               );
 
-              // Secondary promotional banner every 3 categories if banners exist
               return (
                 <div
                   key={category.id}
-                  className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-sky-100/80 dark:border-slate-800 shadow-soft dark:shadow-slate-950/40 transition-all hover:shadow-card"
+                  className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-sky-100/90 dark:border-slate-800 shadow-xs hover:shadow-soft dark:hover:shadow-slate-950/30 transition-all"
                 >
                   <CategoryShowcaseRow
                     category={category}
