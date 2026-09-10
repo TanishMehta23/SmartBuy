@@ -17,7 +17,7 @@ import {
 export const getProducts = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 25));
+    const limit = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 25));
     const skip = (page - 1) * limit;
 
     const { search, categoryId, sort } = req.query;

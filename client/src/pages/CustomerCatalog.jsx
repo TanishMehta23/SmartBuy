@@ -75,70 +75,64 @@ export const CustomerCatalog = () => {
   };
 
   // Initial Load: Categories, Banners, and Products
-  // Loading screen will only dismiss after ALL data and initial critical images are fully loaded
-  useEffect(() => {
-    let isMounted = true;
+  // Fetch Initial Data: Categories, Banners, and Products
+  const fetchInitialData = async () => {
+    setError(null);
+    try {
+      const [catRes, bannerRes, homeProdRes] = await Promise.allSettled([
+        categoryService.getCategories(),
+        bannerService.getBanners(),
+        productService.getProducts({ page: 1, limit: 500, sort: 'newest' }),
+      ]);
 
-    const fetchInitialData = async () => {
-      try {
-        const [catRes, bannerRes, homeProdRes] = await Promise.allSettled([
-          categoryService.getCategories(),
-          bannerService.getBanners(),
-          productService.getProducts({ page: 1, limit: 100, sort: 'newest' }),
-        ]);
+      let initialCategories = [];
+      let initialBanners = [];
+      let initialHomeProducts = [];
 
-        let initialCategories = [];
-        let initialBanners = [];
-        let initialHomeProducts = [];
-
-        if (catRes.status === 'fulfilled' && catRes.value.success) {
-          initialCategories = catRes.value.data || [];
-          if (isMounted) setCategories(initialCategories);
-        }
-
-        if (bannerRes.status === 'fulfilled' && bannerRes.value.success) {
-          initialBanners = bannerRes.value.data || [];
-          if (isMounted) setBanners(initialBanners);
-        }
-
-        if (homeProdRes.status === 'fulfilled' && homeProdRes.value.success) {
-          initialHomeProducts = homeProdRes.value.data || [];
-          if (isMounted) {
-            setAllProductsForHome(initialHomeProducts);
-            setProducts(initialHomeProducts.slice(0, itemsPerPage));
-            setPaginationInfo(
-              homeProdRes.value.pagination || {
-                page: 1,
-                limit: itemsPerPage,
-                totalProducts: initialHomeProducts.length,
-                totalPages: Math.ceil(initialHomeProducts.length / itemsPerPage) || 1,
-              }
-            );
-          }
-        } else if (homeProdRes.status === 'rejected') {
-          if (isMounted) {
-            setError(homeProdRes.reason?.userFriendlyMessage || 'Could not fetch catalog items.');
-          }
-        }
-
-        // Preload key visible above-the-fold images (banners + top 6 products) with fast timeout
-        const imagesToPreload = [
-          ...initialBanners.filter((b) => b.isActive !== false).map((b) => b.imageUrl),
-          ...initialHomeProducts.slice(0, 6).map((p) => p.imageUrl),
-        ].filter(Boolean);
-
-        await preloadImages(imagesToPreload, 1200);
-      } catch (err) {
-        console.error('Failed to load initial data', err);
-      } finally {
-        if (isMounted) {
-          setHasLoadedOnce(true);
-          setIsInitialLoading(false);
-          setLoading(false);
-        }
+      if (catRes.status === 'fulfilled' && catRes.value.success) {
+        initialCategories = catRes.value.data || [];
+        setCategories(initialCategories);
       }
-    };
 
+      if (bannerRes.status === 'fulfilled' && bannerRes.value.success) {
+        initialBanners = bannerRes.value.data || [];
+        setBanners(initialBanners);
+      }
+
+      if (homeProdRes.status === 'fulfilled' && homeProdRes.value.success) {
+        initialHomeProducts = homeProdRes.value.data || [];
+        setAllProductsForHome(initialHomeProducts);
+        setProducts(initialHomeProducts.slice(0, itemsPerPage));
+        setPaginationInfo(
+          homeProdRes.value.pagination || {
+            page: 1,
+            limit: itemsPerPage,
+            totalProducts: initialHomeProducts.length,
+            totalPages: Math.ceil(initialHomeProducts.length / itemsPerPage) || 1,
+          }
+        );
+      } else if (homeProdRes.status === 'rejected') {
+        setError(homeProdRes.reason?.userFriendlyMessage || 'Could not fetch catalog items.');
+      }
+
+      // Preload key visible above-the-fold images (banners + top 6 products) with fast timeout
+      const imagesToPreload = [
+        ...initialBanners.filter((b) => b.isActive !== false).map((b) => b.imageUrl),
+        ...initialHomeProducts.slice(0, 6).map((p) => p.imageUrl),
+      ].filter(Boolean);
+
+      await preloadImages(imagesToPreload, 1200);
+    } catch (err) {
+      console.error('Failed to load initial data', err);
+      setError('Could not fetch catalog items.');
+    } finally {
+      setHasLoadedOnce(true);
+      setIsInitialLoading(false);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchInitialData();
 
     const handleBannerUpdate = async () => {
@@ -150,7 +144,6 @@ export const CustomerCatalog = () => {
 
     window.addEventListener('smartbuy_banners_updated', handleBannerUpdate);
     return () => {
-      isMounted = false;
       window.removeEventListener('smartbuy_banners_updated', handleBannerUpdate);
     };
   }, []);
@@ -164,10 +157,13 @@ export const CustomerCatalog = () => {
   useEffect(() => {
     if (!hasLoadedOnce) return;
 
-    // In home view without search, products are already in allProductsForHome
+    // In home view without search, products are already in allProductsForHome if loaded
     if (selectedCategoryId === 'all' && !debouncedSearch && sortOption === 'newest') {
-      setProducts(allProductsForHome.slice(0, itemsPerPage));
-      return;
+      if (allProductsForHome.length > 0) {
+        setProducts(allProductsForHome.slice(0, itemsPerPage));
+        setError(null);
+        return;
+      }
     }
 
     const fetchProducts = async () => {

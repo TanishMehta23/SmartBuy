@@ -12,45 +12,52 @@ export const ProductCard = ({ product }) => {
   const [imageError, setImageError] = useState(false);
   const imgRef = React.useRef(null);
   const { language, translateDynamic, isPortuguese, t } = useLanguage();
-  const [displayName, setDisplayName] = useState(product.name);
+  const [displayName, setDisplayName] = useState(product?.name || '');
 
-  // Check if image is already cached/complete
+  // Reset state when product changes and check if image is already cached/complete
   useEffect(() => {
-    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
-      setImageLoaded(true);
+    setImageError(false);
+    setImageLoaded(false);
+
+    if (imgRef.current) {
+      if (imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+        setImageLoaded(true);
+      }
     }
-  }, [product.imageUrl]);
+  }, [product?.id, product?.imageUrl]);
 
   useEffect(() => {
     let isMounted = true;
-    if (isPortuguese) {
+    if (isPortuguese && product?.name) {
       translateDynamic(product.name, 'pt').then((translated) => {
         if (isMounted) setDisplayName(translated);
       });
     } else {
-      setDisplayName(product.name);
+      setDisplayName(product?.name || '');
     }
     return () => {
       isMounted = false;
     };
-  }, [product.name, isPortuguese, language]);
+  }, [product?.name, isPortuguese, language]);
 
-  const categoryName = product.category?.name;
+  const categoryName = product?.category?.name;
   const displayCategory = isPortuguese && categoryName && categoryTranslations[categoryName]
     ? categoryTranslations[categoryName]
     : categoryName;
+
+  const hasValidImage = Boolean(product?.imageUrl && !imageError);
 
   return (
     <div className="group relative flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-card-hover dark:hover:shadow-slate-950/60 overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:border-cyan-400/60 dark:hover:border-cyan-500/50">
       {/* Product Image Area with Clean Subtle Backdrop */}
       <div className="relative aspect-square w-full bg-slate-50/80 dark:bg-slate-800/50 overflow-hidden flex items-center justify-center p-2.5">
-        {/* Placeholder Skeleton */}
-        {!imageLoaded && !imageError && (
+        {/* Placeholder Skeleton behind image */}
+        {!imageLoaded && hasValidImage && (
           <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800 animate-pulse" />
         )}
 
-        {/* Fallback image if error occurs */}
-        {imageError ? (
+        {/* Fallback image if error occurs or no imageUrl */}
+        {!hasValidImage ? (
           <div className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 p-3 text-center">
             <span className="text-xs font-semibold">{t('imageUnavailable')}</span>
           </div>
@@ -61,9 +68,15 @@ export const ProductCard = ({ product }) => {
             alt={displayName}
             loading="lazy"
             decoding="async"
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageError(true)}
-            className={`h-full w-full object-contain object-center transition-transform duration-500 ease-out group-hover:scale-105 ${
+            onLoad={() => {
+              setImageLoaded(true);
+              setImageError(false);
+            }}
+            onError={() => {
+              setImageError(true);
+              setImageLoaded(true);
+            }}
+            className={`relative z-1 h-full w-full object-contain object-center transition-all duration-300 ease-out group-hover:scale-105 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           />

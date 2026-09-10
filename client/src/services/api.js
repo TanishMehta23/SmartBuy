@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '',
-  timeout: 8000, // 8-second timeout to prevent indefinite pending requests
+  timeout: 30000, // 30-second timeout to gracefully handle server cold starts (Render/Neon free tier)
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -21,10 +21,28 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor for unified error formatting
+// Response interceptor with 1 automatic retry on network/timeout error for idempotent GET requests
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const config = error.config;
+
+    // Retry once for GET requests on timeout or network error
+    if (
+      config &&
+      config.method === 'get' &&
+      !config._retry &&
+      (error.code === 'ECONNABORTED' || !error.response || error.response.status >= 500)
+    ) {
+      config._retry = true;
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        return await api(config);
+      } catch (retryError) {
+        error = retryError;
+      }
+    }
+
     let message = error.response?.data?.message || error.message || 'An unexpected error occurred';
     
     // If backend returned specific validation errors (e.g. from Zod)
