@@ -10,8 +10,16 @@ import { categoryTranslations } from '../utils/translations';
 export const ProductCard = ({ product }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const imgRef = React.useRef(null);
   const { language, translateDynamic, isPortuguese, t } = useLanguage();
   const [displayName, setDisplayName] = useState(product.name);
+
+  // Check if image is already cached/complete
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setImageLoaded(true);
+    }
+  }, [product.imageUrl]);
 
   useEffect(() => {
     let isMounted = true;
@@ -48,6 +56,7 @@ export const ProductCard = ({ product }) => {
           </div>
         ) : (
           <img
+            ref={imgRef}
             src={product.imageUrl}
             alt={displayName}
             loading="lazy"

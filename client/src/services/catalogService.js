@@ -145,7 +145,7 @@ export const bannerService = {
         return { success: true, data };
       }
     } catch (err) {
-      console.warn('Live banners API fetch fallback', err);
+      // Graceful fallback to client cache if remote endpoint is not yet live
     }
     const cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
     return { success: true, data: cached };
@@ -160,7 +160,7 @@ export const bannerService = {
         return { success: true, data };
       }
     } catch (err) {
-      console.warn('Admin banners API fetch fallback', err);
+      // Graceful fallback to client cache
     }
     const cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
     return { success: true, data: cached };

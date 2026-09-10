@@ -35,8 +35,8 @@ export const CustomerCatalog = () => {
     totalPages: 1,
   });
 
-  const [loading, setLoading] = useState(true);
-  const [homeLoading, setHomeLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [error, setError] = useState(null);
 
@@ -55,8 +55,30 @@ export const CustomerCatalog = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Load categories, banners, and initial category showcases
+  // Helper to preload images before dismissing loading screen
+  const preloadImages = (urls, timeoutMs = 3000) => {
+    if (!urls || urls.length === 0) return Promise.resolve();
+    const preloads = Promise.allSettled(
+      urls.map(
+        (url) =>
+          new Promise((resolve) => {
+            if (!url) return resolve();
+            const img = new Image();
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            img.src = url;
+          })
+      )
+    );
+    const timeout = new Promise((resolve) => setTimeout(resolve, timeoutMs));
+    return Promise.race([preloads, timeout]);
+  };
+
+  // Initial Load: Categories, Banners, and Products
+  // Loading screen will only dismiss after ALL data and initial critical images are fully loaded
   useEffect(() => {
+    let isMounted = true;
+
     const fetchInitialData = async () => {
       try {
         const [catRes, bannerRes, homeProdRes] = await Promise.allSettled([
@@ -64,19 +86,59 @@ export const CustomerCatalog = () => {
           bannerService.getBanners(),
           productService.getProducts({ page: 1, limit: 100, sort: 'newest' }),
         ]);
+
+        let initialCategories = [];
+        let initialBanners = [];
+        let initialHomeProducts = [];
+
         if (catRes.status === 'fulfilled' && catRes.value.success) {
-          setCategories(catRes.value.data);
+          initialCategories = catRes.value.data || [];
+          if (isMounted) setCategories(initialCategories);
         }
+
         if (bannerRes.status === 'fulfilled' && bannerRes.value.success) {
-          setBanners(bannerRes.value.data);
+          initialBanners = bannerRes.value.data || [];
+          if (isMounted) setBanners(initialBanners);
         }
+
         if (homeProdRes.status === 'fulfilled' && homeProdRes.value.success) {
-          setAllProductsForHome(homeProdRes.value.data);
+          initialHomeProducts = homeProdRes.value.data || [];
+          if (isMounted) {
+            setAllProductsForHome(initialHomeProducts);
+            setProducts(initialHomeProducts.slice(0, itemsPerPage));
+            setPaginationInfo(
+              homeProdRes.value.pagination || {
+                page: 1,
+                limit: itemsPerPage,
+                totalProducts: initialHomeProducts.length,
+                totalPages: Math.ceil(initialHomeProducts.length / itemsPerPage) || 1,
+              }
+            );
+          }
+        } else if (homeProdRes.status === 'rejected') {
+          if (isMounted) {
+            setError(homeProdRes.reason?.userFriendlyMessage || 'Could not fetch catalog items.');
+          }
         }
+
+        // Preload key visible above-the-fold images (banners + top 6 products) with fast timeout
+        const imagesToPreload = [
+          ...initialBanners.filter((b) => b.isActive !== false).map((b) => b.imageUrl),
+          ...initialHomeProducts.slice(0, 6).map((p) => p.imageUrl),
+        ].filter(Boolean);
+
+        await preloadImages(imagesToPreload, 1200);
       } catch (err) {
         console.error('Failed to load initial data', err);
+      } finally {
+        if (isMounted) {
+          setHasLoadedOnce(true);
+          setIsInitialLoading(false);
+          setLoading(false);
+        }
       }
     };
+
     fetchInitialData();
 
     const handleBannerUpdate = async () => {
@@ -87,7 +149,10 @@ export const CustomerCatalog = () => {
     };
 
     window.addEventListener('smartbuy_banners_updated', handleBannerUpdate);
-    return () => window.removeEventListener('smartbuy_banners_updated', handleBannerUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('smartbuy_banners_updated', handleBannerUpdate);
+    };
   }, []);
 
   // Reset to page 1 when search, category, or limit changes
@@ -95,8 +160,16 @@ export const CustomerCatalog = () => {
     setCurrentPage(1);
   }, [debouncedSearch, selectedCategoryId, sortOption, itemsPerPage]);
 
-  // Fetch products when params change
+  // Fetch products when params change (only after initial load has finished)
   useEffect(() => {
+    if (!hasLoadedOnce) return;
+
+    // In home view without search, products are already in allProductsForHome
+    if (selectedCategoryId === 'all' && !debouncedSearch && sortOption === 'newest') {
+      setProducts(allProductsForHome.slice(0, itemsPerPage));
+      return;
+    }
+
     const fetchProducts = async () => {
       setLoading(true);
       setError(null);
@@ -112,7 +185,6 @@ export const CustomerCatalog = () => {
         if (res.success) {
           setProducts(res.data);
           setPaginationInfo(res.pagination);
-          setHasLoadedOnce(true);
         }
       } catch (err) {
         setError(err.userFriendlyMessage || 'Could not fetch catalog items.');
@@ -122,10 +194,10 @@ export const CustomerCatalog = () => {
     };
 
     fetchProducts();
-  }, [currentPage, debouncedSearch, selectedCategoryId, sortOption, itemsPerPage]);
+  }, [hasLoadedOnce, currentPage, debouncedSearch, selectedCategoryId, sortOption, itemsPerPage]);
 
-  // Show full loading screen on initial catalog load or when backend is waking up
-  if (!hasLoadedOnce && loading && !error) {
+  // Show full loading screen on initial catalog load until ALL data and assets are ready
+  if (isInitialLoading && !error) {
     return <LoadingScreen />;
   }
 

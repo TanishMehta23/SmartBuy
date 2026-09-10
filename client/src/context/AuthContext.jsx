@@ -7,15 +7,23 @@ export const AuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check current admin session on initial mount
+  // Check current admin session on initial mount (only if token exists)
   useEffect(() => {
     const checkAuth = async () => {
+      const token = sessionStorage.getItem('admin_token');
+      if (!token) {
+        setAdmin(null);
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await authService.getMe();
         if (response.success && response.admin) {
           setAdmin(response.admin);
         }
       } catch (error) {
+        sessionStorage.removeItem('admin_token');
         setAdmin(null);
       } finally {
         setLoading(false);
