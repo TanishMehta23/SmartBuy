@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search, X, Heart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useWishlist } from '../context/WishlistContext';
 import { LanguageSelector } from './LanguageSelector';
 import { ThemeToggle } from './ThemeToggle';
 import { categoryTranslations } from '../utils/translations';
@@ -14,6 +15,13 @@ export const Header = ({
 }) => {
   const { t, isPortuguese } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    // Trigger slide-down entrance animation on mount
+    const timer = setTimeout(() => setHasMounted(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,9 +38,13 @@ export const Header = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const { wishlistCount } = useWishlist();
+
   return (
     <header
       className={`sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b transition-all duration-300 ${
+        hasMounted ? 'animate-slide-down' : 'opacity-0 -translate-y-full'
+      } ${
         isScrolled
           ? 'border-sky-200/80 dark:border-slate-800 shadow-md shadow-sky-950/5 dark:shadow-slate-950/40 py-2 sm:py-2.5'
           : 'border-sky-100/80 dark:border-slate-800/80 py-2.5 sm:py-3.5'
@@ -68,8 +80,29 @@ export const Header = ({
               </div>
             </a>
 
-            {/* Mobile-only theme toggle */}
-            <div className="flex md:hidden items-center shrink-0">
+            {/* Mobile-only controls (Wishlist + theme) */}
+            <div className="flex md:hidden items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  onSelectCategory?.('wishlist');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`relative w-8 h-8 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
+                  selectedCategoryId === 'wishlist'
+                    ? 'bg-rose-50 dark:bg-rose-950/80 border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400'
+                    : 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-200/80 dark:border-rose-900/60 text-slate-600 dark:text-slate-300'
+                }`}
+                title="Wishlist"
+                aria-label="View Wishlist"
+              >
+                <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-0.5 bg-rose-500 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
               <ThemeToggle size="sm" />
             </div>
           </div>
@@ -85,7 +118,7 @@ export const Header = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={t('searchPlaceholder')}
-                className="w-full pl-10 pr-9 py-2 sm:py-2.5 bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-800 dark:focus:bg-slate-900 text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-xl sm:rounded-2xl border border-sky-200/80 dark:border-slate-700 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-3 focus:ring-cyan-500/15 transition-all outline-none"
+                className="w-full pl-10 pr-9 py-2 sm:py-2.5 bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-800 dark:focus:bg-slate-900 text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-xl sm:rounded-2xl border border-sky-200/80 dark:border-slate-700 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-3 focus:ring-cyan-500/15 transition-all outline-none focus:animate-glow-pulse"
               />
               {Boolean(searchQuery) && (
                 <button
@@ -96,6 +129,38 @@ export const Header = ({
                   <X className="w-4 h-4" />
                 </button>
               )}
+            </div>
+
+            {/* Wishlist Header Button (Desktop - Circular Icon Button) */}
+            <div className="relative group hidden md:inline-flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  onSelectCategory?.('wishlist');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`relative inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all duration-300 cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-rose-500/40 hover:scale-105 active:scale-95 ${
+                  selectedCategoryId === 'wishlist'
+                    ? 'bg-rose-50 dark:bg-rose-950/80 border border-rose-300 dark:border-rose-700 shadow-sm ring-2 ring-rose-400/20'
+                    : 'bg-rose-50/80 hover:bg-rose-100/80 dark:bg-rose-950/40 dark:hover:bg-rose-950/70 border border-rose-200/80 dark:border-rose-900/60 shadow-xs'
+                }`}
+                title="Wishlist"
+                aria-label="View Wishlist"
+              >
+                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 fill-rose-500 transition-transform group-hover:scale-110" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-xs">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Hover Tooltip */}
+              <div className="pointer-events-none absolute top-full mt-2 right-0 opacity-0 group-hover:opacity-100 transition-all duration-200 z-50 whitespace-nowrap shadow-xl">
+                <div className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-slate-900/95 text-white border border-slate-700 shadow-lg backdrop-blur-md">
+                  {isPortuguese ? 'Produtos Favoritos' : 'My Wishlist'}
+                </div>
+              </div>
             </div>
 
             {/* Desktop Theme Toggle */}

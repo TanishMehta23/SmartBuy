@@ -9,15 +9,59 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { storeSettingsService } from '../services/storeSettingsService';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export const StoreExperienceShowcase = () => {
   const { isPortuguese } = useLanguage();
   const [activePhoto, setActivePhoto] = useState(0);
-  const [details, setDetails] = useState(null);
+  const [details, setDetails] = useState({
+    badgeTextEn: 'Visit Our Flagship Store in Cascais',
+    badgeTextPt: 'Visite a Nossa Loja em Cascais',
+    headlineEn: 'Your Smart, Premium & Fresh Supermarket',
+    headlinePt: 'A Sua Experiência de Compras Inteligente & Fresca',
+    descriptionEn: 'Located in the heart of Cascais, Smart Buy brings you handpicked essentials, artisanal bakery, farm-fresh produce, and daily lifestyle items with an unmatched in-store experience.',
+    descriptionPt: 'Localizado no coração de Cascais, o Smart Buy oferece uma seleção rigorosa de produtos de alta qualidade, padaria artesanal, itens essenciais do dia a dia e atendimento dedicado.',
+    address: 'Rua de Santa Margarida N.º 8, 2750-112 Cascais, Portugal',
+    hoursEn: 'Open Daily • Closes 8:00 PM',
+    hoursPt: 'Aberto Todos os Dias até às 20h00',
+    phone: '+351 21 484 3122',
+    mapUrl: 'https://www.google.com/maps/place/Smart+Buy+Supermercado/@38.7029,-9.4215,17z',
+    photos: [
+      {
+        url: '/store_aisles.jpg',
+        tagEn: 'Modern Aisles',
+        tagPt: 'Corredores Modernos',
+        captionEn: 'Spacious and organized supermarket aisles',
+        captionPt: 'Corredores espaçosos e organizados',
+      },
+      {
+        url: '/store_produce.jpg',
+        tagEn: 'Fresh Produce',
+        tagPt: 'Hortifruti Fresco',
+        captionEn: 'Daily farm-fresh fruits & organic greens',
+        captionPt: 'Frutas e vegetais frescos todos os dias',
+      },
+      {
+        url: '/store_bakery.jpg',
+        tagEn: 'Artisan Bakery',
+        tagPt: 'Padaria & Confeitaria',
+        captionEn: 'Fresh artisan breads and traditional pastries',
+        captionPt: 'Pães quentes e pastelaria tradicional',
+      },
+      {
+        url: '/store_cellar.jpg',
+        tagEn: 'Beverages & Cellar',
+        tagPt: 'Garrafeira & Bebidas',
+        captionEn: 'Fine selection of regional wines & drinks',
+        captionPt: 'Grande seleção de vinhos e bebidas',
+      },
+    ],
+  });
+  const { ref: sectionRef, isVisible } = useScrollAnimation({ threshold: 0.1 });
 
   const loadData = async () => {
     const res = await storeSettingsService.getStoreDetails();
-    if (res.success) {
+    if (res.success && res.data) {
       setDetails(res.data);
     }
   };
@@ -34,13 +78,21 @@ export const StoreExperienceShowcase = () => {
   const activeItem = photos[activePhoto] || photos[0];
 
   return (
-    <div className="my-6 sm:my-10 relative overflow-hidden rounded-3xl border border-sky-100/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-5 sm:p-7 lg:p-9 shadow-soft dark:shadow-slate-950/40 backdrop-blur-md">
-      {/* Subtle Ambient Decorative Gradient */}
-      <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-400/5 dark:bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+    <div
+      ref={sectionRef}
+      className="my-6 sm:my-10 relative overflow-hidden rounded-3xl border border-sky-100/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-5 sm:p-7 lg:p-9 shadow-soft dark:shadow-slate-950/40 backdrop-blur-md"
+    >
+      {/* Subtle Ambient Decorative Gradient — now with floating animation */}
+      <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-400/5 dark:bg-cyan-500/5 rounded-full blur-3xl pointer-events-none animate-float-slow" />
+      <div className="absolute bottom-0 left-0 w-56 h-56 bg-sky-400/5 dark:bg-sky-500/5 rounded-full blur-3xl pointer-events-none animate-float-slow-reverse" />
 
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-        {/* Left Column: Store Story & Contact Badges */}
-        <div className="lg:col-span-6 space-y-3.5 sm:space-y-4">
+        {/* Left Column: Store Story & Contact Badges — fade in from left */}
+        <div
+          className={`lg:col-span-6 space-y-3.5 sm:space-y-4 animate-on-scroll ${
+            isVisible ? 'animate-fade-in-left' : ''
+          }`}
+        >
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/60">
             <Store className="w-3.5 h-3.5" />
             <span className="uppercase tracking-wider">
@@ -123,8 +175,13 @@ export const StoreExperienceShowcase = () => {
           </div>
         </div>
 
-        {/* Right Column: Photo Gallery Display */}
-        <div className="lg:col-span-6 flex flex-col gap-2.5">
+        {/* Right Column: Photo Gallery Display — fade in from right */}
+        <div
+          className={`lg:col-span-6 flex flex-col gap-2.5 animate-on-scroll ${
+            isVisible ? 'animate-fade-in-right' : ''
+          }`}
+          style={isVisible ? { animationDelay: '150ms' } : undefined}
+        >
           {/* Main Selected Image Showcase */}
           {activeItem && (
             <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-md border border-slate-200/80 dark:border-slate-800 group">
@@ -163,10 +220,10 @@ export const StoreExperienceShowcase = () => {
                     key={index}
                     type="button"
                     onClick={() => setActivePhoto(index)}
-                    className={`relative aspect-[16/10] rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                    className={`relative aspect-[16/10] rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer ${
                       isSelected
                         ? 'border-cyan-500 ring-2 ring-cyan-400/30 shadow-xs scale-101'
-                        : 'border-transparent opacity-65 hover:opacity-100'
+                        : 'border-transparent opacity-65 hover:opacity-100 hover:scale-103'
                     }`}
                   >
                     <img

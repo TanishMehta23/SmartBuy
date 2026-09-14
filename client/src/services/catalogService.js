@@ -135,6 +135,18 @@ const fileToBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
+const sanitizeBanners = (banners) => {
+  if (!Array.isArray(banners)) return [];
+  const defaultBannerUrl = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80';
+  return banners.map((b) => {
+    if (!b || typeof b !== 'object') return b;
+    if (typeof b.imageUrl === 'string' && b.imageUrl.startsWith('blob:')) {
+      return { ...b, imageUrl: defaultBannerUrl };
+    }
+    return b;
+  });
+};
+
 export const bannerService = {
   getBanners: async () => {
     try {
@@ -142,13 +154,13 @@ export const bannerService = {
       let data = res.data?.data || res.data || [];
       if (Array.isArray(data) && data.length > 0) {
         localStorage.setItem('smartbuy_banners_cache', JSON.stringify(data));
-        return { success: true, data };
+        return { success: true, data: sanitizeBanners(data) };
       }
     } catch (err) {
       // Graceful fallback to client cache if remote endpoint is not yet live
     }
     const cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
-    return { success: true, data: cached };
+    return { success: true, data: sanitizeBanners(cached) };
   },
 
   getAdminBanners: async () => {
@@ -157,13 +169,13 @@ export const bannerService = {
       let data = res.data?.data || res.data || [];
       if (Array.isArray(data) && data.length > 0) {
         localStorage.setItem('smartbuy_banners_cache', JSON.stringify(data));
-        return { success: true, data };
+        return { success: true, data: sanitizeBanners(data) };
       }
     } catch (err) {
       // Graceful fallback to client cache
     }
     const cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
-    return { success: true, data: cached };
+    return { success: true, data: sanitizeBanners(cached) };
   },
 
   createBanner: async (formData) => {

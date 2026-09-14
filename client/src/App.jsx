@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { WishlistProvider } from './context/WishlistContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
 
@@ -22,46 +23,48 @@ export default function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <AuthProvider>
-          <BrowserRouter>
-            {/* Automatically scroll to top on page navigation */}
-            <ScrollToTop />
+        <WishlistProvider>
+          <AuthProvider>
+            <BrowserRouter>
+              {/* Automatically scroll to top on page navigation */}
+              <ScrollToTop />
 
-            {/* Vercel Analytics */}
-            <Analytics />
+              {/* Vercel Analytics */}
+              <Analytics />
 
-            {/* Modern Toast notifications */}
-            <Toaster position="top-right" richColors closeButton expand={false} />
+              {/* Modern Toast notifications */}
+              <Toaster position="top-right" richColors closeButton expand={false} />
 
-            <Routes>
-              {/* Public Customer Portal */}
-              <Route path="/" element={<CustomerCatalog />} />
+              <Routes>
+                {/* Public Customer Portal */}
+                <Route path="/" element={<CustomerCatalog />} />
 
-              {/* Admin Authentication */}
-              <Route path="/admin/login" element={<AdminLogin />} />
+                {/* Admin Authentication */}
+                <Route path="/admin/login" element={<AdminLogin />} />
 
-              {/* Protected Admin Portal */}
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Navigate to="/admin/dashboard" replace />} />
-                <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="categories" element={<AdminCategories />} />
-                <Route path="banners" element={<AdminBanners />} />
-                <Route path="store" element={<AdminStoreSettings />} />
-              </Route>
+                {/* Protected Admin Portal */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                  <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="categories" element={<AdminCategories />} />
+                  <Route path="banners" element={<AdminBanners />} />
+                  <Route path="store" element={<AdminStoreSettings />} />
+                </Route>
 
-              {/* Fallback to Customer Catalog */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
+                {/* Fallback to Customer Catalog */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </WishlistProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSelector } from './LanguageSelector';
 import { ThemeToggle } from './ThemeToggle';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import {
   ShieldCheck,
   Sparkles,
@@ -22,6 +23,8 @@ export const Footer = () => {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   const [activeModal, setActiveModal] = useState(null); // 'privacy' | 'terms' | null
+  const { ref: trustRef, isVisible: trustVisible } = useScrollAnimation({ threshold: 0.1 });
+  const { ref: linksRef, isVisible: linksVisible } = useScrollAnimation({ threshold: 0.1 });
 
   // Lock background scrolling when modal is open
   useEffect(() => {
@@ -41,66 +44,76 @@ export const Footer = () => {
 
   const googleMapsUrl = 'https://www.google.com/maps/place/Smart+Buy+Supermercado/data=!4m2!3m1!1s0x0:0x3b8e9bda4f2f79c5?sa=X&ved=1t:2428&ictx=111';
 
+  const trustFeatures = [
+    {
+      icon: ShieldCheck,
+      gradient: 'from-cyan-500 to-sky-600',
+      shadowColor: 'shadow-cyan-500/20',
+      titleKey: 'footerFeature1Title',
+      descKey: 'footerFeature1Desc',
+    },
+    {
+      icon: Sparkles,
+      gradient: 'from-sky-500 to-blue-600',
+      shadowColor: 'shadow-sky-500/20',
+      titleKey: 'footerFeature2Title',
+      descKey: 'footerFeature2Desc',
+    },
+    {
+      icon: Globe2,
+      gradient: 'from-teal-500 to-cyan-600',
+      shadowColor: 'shadow-teal-500/20',
+      titleKey: 'footerFeature3Title',
+      descKey: 'footerFeature3Desc',
+    },
+  ];
+
   return (
     <footer className="relative mt-auto border-t border-sky-200/80 dark:border-slate-800 bg-gradient-to-b from-sky-50/90 via-sky-100/50 to-white/95 dark:from-slate-900/90 dark:via-slate-950/90 dark:to-slate-950/95 backdrop-blur-xl text-slate-700 dark:text-slate-300 w-full overflow-hidden transition-colors duration-200">
-      {/* Decorative ambient background blur orbs */}
-      <div className="absolute top-0 left-1/4 w-96 h-48 bg-cyan-300/15 dark:bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-48 bg-sky-400/15 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Decorative ambient background blur orbs — now with floating animation */}
+      <div className="absolute top-0 left-1/4 w-96 h-48 bg-cyan-300/15 dark:bg-cyan-500/10 rounded-full blur-3xl pointer-events-none animate-float-slow" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-48 bg-sky-400/15 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none animate-float-slow-reverse" />
 
       {/* Trust & Quality Pillars Banner */}
-      <div className="border-b border-sky-200/60 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/50 backdrop-blur-md">
+      <div ref={trustRef} className="border-b border-sky-200/60 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/50 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Feature 1 */}
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-sky-100/80 dark:border-slate-700/80 shadow-xs hover:shadow-soft dark:hover:shadow-slate-950/50 hover:border-cyan-200 dark:hover:border-cyan-500/40 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-cyan-500/20">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-                  {t('footerFeature1Title')}
-                </h4>
-                <p className="text-xs text-sky-800/70 dark:text-slate-400 font-medium mt-0.5 leading-relaxed">
-                  {t('footerFeature1Desc')}
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-sky-100/80 dark:border-slate-700/80 shadow-xs hover:shadow-soft dark:hover:shadow-slate-950/50 hover:border-cyan-200 dark:hover:border-cyan-500/40 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-sky-500/20">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-                  {t('footerFeature2Title')}
-                </h4>
-                <p className="text-xs text-sky-800/70 dark:text-slate-400 font-medium mt-0.5 leading-relaxed">
-                  {t('footerFeature2Desc')}
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-sky-100/80 dark:border-slate-700/80 shadow-xs hover:shadow-soft dark:hover:shadow-slate-950/50 hover:border-cyan-200 dark:hover:border-cyan-500/40 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-teal-500/20">
-                <Globe2 className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-                  {t('footerFeature3Title')}
-                </h4>
-                <p className="text-xs text-sky-800/70 dark:text-slate-400 font-medium mt-0.5 leading-relaxed">
-                  {t('footerFeature3Desc')}
-                </p>
-              </div>
-            </div>
+            {trustFeatures.map((feature, idx) => {
+              const Icon = feature.icon;
+              const delayMs = idx * 120;
+              return (
+                <div
+                  key={idx}
+                  className={`flex items-start gap-3.5 p-4 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-sky-100/80 dark:border-slate-700/80 shadow-xs hover:shadow-soft dark:hover:shadow-slate-950/50 hover:border-cyan-200 dark:hover:border-cyan-500/40 transition-all animate-on-scroll ${
+                    trustVisible ? 'animate-fade-in-up' : ''
+                  }`}
+                  style={trustVisible ? { animationDelay: `${delayMs}ms` } : undefined}
+                >
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${feature.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${feature.shadowColor}`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+                      {t(feature.titleKey)}
+                    </h4>
+                    <p className="text-xs text-sky-800/70 dark:text-slate-400 font-medium mt-0.5 leading-relaxed">
+                      {t(feature.descKey)}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Main Footer Links & Contact Info */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      <div
+        ref={linksRef}
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-on-scroll ${
+          linksVisible ? 'animate-fade-in-up' : ''
+        }`}
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-10">
           {/* Brand Column */}
           <div className="sm:col-span-2 md:col-span-5 space-y-3">
@@ -252,7 +265,7 @@ export const Footer = () => {
           <div className="flex items-center justify-center shrink-0">
             <button
               onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-cyan-700 dark:hover:text-cyan-300 font-bold text-xs transition-colors cursor-pointer border border-slate-200/80 dark:border-slate-700"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-cyan-700 dark:hover:text-cyan-300 font-bold text-xs transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700 hover:scale-105 hover:-translate-y-0.5 active:scale-95"
               aria-label="Back to top"
             >
               <span>Back to Top</span>

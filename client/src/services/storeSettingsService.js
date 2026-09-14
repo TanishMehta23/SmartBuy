@@ -14,28 +14,28 @@ const DEFAULT_STORE_DETAILS = {
   mapUrl: 'https://www.google.com/maps/place/Smart+Buy+Supermercado/@38.7029,-9.4215,17z',
   photos: [
     {
-      url: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=1200&q=80',
+      url: '/store_aisles.jpg',
       tagEn: 'Modern Aisles',
       tagPt: 'Corredores Modernos',
       captionEn: 'Spacious and organized supermarket aisles',
       captionPt: 'Corredores espaçosos e organizados',
     },
     {
-      url: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=1200&q=80',
+      url: '/store_produce.jpg',
       tagEn: 'Fresh Produce',
       tagPt: 'Hortifruti Fresco',
       captionEn: 'Daily farm-fresh fruits & organic greens',
       captionPt: 'Frutas e vegetais frescos todos os dias',
     },
     {
-      url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80',
+      url: '/store_bakery.jpg',
       tagEn: 'Artisan Bakery',
       tagPt: 'Padaria & Confeitaria',
       captionEn: 'Fresh artisan breads and traditional pastries',
       captionPt: 'Pães quentes e pastelaria tradicional',
     },
     {
-      url: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?auto=format&fit=crop&w=1200&q=80',
+      url: '/store_cellar.jpg',
       tagEn: 'Beverages & Cellar',
       tagPt: 'Garrafeira & Bebidas',
       captionEn: 'Fine selection of regional wines & drinks',
@@ -44,14 +44,19 @@ const DEFAULT_STORE_DETAILS = {
   ],
 };
 
-const STORAGE_KEY = 'smartbuy_store_details';
+const STORAGE_KEY = 'smartbuy_store_details_v2';
 
 export const storeSettingsService = {
   getStoreDetails: async () => {
     try {
       const cached = localStorage.getItem(STORAGE_KEY);
       if (cached) {
-        return { success: true, data: JSON.parse(cached) };
+        const parsed = JSON.parse(cached);
+        // Ensure local high-res photos are used
+        if (!parsed.photos || parsed.photos.some((p) => p.url?.startsWith('http'))) {
+          parsed.photos = DEFAULT_STORE_DETAILS.photos;
+        }
+        return { success: true, data: parsed };
       }
     } catch (e) {}
     return { success: true, data: DEFAULT_STORE_DETAILS };

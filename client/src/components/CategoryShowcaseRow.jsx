@@ -3,10 +3,12 @@ import { ChevronLeft, ChevronRight, ArrowRight, PackageOpen } from 'lucide-react
 import { ProductCard } from './ProductCard';
 import { useLanguage } from '../context/LanguageContext';
 import { categoryTranslations } from '../utils/translations';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export const CategoryShowcaseRow = ({ category, products = [], onSeeAll }) => {
   const scrollRef = useRef(null);
   const { isPortuguese, t } = useLanguage();
+  const { ref: sectionRef, isVisible } = useScrollAnimation({ threshold: 0.08 });
 
   const displayName = category.id === 'all'
     ? t('allProducts') || 'All Products'
@@ -27,11 +29,21 @@ export const CategoryShowcaseRow = ({ category, products = [], onSeeAll }) => {
   const hasProducts = Array.isArray(products) && products.length > 0;
 
   return (
-    <section className="relative group/section">
+    <section
+      ref={sectionRef}
+      className={`relative group/section animate-on-scroll ${
+        isVisible ? 'animate-fade-in-up' : ''
+      }`}
+    >
       {/* Category Section Header */}
       <div className="flex items-center justify-between mb-3 sm:mb-4 pb-2.5 sm:pb-3 border-b border-sky-100/90 dark:border-slate-800/80">
         <div className="flex items-center gap-2.5 sm:gap-3">
-          <div className="w-2 h-5 sm:h-6 bg-gradient-to-b from-cyan-500 to-sky-600 rounded-full" />
+          <div
+            className={`w-2 h-5 sm:h-6 bg-gradient-to-b from-cyan-500 to-sky-600 rounded-full ${
+              isVisible ? 'animate-grow-down' : ''
+            }`}
+            style={{ transformOrigin: 'top' }}
+          />
           <div className="flex items-center gap-2 sm:gap-2.5">
             <h2 className="text-base sm:text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight">
               {displayName}

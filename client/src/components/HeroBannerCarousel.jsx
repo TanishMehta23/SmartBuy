@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export const HeroBannerCarousel = ({ banners = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -8,6 +9,7 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
   const [isHovered, setIsHovered] = useState(false);
   const timerRef = useRef(null);
   const { t } = useLanguage();
+  const { ref: sectionRef, isVisible } = useScrollAnimation({ threshold: 0.15 });
 
   const activeBanners = banners.filter((b) => b.isActive !== false);
 
@@ -65,14 +67,17 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
 
   return (
     <div
-      className="relative w-full mb-5 sm:mb-7 select-none group"
+      ref={sectionRef}
+      className={`relative w-full mb-5 sm:mb-7 select-none group animate-on-scroll ${
+        isVisible ? 'animate-scale-in' : ''
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Outer Banner Card Container with Modern Rounded Borders & Subtle Elevation */}
       <div
         onClick={handleBannerClick}
-        className={`relative w-full aspect-[21/9] sm:aspect-[24/9] md:aspect-[28/9] max-h-[360px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-card border border-sky-100/90 dark:border-slate-800 bg-slate-900 transition-all duration-300 ${
+        className={`relative w-full aspect-[16/9] sm:aspect-[20/9] md:aspect-[22/9] lg:aspect-[2.4/1] min-h-[190px] sm:min-h-[260px] md:min-h-[300px] max-h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-card border border-sky-100/90 dark:border-slate-800 bg-slate-900 transition-all duration-300 ${
           currentBanner.linkUrl ? 'cursor-pointer hover:shadow-card-hover hover:scale-[1.002]' : ''
         }`}
       >
@@ -86,11 +91,14 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
                 isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
               }`}
             >
-              {/* Banner Image */}
+              {/* Banner Image with Ken Burns zoom effect */}
               <img
                 src={banner.imageUrl}
                 alt={banner.title || 'Promotional Banner'}
-                className="w-full h-full object-cover object-center"
+                className={`w-full h-full object-cover object-center ${
+                  isCurrent ? 'animate-ken-burns' : ''
+                }`}
+                key={`${banner.id || index}-${isCurrent ? currentIndex : 'inactive'}`}
                 loading={index === 0 ? 'eager' : 'lazy'}
               />
 

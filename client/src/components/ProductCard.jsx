@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import { Heart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useWishlist } from '../context/WishlistContext';
 import { categoryTranslations } from '../utils/translations';
 
 /**
  * Product Card Component (Pure Product Catalog Item - Strictly Non-Clickable)
- * Displays product image, category badge, and name with modern visual polish
+ * Displays product image, category badge, wishlist heart, and name
  * Supports Dynamic Portuguese translation & Dark mode
+ * Includes shimmer sweep on hover and scale-in image reveal
  */
 export const ProductCard = ({ product }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const imgRef = React.useRef(null);
   const { language, translateDynamic, isPortuguese, t } = useLanguage();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [displayName, setDisplayName] = useState(product?.name || '');
+  const [heartAnimating, setHeartAnimating] = useState(false);
+
+  const wishlisted = product?.id ? isWishlisted(product.id) : false;
 
   // Reset state when product changes and check if image is already cached/complete
   useEffect(() => {
@@ -47,10 +54,20 @@ export const ProductCard = ({ product }) => {
 
   const hasValidImage = Boolean(product?.imageUrl && !imageError);
 
+  const handleWishlistClick = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (product?.id) {
+      toggleWishlist(product.id);
+      setHeartAnimating(true);
+      setTimeout(() => setHeartAnimating(false), 400);
+    }
+  };
+
   return (
     <div className="group relative flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-card-hover dark:hover:shadow-slate-950/60 overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:border-cyan-400/60 dark:hover:border-cyan-500/50">
       {/* Product Image Area with Clean Subtle Backdrop */}
-      <div className="relative aspect-square w-full bg-slate-50/80 dark:bg-slate-800/50 overflow-hidden flex items-center justify-center p-2.5">
+      <div className="relative aspect-square w-full bg-slate-50/80 dark:bg-slate-800/50 overflow-hidden flex items-center justify-center p-2.5 shimmer-sweep">
         {/* Placeholder Skeleton behind image */}
         {!imageLoaded && hasValidImage && (
           <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800 animate-pulse" />
@@ -76,20 +93,40 @@ export const ProductCard = ({ product }) => {
               setImageError(true);
               setImageLoaded(true);
             }}
-            className={`relative z-1 h-full w-full object-contain object-center transition-all duration-300 ease-out group-hover:scale-105 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
+            className={`relative z-1 h-full w-full object-contain object-center transition-all duration-500 ease-out group-hover:scale-105 ${
+              imageLoaded ? 'opacity-100 animate-scale-in' : 'opacity-0'
             }`}
           />
         )}
 
-        {/* Subtle Category Pill Tag */}
+        {/* Category Pill Tag — bottom-left */}
         {displayCategory && (
-          <div className="absolute top-2 left-2 pointer-events-none z-10">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wider bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs text-slate-700 dark:text-cyan-300 border border-slate-200/80 dark:border-slate-700 shadow-2xs">
+          <div className="absolute bottom-2 left-2 pointer-events-none z-10">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wider bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs text-sky-700 dark:text-cyan-300 border border-sky-100 dark:border-slate-700 shadow-2xs">
               {displayCategory}
             </span>
           </div>
         )}
+
+        {/* Wishlist Heart Button — top-right */}
+        <button
+          type="button"
+          onClick={handleWishlistClick}
+          className={`absolute top-2 right-2 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer ${
+            wishlisted
+              ? 'bg-rose-50 dark:bg-rose-950/60 border border-rose-200/80 dark:border-rose-800/60 shadow-sm'
+              : 'bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-700 shadow-xs opacity-0 group-hover:opacity-100'
+          } ${wishlisted ? 'opacity-100' : ''} hover:scale-110 active:scale-90`}
+          aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <Heart
+            className={`w-4 h-4 transition-all duration-300 ${
+              wishlisted
+                ? 'text-rose-500 fill-rose-500'
+                : 'text-slate-400 dark:text-slate-500 hover:text-rose-400'
+            } ${heartAnimating ? 'scale-125' : 'scale-100'}`}
+          />
+        </button>
       </div>
 
       {/* Product Name Ribbon */}
