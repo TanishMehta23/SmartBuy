@@ -68,18 +68,16 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
   return (
     <div
       ref={sectionRef}
-      className={`relative w-full mb-5 sm:mb-7 select-none group animate-on-scroll ${
-        isVisible ? 'animate-scale-in' : ''
-      }`}
+      className={`relative w-full mb-5 sm:mb-7 select-none group animate-on-scroll ${isVisible ? 'animate-scale-in' : ''
+        }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Outer Banner Card Container with Modern Rounded Borders & Subtle Elevation */}
       <div
         onClick={handleBannerClick}
-        className={`relative w-full aspect-[16/9] sm:aspect-[20/9] md:aspect-[22/9] lg:aspect-[2.4/1] min-h-[190px] sm:min-h-[260px] md:min-h-[300px] max-h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-card border border-sky-100/90 dark:border-slate-800 bg-slate-900 transition-all duration-300 ${
-          currentBanner.linkUrl ? 'cursor-pointer hover:shadow-card-hover hover:scale-[1.002]' : ''
-        }`}
+        className={`relative w-full aspect-[16/9] sm:aspect-[20/9] md:aspect-[22/9] lg:aspect-[2.4/1] min-h-[190px] sm:min-h-[260px] md:min-h-[300px] max-h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-card border border-sky-100/90 dark:border-slate-800 bg-slate-900 transition-all duration-300 ${currentBanner.linkUrl ? 'cursor-pointer hover:shadow-card-hover hover:scale-[1.002]' : ''
+          }`}
       >
         {/* Slides Track */}
         {activeBanners.map((banner, index) => {
@@ -87,17 +85,15 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
           return (
             <div
               key={banner.id || index}
-              className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${
-                isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-              }`}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                }`}
             >
               {/* Banner Image with Ken Burns zoom effect */}
               <img
                 src={banner.imageUrl}
                 alt={banner.title || 'Promotional Banner'}
-                className={`w-full h-full object-cover object-center ${
-                  isCurrent ? 'animate-ken-burns' : ''
-                }`}
+                className={`w-full h-full object-cover object-center ${isCurrent ? 'animate-ken-burns' : ''
+                  }`}
                 key={`${banner.id || index}-${isCurrent ? currentIndex : 'inactive'}`}
                 loading={index === 0 ? 'eager' : 'lazy'}
               />
@@ -169,11 +165,10 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
                     type="button"
                     onClick={(e) => handleDotClick(index, e)}
                     aria-label={`Go to slide ${index + 1}`}
-                    className={`transition-all duration-300 rounded-full cursor-pointer ${
-                      isActive
+                    className={`transition-all duration-300 rounded-full cursor-pointer ${isActive
                         ? 'w-4 sm:w-5 h-1.5 sm:h-2 bg-white shadow-xs'
                         : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/50 hover:bg-white/80'
-                    }`}
+                      }`}
                   />
                 );
               })}

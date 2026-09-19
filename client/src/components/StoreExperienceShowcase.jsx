@@ -89,9 +89,8 @@ export const StoreExperienceShowcase = () => {
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
         {/* Left Column: Store Story & Contact Badges — fade in from left */}
         <div
-          className={`lg:col-span-6 space-y-3.5 sm:space-y-4 animate-on-scroll ${
-            isVisible ? 'animate-fade-in-left' : ''
-          }`}
+          className={`lg:col-span-6 space-y-3.5 sm:space-y-4 animate-on-scroll ${isVisible ? 'animate-fade-in-left' : ''
+            }`}
         >
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/60">
             <Store className="w-3.5 h-3.5" />
@@ -119,44 +118,44 @@ export const StoreExperienceShowcase = () => {
               href={details.mapUrl || "https://www.google.com/maps"}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/80 hover:border-cyan-400 transition-all group/item cursor-pointer"
+              className="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/80 hover:border-cyan-400 transition-all group/item cursor-pointer"
             >
-              <div className="w-7 h-7 rounded-xl bg-cyan-100/70 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 group-hover/item:scale-105 transition-transform">
+              <div className="w-7 h-7 rounded-xl bg-cyan-100/70 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
                 <MapPin className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0 flex-1">
                 <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider block">
                   {isPortuguese ? 'Morada' : 'Address'}
                 </span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug block">
                   {details.address}
                 </span>
               </div>
             </a>
 
             {/* Opening Hours */}
-            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/80">
-              <div className="w-7 h-7 rounded-xl bg-emerald-100/70 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/80">
+              <div className="w-7 h-7 rounded-xl bg-emerald-100/70 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
                 <Clock className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0 flex-1">
                 <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider block">
                   {isPortuguese ? 'Horário' : 'Hours'}
                 </span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug block">
                   {isPortuguese ? details.hoursPt || details.hoursEn : details.hoursEn}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Action Button */}
-          <div className="pt-2 flex flex-wrap items-center gap-2.5">
+          {/* Action Buttons */}
+          <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-2.5">
             <a
               href={details.mapUrl || "https://www.google.com/maps"}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold shadow-sm shadow-cyan-500/25 transition-all cursor-pointer group active:scale-97"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold shadow-sm shadow-cyan-500/25 transition-all cursor-pointer group active:scale-97 text-center"
             >
               <MapPin className="w-3.5 h-3.5" />
               <span>{isPortuguese ? 'Ver Localização no Mapa' : 'View Store on Google Maps'}</span>
@@ -166,7 +165,7 @@ export const StoreExperienceShowcase = () => {
             {details.phone && (
               <a
                 href={`tel:${details.phone.replace(/\s+/g, '')}`}
-                className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold transition-colors cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold transition-colors cursor-pointer text-center"
               >
                 <Phone className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                 <span>{details.phone}</span>
@@ -177,9 +176,8 @@ export const StoreExperienceShowcase = () => {
 
         {/* Right Column: Photo Gallery Display — fade in from right */}
         <div
-          className={`lg:col-span-6 flex flex-col gap-2.5 animate-on-scroll ${
-            isVisible ? 'animate-fade-in-right' : ''
-          }`}
+          className={`lg:col-span-6 flex flex-col gap-2.5 animate-on-scroll ${isVisible ? 'animate-fade-in-right' : ''
+            }`}
           style={isVisible ? { animationDelay: '150ms' } : undefined}
         >
           {/* Main Selected Image Showcase */}
@@ -220,11 +218,10 @@ export const StoreExperienceShowcase = () => {
                     key={index}
                     type="button"
                     onClick={() => setActivePhoto(index)}
-                    className={`relative aspect-[16/10] rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer ${
-                      isSelected
+                    className={`relative aspect-[16/10] rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer ${isSelected
                         ? 'border-cyan-500 ring-2 ring-cyan-400/30 shadow-xs scale-101'
                         : 'border-transparent opacity-65 hover:opacity-100 hover:scale-103'
-                    }`}
+                      }`}
                   >
                     <img
                       src={photo.url}

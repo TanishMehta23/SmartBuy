@@ -61,9 +61,8 @@ export const FeatureBadgesStrip = () => {
           return (
             <div
               key={idx}
-              className={`relative overflow-hidden flex items-center gap-2 sm:gap-3.5 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/70 dark:border-slate-800 shadow-xs hover:shadow-xl hover:shadow-cyan-500/5 dark:hover:shadow-cyan-950/40 hover:-translate-y-0.5 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group animate-on-scroll ${
-                isVisible ? 'animate-fade-in-up' : ''
-              }`}
+              className={`relative overflow-hidden flex items-center gap-2 sm:gap-3.5 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/70 dark:border-slate-800 shadow-xs hover:shadow-xl hover:shadow-cyan-500/5 dark:hover:shadow-cyan-950/40 hover:-translate-y-0.5 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group animate-on-scroll ${isVisible ? 'animate-fade-in-up' : ''
+                }`}
               style={isVisible ? { animationDelay: `${delayMs}ms` } : undefined}
             >
               {/* Subtle dynamic background gradient on hover */}

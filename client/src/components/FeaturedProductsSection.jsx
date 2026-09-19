@@ -74,6 +74,7 @@ export const FeaturedProductsSection = ({
   products = [],
   activeCategory = 'all',
   onSeeAll,
+  onSelectProduct,
 }) => {
   const activeTab = activeCategory;
   const scrollRef = useRef(null);
@@ -105,8 +106,8 @@ export const FeaturedProductsSection = ({
   const currentCategoryName = activeTab === 'all'
     ? (isPortuguese ? 'Todos os Produtos' : 'All Products')
     : currentCategoryObj
-    ? getCategoryDisplayName(currentCategoryObj)
-    : (t('categoryProducts') || 'Category');
+      ? getCategoryDisplayName(currentCategoryObj)
+      : (t('categoryProducts') || 'Category');
 
   const IconComponent = activeTab === 'all'
     ? LayoutGrid
@@ -185,7 +186,7 @@ export const FeaturedProductsSection = ({
                 key={product.id}
                 className="w-[160px] sm:w-[200px] md:w-[220px] lg:w-[230px] shrink-0"
               >
-                <ProductCard product={product} />
+                <ProductCard product={product} onSelectProduct={onSelectProduct} />
               </div>
             ))}
 

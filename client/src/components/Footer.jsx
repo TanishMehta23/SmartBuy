@@ -86,9 +86,8 @@ export const Footer = () => {
               return (
                 <div
                   key={idx}
-                  className={`flex items-start gap-3.5 p-4 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-sky-100/80 dark:border-slate-700/80 shadow-xs hover:shadow-soft dark:hover:shadow-slate-950/50 hover:border-cyan-200 dark:hover:border-cyan-500/40 transition-all animate-on-scroll ${
-                    trustVisible ? 'animate-fade-in-up' : ''
-                  }`}
+                  className={`flex items-start gap-3.5 p-4 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-sky-100/80 dark:border-slate-700/80 shadow-xs hover:shadow-soft dark:hover:shadow-slate-950/50 hover:border-cyan-200 dark:hover:border-cyan-500/40 transition-all animate-on-scroll ${trustVisible ? 'animate-fade-in-up' : ''
+                    }`}
                   style={trustVisible ? { animationDelay: `${delayMs}ms` } : undefined}
                 >
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${feature.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${feature.shadowColor}`}>
@@ -112,9 +111,8 @@ export const Footer = () => {
       {/* Main Footer Links & Contact Info */}
       <div
         ref={linksRef}
-        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-on-scroll ${
-          linksVisible ? 'animate-fade-in-up' : ''
-        }`}
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-on-scroll ${linksVisible ? 'animate-fade-in-up' : ''
+          }`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-6 sm:gap-8 lg:gap-10">
           {/* Brand Column */}

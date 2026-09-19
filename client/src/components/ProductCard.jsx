@@ -11,7 +11,7 @@ import { categoryTranslations } from '../utils/translations';
  * Supports Dynamic Portuguese translation & Dark mode
  * Includes shimmer sweep on hover and scale-in image reveal
  */
-export const ProductCard = ({ product }) => {
+export const ProductCard = ({ product, onSelectProduct }) => {
   const navigate = useNavigate();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -66,8 +66,17 @@ export const ProductCard = ({ product }) => {
     }
   };
 
+  const handleCardClick = () => {
+    if (onSelectProduct) {
+      onSelectProduct(product);
+    }
+  };
+
   return (
-    <div className="group relative flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-card-hover dark:hover:shadow-slate-950/60 overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:border-cyan-400/60 dark:hover:border-cyan-500/50">
+    <div
+      onClick={handleCardClick}
+      className="group relative flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-card-hover dark:hover:shadow-slate-950/60 overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:border-cyan-400/60 dark:hover:border-cyan-500/50 cursor-pointer"
+    >
       {/* Product Image Area with Clean Subtle Backdrop */}
       <div className="relative aspect-square w-full bg-slate-50/80 dark:bg-slate-800/50 overflow-hidden flex items-center justify-center p-2.5 shimmer-sweep">
         {/* Placeholder Skeleton behind image */}
@@ -95,9 +104,8 @@ export const ProductCard = ({ product }) => {
               setImageError(true);
               setImageLoaded(true);
             }}
-            className={`relative z-1 h-full w-full object-contain object-center transition-all duration-500 ease-out group-hover:scale-105 ${
-              imageLoaded ? 'opacity-100 animate-scale-in' : 'opacity-0'
-            }`}
+            className={`relative z-1 h-full w-full object-contain object-center transition-all duration-500 ease-out group-hover:scale-105 ${imageLoaded ? 'opacity-100 animate-scale-in' : 'opacity-0'
+              }`}
           />
         )}
 
@@ -133,19 +141,17 @@ export const ProductCard = ({ product }) => {
         <button
           type="button"
           onClick={handleWishlistClick}
-          className={`absolute top-2 right-2 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer ${
-            wishlisted
+          className={`absolute top-2 right-2 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer ${wishlisted
               ? 'bg-rose-50 dark:bg-rose-950/60 border border-rose-200/80 dark:border-rose-800/60 shadow-sm'
               : 'bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-700 shadow-xs opacity-0 group-hover:opacity-100'
-          } ${wishlisted ? 'opacity-100' : ''} hover:scale-110 active:scale-90`}
+            } ${wishlisted ? 'opacity-100' : ''} hover:scale-110 active:scale-90`}
           aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <Heart
-            className={`w-4 h-4 transition-all duration-300 ${
-              wishlisted
+            className={`w-4 h-4 transition-all duration-300 ${wishlisted
                 ? 'text-rose-500 fill-rose-500'
                 : 'text-slate-400 dark:text-slate-500 hover:text-rose-400'
-            } ${heartAnimating ? 'scale-125' : 'scale-100'}`}
+              } ${heartAnimating ? 'scale-125' : 'scale-100'}`}
           />
         </button>
       </div>

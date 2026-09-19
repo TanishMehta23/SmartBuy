@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, X, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useWishlist } from '../context/WishlistContext';
 import { LanguageSelector } from './LanguageSelector';
 import { ThemeToggle } from './ThemeToggle';
-import { categoryTranslations } from '../utils/translations';
+import { SearchAutocomplete } from './SearchAutocomplete';
 
 export const Header = ({
   searchQuery,
@@ -12,6 +12,8 @@ export const Header = ({
   categories,
   selectedCategoryId,
   onSelectCategory,
+  allProducts = [],
+  onSelectProduct,
 }) => {
   const { t, isPortuguese } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,13 +44,11 @@ export const Header = ({
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b transition-all duration-300 ${
-        hasMounted ? 'animate-slide-down' : 'opacity-0 -translate-y-full'
-      } ${
-        isScrolled
+      className={`sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b transition-all duration-300 ${hasMounted ? 'animate-slide-down' : 'opacity-0 -translate-y-full'
+        } ${isScrolled
           ? 'border-sky-200/80 dark:border-slate-800 shadow-md shadow-sky-950/5 dark:shadow-slate-950/40 py-2 sm:py-2.5'
           : 'border-sky-100/80 dark:border-slate-800/80 py-2.5 sm:py-3.5'
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 sm:gap-4">
@@ -88,11 +88,10 @@ export const Header = ({
                   onSelectCategory?.('wishlist');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`relative w-8 h-8 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
-                  selectedCategoryId === 'wishlist'
+                className={`relative w-8 h-8 rounded-full flex items-center justify-center border transition-all cursor-pointer ${selectedCategoryId === 'wishlist'
                     ? 'bg-rose-50 dark:bg-rose-950/80 border-rose-300 dark:border-rose-700 text-rose-600 dark:text-rose-400'
                     : 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-200/80 dark:border-rose-900/60 text-slate-600 dark:text-slate-300'
-                }`}
+                  }`}
                 title="Wishlist"
                 aria-label="View Wishlist"
               >
@@ -107,29 +106,16 @@ export const Header = ({
             </div>
           </div>
 
-          {/* Search Bar + Controls */}
+          {/* Search Autocomplete Bar + Controls */}
           <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto flex-1 justify-end max-w-full md:max-w-xl min-w-0">
-            <div className="relative group flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-400 dark:text-slate-500 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 transition-colors">
-                <Search className="w-4 h-4" />
-              </div>
-              <input
-                type="text"
-                value={searchQuery || ''}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder={t('searchPlaceholder')}
-                className="w-full pl-10 pr-9 py-2 sm:py-2.5 bg-slate-50/80 hover:bg-slate-100/70 focus:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-800 dark:focus:bg-slate-900 text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-xl sm:rounded-2xl border border-sky-200/80 dark:border-slate-700 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-3 focus:ring-cyan-500/15 transition-all outline-none focus:animate-glow-pulse"
-              />
-              {Boolean(searchQuery) && (
-                <button
-                  onClick={() => onSearchChange('')}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
-                  title={t('clearSearch')}
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
+            <SearchAutocomplete
+              searchQuery={searchQuery}
+              onSearchChange={onSearchChange}
+              categories={categories}
+              allProducts={allProducts}
+              onSelectCategory={onSelectCategory}
+              onSelectProduct={onSelectProduct}
+            />
 
             {/* Wishlist Header Button (Desktop - Circular Icon Button) */}
             <div className="relative group hidden md:inline-flex items-center justify-center">
@@ -139,11 +125,10 @@ export const Header = ({
                   onSelectCategory?.('wishlist');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`relative inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all duration-300 cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-rose-500/40 hover:scale-105 active:scale-95 ${
-                  selectedCategoryId === 'wishlist'
+                className={`relative inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all duration-300 cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-rose-500/40 hover:scale-105 active:scale-95 ${selectedCategoryId === 'wishlist'
                     ? 'bg-rose-50 dark:bg-rose-950/80 border border-rose-300 dark:border-rose-700 shadow-sm ring-2 ring-rose-400/20'
                     : 'bg-rose-50/80 hover:bg-rose-100/80 dark:bg-rose-950/40 dark:hover:bg-rose-950/70 border border-rose-200/80 dark:border-rose-900/60 shadow-xs'
-                }`}
+                  }`}
                 title="Wishlist"
                 aria-label="View Wishlist"
               >

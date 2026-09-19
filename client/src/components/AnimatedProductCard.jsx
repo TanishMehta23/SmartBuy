@@ -7,7 +7,7 @@ import { useScrollAnimation } from '../hooks/useScrollAnimation';
  * Uses IntersectionObserver via useScrollAnimation to trigger once when the card
  * enters the viewport, with a computed delay based on its index for cascading reveals.
  */
-export const AnimatedProductCard = ({ product, index = 0 }) => {
+export const AnimatedProductCard = ({ product, index = 0, onSelectProduct }) => {
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
 
   // Compute stagger delay: max 600ms, steps of 75ms per card position within a row
@@ -27,7 +27,7 @@ export const AnimatedProductCard = ({ product, index = 0 }) => {
           : undefined
       }
     >
-      <ProductCard product={product} />
+      <ProductCard product={product} onSelectProduct={onSelectProduct} />
     </div>
   );
 };

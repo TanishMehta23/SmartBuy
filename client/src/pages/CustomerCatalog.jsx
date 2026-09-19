@@ -8,12 +8,16 @@ import { LoadingScreen } from '../components/LoadingScreen';
 import { Footer } from '../components/Footer';
 import { CustomSelect } from '../components/CustomSelect';
 import { HeroBannerCarousel } from '../components/HeroBannerCarousel';
-import { CategoryIconsBar } from '../components/CategoryIconsBar';
-import { CategoryShowcaseRow } from '../components/CategoryShowcaseRow';
-import { FeaturedProductsSection } from '../components/FeaturedProductsSection';
+import { UnifiedCategoryShowcase } from '../components/UnifiedCategoryShowcase';
 import { FeatureBadgesStrip } from '../components/FeatureBadgesStrip';
-import { PromotionalCardsRow } from '../components/PromotionalCardsRow';
 import { StoreExperienceShowcase } from '../components/StoreExperienceShowcase';
+import { ExploreCategoriesGrid } from '../components/ExploreCategoriesGrid';
+import { JustArrivedSection } from '../components/JustArrivedSection';
+import { FreshProduceSection } from '../components/FreshProduceSection';
+import { BakeryShowcaseSection } from '../components/BakeryShowcaseSection';
+import { FeaturedCollectionsSection } from '../components/FeaturedCollectionsSection';
+import { BrandsShowcaseSection } from '../components/BrandsShowcaseSection';
+import { ProductQuickViewModal } from '../components/ProductQuickViewModal';
 import { productService, categoryService, bannerService } from '../services/catalogService';
 import { useDebounce } from '../hooks/useDebounce';
 import { useLanguage } from '../context/LanguageContext';
@@ -24,11 +28,11 @@ import { ArrowUpDown, Layers, AlertCircle, Loader2, ArrowLeft, Heart } from 'luc
 const slugify = (text) =>
   text
     ? text
-        .toString()
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
     : '';
 
 export const CustomerCatalog = () => {
@@ -46,7 +50,8 @@ export const CustomerCatalog = () => {
   const [sortOption, setSortOption] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [featuredCategoryTab, setFeaturedCategoryTab] = useState('all');
-  
+  const [selectedQuickViewProduct, setSelectedQuickViewProduct] = useState(null);
+
   // 24 for mobile (perfect 2-col grid), 25 for laptop (perfect 5-col grid)
   const [itemsPerPage, setItemsPerPage] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 24 : 25));
 
@@ -97,7 +102,6 @@ export const CustomerCatalog = () => {
   };
 
   // Initial Load: Categories, Banners, and Products
-  // Fetch Initial Data: Categories, Banners, and Products
   const fetchInitialData = async () => {
     setError(null);
     try {
@@ -339,67 +343,96 @@ export const CustomerCatalog = () => {
   const categoryDisplayName = selectedCategoryId === 'all-catalog'
     ? t('allProducts')
     : selectedCategoryId === 'wishlist'
-    ? (isPortuguese ? 'Produtos Favoritos' : 'My Wishlist')
-    : selectedCategoryId === 'produce'
-    ? (isPortuguese ? 'Frutas & Legumes Frescos' : 'Fresh Fruits & Vegetables')
-    : selectedCategoryObj
-    ? isPortuguese && categoryTranslations[selectedCategoryObj.name]
-      ? categoryTranslations[selectedCategoryObj.name]
-      : selectedCategoryObj.name
-    : t('categoryProducts');
+      ? (isPortuguese ? 'Produtos Favoritos' : 'My Wishlist')
+      : selectedCategoryId === 'produce'
+        ? (isPortuguese ? 'Frutas & Legumes Frescos' : 'Fresh Fruits & Vegetables')
+        : selectedCategoryObj
+          ? isPortuguese && categoryTranslations[selectedCategoryObj.name]
+            ? categoryTranslations[selectedCategoryObj.name]
+            : selectedCategoryObj.name
+          : t('categoryProducts');
 
   const isHomeView = selectedCategoryId === 'all' && !debouncedSearch && location.pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col bg-theme-bluish relative w-full overflow-x-clip transition-colors duration-200">
-      {/* Sticky Header with Search and Brand Controls */}
+      {/* Sticky Header with Search Autocomplete and Brand Controls */}
       <Header
         searchQuery={searchInput}
         onSearchChange={setSearchInput}
         categories={categories}
+        allProducts={allProductsForHome}
         selectedCategoryId={selectedCategoryId}
         onSelectCategory={handleCategorySelect}
+        onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 relative z-10">
+      {/* Main Content Area - Centered max-w-7xl Layout */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 relative z-10">
         {/* Category Header or Home Showcase */}
         {isHomeView ? (
-          /* HOMEPAGE VIEW */
-          <div className="space-y-4 sm:space-y-6">
+          /* HOMEPAGE VIEW: Feature-Rich Supermarket Showcase */
+          <div className="flex flex-col gap-6 sm:gap-10">
             {/* 1. Hero Banner Carousel */}
             <HeroBannerCarousel banners={banners} />
 
-            {/* 2. Feature Badges Strip */}
+            {/* 2. Feature Badges Strip (Quality & Physical Store Highlights) */}
             <FeatureBadgesStrip />
 
-            {/* 3. Category Icons Bar (Filters the Featured section below on the homepage) */}
-            <CategoryIconsBar
+            {/* 3. Explore Categories Visual Showcase Cards */}
+            <ExploreCategoriesGrid
               categories={categories}
-              selectedCategoryId={featuredCategoryTab}
-              onSelectCategory={(catId) => setFeaturedCategoryTab(catId)}
+              onSelectCategory={handleCategorySelect}
             />
 
-            {/* 4. Featured Products Section with Filter Tabs & See All */}
+            {/* 4. Just Arrived Products Carousel */}
             {allProductsForHome.length > 0 && (
-              <FeaturedProductsSection
-                categories={categories}
+              <JustArrivedSection
                 products={allProductsForHome}
-                activeCategory={featuredCategoryTab}
-                onCategoryChange={setFeaturedCategoryTab}
-                onSeeAll={handleCategorySelect}
+                onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
+                onSeeAll={() => handleCategorySelect('all-catalog')}
               />
             )}
 
-
-            {/* 6. Promotional Info Cards */}
-            <PromotionalCardsRow
+            {/* 5. Unified Category Selector & Live Featured Showcase */}
+            <UnifiedCategoryShowcase
               categories={categories}
-              onSelectCategory={handleCategorySelect}
-              onBrowseCatalog={() => handleCategorySelect('all-catalog')}
+              products={allProductsForHome}
+              selectedCategoryId={featuredCategoryTab}
+              onSelectCategory={(catId) => setFeaturedCategoryTab(catId)}
+              onSeeAll={handleCategorySelect}
+              onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
             />
 
-            {/* 7. Store Experience Showcase */}
+            {/* 6. Fresh Produce Spotlight */}
+            {allProductsForHome.length > 0 && (
+              <FreshProduceSection
+                products={allProductsForHome}
+                categories={categories}
+                onSelectCategory={handleCategorySelect}
+                onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
+              />
+            )}
+
+            {/* 7. Dedicated Artisan Bakery Spotlight */}
+            {allProductsForHome.length > 0 && (
+              <BakeryShowcaseSection
+                products={allProductsForHome}
+                categories={categories}
+                onSelectCategory={handleCategorySelect}
+                onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
+              />
+            )}
+
+            {/* 8. Curated Featured Collections */}
+            <FeaturedCollectionsSection onSelectCategory={handleCategorySelect} />
+
+            {/* 9. Meet Our Brands Discovery */}
+            <BrandsShowcaseSection />
+
+
+
+            {/* 11. Discover Our Store & Photo Gallery */}
             <StoreExperienceShowcase />
           </div>
         ) : (
@@ -432,8 +465,8 @@ export const CustomerCatalog = () => {
                   {loading && products.length === 0
                     ? t('updatingCatalog')
                     : paginationInfo.totalProducts === 1
-                    ? t('matchingProductsCount', { count: paginationInfo.totalProducts })
-                    : t('matchingProductsCountPlural', { count: paginationInfo.totalProducts })}
+                      ? t('matchingProductsCount', { count: paginationInfo.totalProducts })
+                      : t('matchingProductsCountPlural', { count: paginationInfo.totalProducts })}
                 </p>
               </div>
 
@@ -516,12 +549,17 @@ export const CustomerCatalog = () => {
               </div>
             )}
 
-            {/* Product Grid for specific Category — with staggered animated cards */}
+            {/* Product Grid for specific Category — with staggered animated cards and quick view */}
             {!loading && !error && products.length > 0 && (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4 md:gap-5">
                   {products.map((product, index) => (
-                    <AnimatedProductCard key={product.id} product={product} index={index} />
+                    <AnimatedProductCard
+                      key={product.id}
+                      product={product}
+                      index={index}
+                      onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
+                    />
                   ))}
                 </div>
 
@@ -541,6 +579,17 @@ export const CustomerCatalog = () => {
           </>
         )}
       </main>
+
+      {/* Product Quick View Modal */}
+      {selectedQuickViewProduct && (
+        <ProductQuickViewModal
+          product={selectedQuickViewProduct}
+          isOpen={Boolean(selectedQuickViewProduct)}
+          onClose={() => setSelectedQuickViewProduct(null)}
+          allProducts={allProductsForHome}
+          onSelectRelated={(prod) => setSelectedQuickViewProduct(prod)}
+        />
+      )}
 
       {/* Professional Footer */}
       <Footer />

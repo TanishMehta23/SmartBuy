@@ -199,8 +199,8 @@ export const CategoryIconsBar = ({ categories = [], selectedCategoryId, onSelect
             const displayName = isAll
               ? (t('allProducts') || 'All')
               : isPortuguese && categoryTranslations[category.name]
-              ? categoryTranslations[category.name]
-              : category.name;
+                ? categoryTranslations[category.name]
+                : category.name;
 
             // Stagger delay for entrance
             const delayMs = idx * 60;
@@ -216,33 +216,29 @@ export const CategoryIconsBar = ({ categories = [], selectedCategoryId, onSelect
                     onSelectCategory(category.id);
                   }
                 }}
-                className={`flex flex-col items-center gap-1.5 min-w-[64px] sm:min-w-[72px] py-2 px-1.5 rounded-2xl cursor-pointer transition-all duration-300 group shrink-0 ${
-                  isVisible ? 'animate-fade-in-up' : 'opacity-0'
-                } ${
-                  isActive
+                className={`flex flex-col items-center gap-1.5 min-w-[64px] sm:min-w-[72px] py-2 px-1.5 rounded-2xl cursor-pointer transition-all duration-300 group shrink-0 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'
+                  } ${isActive
                     ? colors.activePill
                     : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'
-                }`}
+                  }`}
                 style={isVisible ? { animationDelay: `${delayMs}ms` } : undefined}
               >
                 {/* Circular icon container */}
                 <div
-                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    isActive
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${isActive
                       ? `bg-gradient-to-br ${colors.activeGrad} shadow-lg ring-3 scale-110`
                       : `${colors.idleBg} border group-hover:scale-110`
-                  }`}
+                    }`}
                 >
                   <Icon className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:scale-110" />
                 </div>
 
                 {/* Label */}
                 <span
-                  className={`text-[10px] sm:text-xs font-bold text-center leading-tight truncate max-w-[64px] sm:max-w-[72px] transition-colors ${
-                    isActive
+                  className={`text-[10px] sm:text-xs font-bold text-center leading-tight truncate max-w-[64px] sm:max-w-[72px] transition-colors ${isActive
                       ? colors.activeText
                       : 'text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-100'
-                  }`}
+                    }`}
                 >
                   {displayName}
                 </span>
