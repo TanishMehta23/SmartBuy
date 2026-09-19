@@ -38,6 +38,9 @@ export default function App() {
               <Routes>
                 {/* Public Customer Portal */}
                 <Route path="/" element={<CustomerCatalog />} />
+                <Route path="/category/:categoryId" element={<CustomerCatalog />} />
+                <Route path="/catalog" element={<CustomerCatalog />} />
+                <Route path="/wishlist" element={<CustomerCatalog />} />
 
                 {/* Admin Authentication */}
                 <Route path="/admin/login" element={<AdminLogin />} />

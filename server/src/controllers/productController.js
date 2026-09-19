@@ -26,7 +26,11 @@ export const getProducts = async (req, res, next) => {
     const where = {};
 
     if (categoryId && categoryId.trim() !== '' && categoryId !== 'all') {
-      where.categoryId = categoryId.trim();
+      if (categoryId.includes(',')) {
+        where.categoryId = { in: categoryId.split(',').map((id) => id.trim()).filter(Boolean) };
+      } else {
+        where.categoryId = categoryId.trim();
+      }
     }
 
     if (search && search.trim() !== '') {

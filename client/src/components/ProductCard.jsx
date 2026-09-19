@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useWishlist } from '../context/WishlistContext';
 import { categoryTranslations } from '../utils/translations';
 
 /**
- * Product Card Component (Pure Product Catalog Item - Strictly Non-Clickable)
+ * Product Card Component (Pure Product Catalog Item - Interactive Category & Wishlist)
  * Displays product image, category badge, wishlist heart, and name
  * Supports Dynamic Portuguese translation & Dark mode
  * Includes shimmer sweep on hover and scale-in image reveal
  */
 export const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const imgRef = React.useRef(null);
@@ -101,10 +103,29 @@ export const ProductCard = ({ product }) => {
 
         {/* Category Pill Tag — bottom-left */}
         {displayCategory && (
-          <div className="absolute bottom-2 left-2 pointer-events-none z-10">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wider bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs text-sky-700 dark:text-cyan-300 border border-sky-100 dark:border-slate-700 shadow-2xs">
-              {displayCategory}
-            </span>
+          <div className="absolute bottom-2 left-2 z-10">
+            {product?.category?.name || product?.categoryId || product?.category?.id ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  const slug = product?.category?.name
+                    ? product.category.name.toString().toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+                    : product.categoryId || product.category.id;
+                  navigate(`/category/${slug}`);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wider bg-white/95 hover:bg-cyan-600 hover:text-white dark:bg-slate-900/95 dark:hover:bg-cyan-500 backdrop-blur-xs text-sky-700 dark:text-cyan-300 border border-sky-100 hover:border-cyan-600 dark:border-slate-700 shadow-2xs cursor-pointer transition-all duration-200 active:scale-95"
+                title={`View ${displayCategory} category`}
+              >
+                {displayCategory}
+              </button>
+            ) : (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wider bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs text-sky-700 dark:text-cyan-300 border border-sky-100 dark:border-slate-700 shadow-2xs">
+                {displayCategory}
+              </span>
+            )}
           </div>
         )}
 

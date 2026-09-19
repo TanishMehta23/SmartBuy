@@ -126,14 +126,63 @@ export const categoryService = {
   },
 };
 
-// Helper to convert File to Base64 Data URL
-const fileToBase64 = (file) =>
-  new Promise((resolve, reject) => {
+// Helper to safely compress an image File to a lightweight WebP/JPEG data URL (~50-100KB)
+const compressImageFile = (file, maxWidth = 1200, maxHeight = 600, quality = 0.8) =>
+  new Promise((resolve) => {
+    if (!file || !(file instanceof File)) {
+      return resolve('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80');
+    }
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        if (height > maxHeight) {
+          width = Math.round((width * maxHeight) / height);
+          height = maxHeight;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        try {
+          const compressed = canvas.toDataURL('image/webp', quality);
+          resolve(compressed);
+        } catch (e) {
+          const compressed = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressed);
+        }
+      };
+      img.onerror = () => resolve(event.target.result);
+    };
+    reader.onerror = () => resolve('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80');
   });
+
+const safeSetBannersCache = (banners) => {
+  try {
+    localStorage.setItem('smartbuy_banners_cache', JSON.stringify(banners));
+  } catch (err) {
+    console.warn('localStorage quota warning, trimming cached banners:', err);
+    try {
+      const trimmed = banners.slice(0, 4);
+      localStorage.setItem('smartbuy_banners_cache', JSON.stringify(trimmed));
+    } catch (e) {
+      // Ignore quota storage error
+    }
+  }
+};
 
 const sanitizeBanners = (banners) => {
   if (!Array.isArray(banners)) return [];
@@ -153,7 +202,7 @@ export const bannerService = {
       const res = await api.get('/api/banners');
       let data = res.data?.data || res.data || [];
       if (Array.isArray(data) && data.length > 0) {
-        localStorage.setItem('smartbuy_banners_cache', JSON.stringify(data));
+        safeSetBannersCache(data);
         return { success: true, data: sanitizeBanners(data) };
       }
     } catch (err) {
@@ -168,7 +217,7 @@ export const bannerService = {
       const res = await api.get('/api/banners/admin');
       let data = res.data?.data || res.data || [];
       if (Array.isArray(data) && data.length > 0) {
-        localStorage.setItem('smartbuy_banners_cache', JSON.stringify(data));
+        safeSetBannersCache(data);
         return { success: true, data: sanitizeBanners(data) };
       }
     } catch (err) {
@@ -186,7 +235,7 @@ export const bannerService = {
       if (res.data?.success) {
         const cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
         cached.unshift(res.data.data);
-        localStorage.setItem('smartbuy_banners_cache', JSON.stringify(cached));
+        safeSetBannersCache(cached);
         window.dispatchEvent(new Event('smartbuy_banners_updated'));
         return res.data;
       }
@@ -201,11 +250,7 @@ export const bannerService = {
     
     let imageUrl = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80';
     if (file && file instanceof File) {
-      try {
-        imageUrl = await fileToBase64(file);
-      } catch (e) {
-        imageUrl = URL.createObjectURL(file);
-      }
+      imageUrl = await compressImageFile(file);
     }
 
     const newBanner = {
@@ -220,7 +265,7 @@ export const bannerService = {
 
     const cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
     cached.unshift(newBanner);
-    localStorage.setItem('smartbuy_banners_cache', JSON.stringify(cached));
+    safeSetBannersCache(cached);
     window.dispatchEvent(new Event('smartbuy_banners_updated'));
     return { success: true, data: newBanner };
   },
@@ -234,7 +279,7 @@ export const bannerService = {
         const cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
         const idx = cached.findIndex((b) => b.id === id);
         if (idx !== -1) cached[idx] = res.data.data;
-        localStorage.setItem('smartbuy_banners_cache', JSON.stringify(cached));
+        safeSetBannersCache(cached);
         window.dispatchEvent(new Event('smartbuy_banners_updated'));
         return res.data;
       }
@@ -250,13 +295,9 @@ export const bannerService = {
       if (formData.has('isActive')) cached[idx].isActive = formData.get('isActive') !== 'false';
       const file = formData.get('image');
       if (file && file instanceof File) {
-        try {
-          cached[idx].imageUrl = await fileToBase64(file);
-        } catch (e) {
-          cached[idx].imageUrl = URL.createObjectURL(file);
-        }
+        cached[idx].imageUrl = await compressImageFile(file);
       }
-      localStorage.setItem('smartbuy_banners_cache', JSON.stringify(cached));
+      safeSetBannersCache(cached);
       window.dispatchEvent(new Event('smartbuy_banners_updated'));
       return { success: true, data: cached[idx] };
     }
@@ -271,7 +312,7 @@ export const bannerService = {
     }
     let cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
     cached = cached.filter((b) => b.id !== id);
-    localStorage.setItem('smartbuy_banners_cache', JSON.stringify(cached));
+    safeSetBannersCache(cached);
     window.dispatchEvent(new Event('smartbuy_banners_updated'));
     return { success: true, message: 'Deleted successfully' };
   },
@@ -279,7 +320,7 @@ export const bannerService = {
   reorderBanners: async (bannerIds) => {
     const cached = JSON.parse(localStorage.getItem('smartbuy_banners_cache') || '[]');
     cached.sort((a, b) => bannerIds.indexOf(a.id) - bannerIds.indexOf(b.id));
-    localStorage.setItem('smartbuy_banners_cache', JSON.stringify(cached));
+    safeSetBannersCache(cached);
     window.dispatchEvent(new Event('smartbuy_banners_updated'));
 
     try {

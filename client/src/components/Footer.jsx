@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSelector } from './LanguageSelector';
@@ -20,6 +21,7 @@ import {
 } from 'lucide-react';
 
 export const Footer = () => {
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   const [activeModal, setActiveModal] = useState(null); // 'privacy' | 'terms' | null
@@ -42,7 +44,7 @@ export const Footer = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const googleMapsUrl = 'https://www.google.com/maps/place/Smart+Buy+Supermercado/data=!4m2!3m1!1s0x0:0x3b8e9bda4f2f79c5?sa=X&ved=1t:2428&ictx=111';
+  const googleMapsUrl = 'https://maps.app.goo.gl/88x5p8bFx5cojFvv7';
 
   const trustFeatures = [
     {
@@ -157,7 +159,10 @@ export const Footer = () => {
             <div className="space-y-2 text-xs font-semibold">
               <div>
                 <button
-                  onClick={scrollToTop}
+                  onClick={() => {
+                    navigate('/catalog');
+                    scrollToTop();
+                  }}
                   className="text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors cursor-pointer text-left"
                 >
                   {t('footerExploreCatalog')}
@@ -165,7 +170,10 @@ export const Footer = () => {
               </div>
               <div>
                 <button
-                  onClick={scrollToTop}
+                  onClick={() => {
+                    navigate('/');
+                    scrollToTop();
+                  }}
                   className="text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors cursor-pointer text-left"
                 >
                   {t('footerAllCategories')}

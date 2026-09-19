@@ -18,11 +18,7 @@ export const PromotionalCardsRow = ({ categories = [], onSelectCategory, onBrows
 
   const handleCardClick = (type) => {
     if (type === 'produce') {
-      if (freshCategory) {
-        onSelectCategory?.(freshCategory.id);
-      } else {
-        onBrowseCatalog?.();
-      }
+      onSelectCategory?.('fruits-vegetables');
     } else if (type === 'deals' || type === 'brands') {
       onSelectCategory?.('all-catalog');
     } else {

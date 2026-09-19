@@ -11,7 +11,7 @@ const DEFAULT_STORE_DETAILS = {
   hoursEn: 'Open Daily • Closes 8:00 PM',
   hoursPt: 'Aberto Todos os Dias até às 20h00',
   phone: '+351 21 484 3122',
-  mapUrl: 'https://www.google.com/maps/place/Smart+Buy+Supermercado/@38.7029,-9.4215,17z',
+  mapUrl: 'https://maps.app.goo.gl/88x5p8bFx5cojFvv7',
   photos: [
     {
       url: '/store_aisles.jpg',
@@ -44,17 +44,21 @@ const DEFAULT_STORE_DETAILS = {
   ],
 };
 
-const STORAGE_KEY = 'smartbuy_store_details_v2';
+const STORAGE_KEY = 'smartbuy_store_details_v3';
 
 export const storeSettingsService = {
   getStoreDetails: async () => {
     try {
-      const cached = localStorage.getItem(STORAGE_KEY);
+      const cached = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('smartbuy_store_details_v2');
       if (cached) {
         const parsed = JSON.parse(cached);
         // Ensure local high-res photos are used
         if (!parsed.photos || parsed.photos.some((p) => p.url?.startsWith('http'))) {
           parsed.photos = DEFAULT_STORE_DETAILS.photos;
+        }
+        // Migrate old generic coordinates url to exact location
+        if (!parsed.mapUrl || parsed.mapUrl.includes('@38.7029,-9.4215')) {
+          parsed.mapUrl = DEFAULT_STORE_DETAILS.mapUrl;
         }
         return { success: true, data: parsed };
       }

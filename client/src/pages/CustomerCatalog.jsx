@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { AnimatedProductCard } from '../components/AnimatedProductCard';
@@ -20,7 +21,21 @@ import { useWishlist } from '../context/WishlistContext';
 import { categoryTranslations } from '../utils/translations';
 import { ArrowUpDown, Layers, AlertCircle, Loader2, ArrowLeft, Heart } from 'lucide-react';
 
+const slugify = (text) =>
+  text
+    ? text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+    : '';
+
 export const CustomerCatalog = () => {
+  const { categoryId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { wishlist } = useWishlist();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -179,6 +194,33 @@ export const CustomerCatalog = () => {
       return;
     }
 
+    // Handle Fresh Fruits & Vegetables combined view
+    if (selectedCategoryId === 'produce') {
+      const fruitsCat = categories.find((c) => /fruit|fruta/i.test(c.name));
+      const vegCat = categories.find((c) => /veg|legume|hortali/i.test(c.name));
+      const produceCatIds = [fruitsCat?.id, vegCat?.id].filter(Boolean);
+
+      if (allProductsForHome.length > 0 && !debouncedSearch && sortOption === 'newest') {
+        const produceProducts = allProductsForHome.filter(
+          (p) =>
+            produceCatIds.includes(p.categoryId) ||
+            (p.category?.name && /fruit|fruta|veg|legume/i.test(p.category.name))
+        );
+        if (produceProducts.length > 0) {
+          setProducts(produceProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
+          setPaginationInfo({
+            page: currentPage,
+            limit: itemsPerPage,
+            totalProducts: produceProducts.length,
+            totalPages: Math.ceil(produceProducts.length / itemsPerPage) || 1,
+          });
+          setError(null);
+          setLoading(false);
+          return;
+        }
+      }
+    }
+
     // In home view without search, products are already in allProductsForHome if loaded
     if (selectedCategoryId === 'all' && !debouncedSearch && sortOption === 'newest') {
       if (allProductsForHome.length > 0) {
@@ -192,11 +234,19 @@ export const CustomerCatalog = () => {
       setLoading(true);
       setError(null);
       try {
+        let queryCategoryId = selectedCategoryId === 'all-catalog' ? 'all' : selectedCategoryId;
+        if (selectedCategoryId === 'produce') {
+          const fruitsCat = categories.find((c) => /fruit|fruta/i.test(c.name));
+          const vegCat = categories.find((c) => /veg|legume|hortali/i.test(c.name));
+          const produceCatIds = [fruitsCat?.id, vegCat?.id].filter(Boolean);
+          queryCategoryId = produceCatIds.join(',');
+        }
+
         const res = await productService.getProducts({
           page: currentPage,
           limit: itemsPerPage,
           search: debouncedSearch,
-          categoryId: selectedCategoryId === 'all-catalog' ? 'all' : selectedCategoryId,
+          categoryId: queryCategoryId,
           sort: sortOption,
         });
 
@@ -212,32 +262,93 @@ export const CustomerCatalog = () => {
     };
 
     fetchProducts();
-  }, [hasLoadedOnce, currentPage, debouncedSearch, selectedCategoryId, sortOption, itemsPerPage, wishlist, allProductsForHome]);
+  }, [hasLoadedOnce, currentPage, debouncedSearch, selectedCategoryId, sortOption, itemsPerPage, wishlist, allProductsForHome, categories]);
+
+  // Derive active category based on URL pathname & route params
+  const getTargetCategoryIdFromRoute = useCallback(() => {
+    if (location.pathname === '/wishlist') return 'wishlist';
+    if (location.pathname === '/catalog' || location.pathname === '/products') return 'all-catalog';
+    if (location.pathname.startsWith('/category/')) {
+      if (!categoryId || categoryId === 'all') return 'all';
+      if (categoryId === 'all-catalog') return 'all-catalog';
+      if (categoryId === 'wishlist') return 'wishlist';
+      if (
+        categoryId === 'fruits-vegetables' ||
+        categoryId === 'fresh-produce' ||
+        categoryId === 'produce' ||
+        categoryId === 'fruits-and-vegetables'
+      ) {
+        return 'produce';
+      }
+
+      // Match against loaded categories by id, slugified name, or raw name
+      const found = categories.find(
+        (c) =>
+          c.id === categoryId ||
+          slugify(c.name) === slugify(categoryId) ||
+          c.name.toLowerCase() === categoryId.toLowerCase()
+      );
+      return found ? found.id : categoryId;
+    }
+    return 'all';
+  }, [location.pathname, categoryId, categories]);
+
+  // Sync selectedCategoryId with Route
+  useEffect(() => {
+    const targetId = getTargetCategoryIdFromRoute();
+    setSelectedCategoryId((prev) => (prev !== targetId ? targetId : prev));
+  }, [getTargetCategoryIdFromRoute]);
+
+  const handleCategorySelect = useCallback(
+    (catId) => {
+      if (catId === 'all') {
+        navigate('/');
+      } else if (catId === 'all-catalog') {
+        navigate('/catalog');
+      } else if (catId === 'wishlist') {
+        navigate('/wishlist');
+      } else if (
+        catId === 'produce' ||
+        catId === 'fruits-vegetables' ||
+        catId === 'fresh-produce'
+      ) {
+        navigate('/category/fruits-vegetables');
+      } else {
+        const found = categories.find((c) => c.id === catId || slugify(c.name) === slugify(catId));
+        const targetSlug = found ? slugify(found.name) : catId;
+        navigate(`/category/${targetSlug}`);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    [navigate, categories]
+  );
 
   // Show full loading screen on initial catalog load until ALL data and assets are ready
   if (isInitialLoading && !error) {
     return <LoadingScreen />;
   }
 
-  const selectedCategoryObj = categories.find((c) => c.id === selectedCategoryId);
+  const selectedCategoryObj = categories.find(
+    (c) =>
+      c.id === selectedCategoryId ||
+      slugify(c.name) === slugify(selectedCategoryId) ||
+      slugify(c.name) === slugify(categoryId || '') ||
+      c.name.toLowerCase() === (categoryId || '').toLowerCase()
+  );
+
   const categoryDisplayName = selectedCategoryId === 'all-catalog'
     ? t('allProducts')
     : selectedCategoryId === 'wishlist'
     ? (isPortuguese ? 'Produtos Favoritos' : 'My Wishlist')
+    : selectedCategoryId === 'produce'
+    ? (isPortuguese ? 'Frutas & Legumes Frescos' : 'Fresh Fruits & Vegetables')
     : selectedCategoryObj
     ? isPortuguese && categoryTranslations[selectedCategoryObj.name]
       ? categoryTranslations[selectedCategoryObj.name]
       : selectedCategoryObj.name
     : t('categoryProducts');
 
-  const isHomeView = selectedCategoryId === 'all' && !debouncedSearch;
-
-  const handleCategorySelect = (catId) => {
-    setSelectedCategoryId(catId);
-    if (catId !== 'all') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
+  const isHomeView = selectedCategoryId === 'all' && !debouncedSearch && location.pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col bg-theme-bluish relative w-full overflow-x-clip transition-colors duration-200">
@@ -247,7 +358,7 @@ export const CustomerCatalog = () => {
         onSearchChange={setSearchInput}
         categories={categories}
         selectedCategoryId={selectedCategoryId}
-        onSelectCategory={setSelectedCategoryId}
+        onSelectCategory={handleCategorySelect}
       />
 
       {/* Main Content Area */}
@@ -262,24 +373,21 @@ export const CustomerCatalog = () => {
             {/* 2. Feature Badges Strip */}
             <FeatureBadgesStrip />
 
-            {/* 3. Category Icons Bar */}
+            {/* 3. Category Icons Bar (Filters the Featured section below on the homepage) */}
             <CategoryIconsBar
               categories={categories}
               selectedCategoryId={featuredCategoryTab}
               onSelectCategory={(catId) => setFeaturedCategoryTab(catId)}
             />
 
-            {/* 4. Featured Products Section with Filter Tabs */}
+            {/* 4. Featured Products Section with Filter Tabs & See All */}
             {allProductsForHome.length > 0 && (
               <FeaturedProductsSection
                 categories={categories}
                 products={allProductsForHome}
                 activeCategory={featuredCategoryTab}
                 onCategoryChange={setFeaturedCategoryTab}
-                onSeeAll={(catId) => {
-                  setSelectedCategoryId(catId);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onSeeAll={handleCategorySelect}
               />
             )}
 
@@ -288,10 +396,7 @@ export const CustomerCatalog = () => {
             <PromotionalCardsRow
               categories={categories}
               onSelectCategory={handleCategorySelect}
-              onBrowseCatalog={() => {
-                setSelectedCategoryId('all-catalog');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onBrowseCatalog={() => handleCategorySelect('all-catalog')}
             />
 
             {/* 7. Store Experience Showcase */}
@@ -306,10 +411,7 @@ export const CustomerCatalog = () => {
                 {selectedCategoryId !== 'all' && (
                   <button
                     type="button"
-                    onClick={() => {
-                      setSelectedCategoryId('all');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
+                    onClick={() => handleCategorySelect('all')}
                     className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 mb-2 sm:mb-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white/90 dark:bg-slate-800/90 hover:bg-sky-50 dark:hover:bg-slate-700/80 border border-sky-200/80 dark:border-slate-700 shadow-xs hover:shadow-sm hover:border-cyan-400 dark:hover:border-cyan-400 text-cyan-600 dark:text-cyan-400 transition-all duration-200 cursor-pointer group active:scale-97 animate-fade-in-left whitespace-nowrap shrink-0"
                   >
                     <div className="w-5 h-5 rounded-lg bg-sky-100/80 dark:bg-slate-900/80 flex items-center justify-center text-cyan-600 dark:text-cyan-400 group-hover:-translate-x-0.5 transition-transform duration-200 shadow-2xs shrink-0">

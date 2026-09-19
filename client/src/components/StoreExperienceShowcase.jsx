@@ -25,7 +25,7 @@ export const StoreExperienceShowcase = () => {
     hoursEn: 'Open Daily • Closes 8:00 PM',
     hoursPt: 'Aberto Todos os Dias até às 20h00',
     phone: '+351 21 484 3122',
-    mapUrl: 'https://www.google.com/maps/place/Smart+Buy+Supermercado/@38.7029,-9.4215,17z',
+    mapUrl: 'https://maps.app.goo.gl/88x5p8bFx5cojFvv7',
     photos: [
       {
         url: '/store_aisles.jpg',

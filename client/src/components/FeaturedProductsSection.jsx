@@ -1,9 +1,69 @@
 import React, { useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, ArrowRight, Flame } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  Flame,
+  LayoutGrid,
+  Apple,
+  Wheat,
+  Milk,
+  Wine,
+  Cookie,
+  Snowflake,
+  Fish,
+  ShoppingBasket,
+  Sparkles,
+  Home,
+  Package,
+} from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { useLanguage } from '../context/LanguageContext';
 import { categoryTranslations } from '../utils/translations';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
+
+const categoryIconMap = {
+  'All Products': LayoutGrid,
+  'Fruits': Apple,
+  'Vegetables': ShoppingBasket,
+  'Bakery': Wheat,
+  'Dairy': Milk,
+  'Beverages': Wine,
+  'Drinks': Wine,
+  'Snacks': Cookie,
+  'Frozen': Snowflake,
+  'Meat': Fish,
+  'Seafood': Fish,
+  'Meat & Seafood': Fish,
+  'Pantry': ShoppingBasket,
+  'Groceries': ShoppingBasket,
+  'Personal Care': Sparkles,
+  'Beauty': Sparkles,
+  'Health': Sparkles,
+  'Household': Home,
+  'Electronics': Package,
+  'Clothing': Package,
+  'Toys': Package,
+  'Other': Package,
+};
+
+const categoryBadgeGradients = {
+  'All Products': 'from-rose-500 via-orange-500 to-amber-500 shadow-orange-500/25',
+  'Bakery': 'from-amber-500 to-orange-600 shadow-amber-500/30',
+  'Dairy': 'from-blue-500 to-indigo-600 shadow-blue-500/30',
+  'Electronics': 'from-purple-500 to-indigo-600 shadow-purple-500/30',
+  'Drinks': 'from-rose-500 to-pink-600 shadow-rose-500/30',
+  'Beverages': 'from-rose-500 to-pink-600 shadow-rose-500/30',
+  'Fruits': 'from-emerald-500 to-teal-600 shadow-emerald-500/30',
+  'Snacks': 'from-amber-500 to-yellow-600 shadow-amber-500/30',
+  'Vegetables': 'from-green-500 to-emerald-600 shadow-green-500/30',
+  'Seafood': 'from-teal-500 to-cyan-600 shadow-teal-500/30',
+  'Meat': 'from-red-500 to-rose-600 shadow-red-500/30',
+  'Meat & Seafood': 'from-teal-500 to-cyan-600 shadow-teal-500/30',
+  'Personal Care': 'from-fuchsia-500 to-pink-600 shadow-fuchsia-500/30',
+  'Household': 'from-indigo-500 to-violet-600 shadow-indigo-500/30',
+  'Other': 'from-slate-600 to-slate-800 shadow-slate-500/30',
+};
 
 /**
  * Featured Products Section with inline category filter tabs.
@@ -48,6 +108,14 @@ export const FeaturedProductsSection = ({
     ? getCategoryDisplayName(currentCategoryObj)
     : (t('categoryProducts') || 'Category');
 
+  const IconComponent = activeTab === 'all'
+    ? LayoutGrid
+    : categoryIconMap[currentCategoryObj?.name] || Package;
+
+  const badgeGradient = activeTab === 'all'
+    ? 'from-cyan-500 to-blue-600 shadow-cyan-500/25'
+    : categoryBadgeGradients[currentCategoryObj?.name] || 'from-cyan-500 to-blue-600 shadow-cyan-500/25';
+
   return (
     <section
       ref={sectionRef}
@@ -58,18 +126,16 @@ export const FeaturedProductsSection = ({
         <div className="flex items-center justify-between gap-2.5 mb-3 sm:mb-4">
           {/* Title & Icon */}
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 text-white flex items-center justify-center shadow-md shadow-orange-500/25 shrink-0">
-              <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
+            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br ${badgeGradient} text-white flex items-center justify-center shadow-md shrink-0 transition-all duration-300`}>
+              <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 transition-transform" />
             </div>
             <div className="min-w-0">
               <h2 className="text-base sm:text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight truncate">
-                {activeTab === 'all'
-                  ? (isPortuguese ? 'Produtos em Destaque' : 'Featured Products')
-                  : currentCategoryName}
+                {currentCategoryName}
               </h2>
               <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
                 {activeTab === 'all'
-                  ? (isPortuguese ? 'Selecionados especialmente para si' : 'Handpicked just for you')
+                  ? (isPortuguese ? 'Selecionados especialmente para si' : 'Handpicked selection across all categories')
                   : (isPortuguese ? `Destaques de ${currentCategoryName}` : `Top items in ${currentCategoryName}`)}
               </p>
             </div>
