@@ -1,8 +1,7 @@
-<p align="center">
-  <img src="client/public/logo.png" alt="SmartBuy Logo" width="60" />
-  &nbsp;
-  <span style="font-size: 2em; font-weight: 900; vertical-align: middle;">SmartBuy</span>
-</p>
+<h1 align="center">
+  <img src="client/public/logo.png" alt="SmartBuy Logo" width="48" valign="middle" />
+  SmartBuy
+</h1>
 
 <p align="center">
   <strong>Production-ready, full-stack retail catalog platform for supermarkets and independent stores.</strong><br/>
