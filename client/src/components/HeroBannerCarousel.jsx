@@ -8,6 +8,8 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const timerRef = useRef(null);
+  const touchStartXRef = useRef(null);
+  const touchEndXRef = useRef(null);
   const { t } = useLanguage();
   const { ref: sectionRef, isVisible } = useScrollAnimation({ threshold: 0.15 });
 
@@ -43,6 +45,29 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
     setCurrentIndex((prev) => (prev + 1) % activeBanners.length);
   };
 
+  // Touch swipe support for mobile
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartXRef.current || !touchEndXRef.current) return;
+    const distance = touchStartXRef.current - touchEndXRef.current;
+    if (distance > 50) {
+      // Swiped Left -> Next
+      handleNext();
+    } else if (distance < -50) {
+      // Swiped Right -> Prev
+      handlePrev();
+    }
+    touchStartXRef.current = null;
+    touchEndXRef.current = null;
+  };
+
   const handleDotClick = (index, e) => {
     e?.stopPropagation();
     setCurrentIndex(index);
@@ -68,15 +93,18 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
   return (
     <div
       ref={sectionRef}
-      className={`relative w-full mb-5 sm:mb-7 select-none group animate-on-scroll ${isVisible ? 'animate-scale-in' : ''
+      className={`relative w-full mb-4 sm:mb-7 select-none group animate-on-scroll ${isVisible ? 'animate-scale-in' : ''
         }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
-      {/* Outer Banner Card Container with Modern Rounded Borders & Subtle Elevation */}
+      {/* Outer Banner Card Container with Perfect Mobile & Desktop Aspect Ratios */}
       <div
         onClick={handleBannerClick}
-        className={`relative w-full aspect-[16/9] sm:aspect-[20/9] md:aspect-[22/9] lg:aspect-[2.4/1] min-h-[190px] sm:min-h-[260px] md:min-h-[300px] max-h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-card border border-sky-100/90 dark:border-slate-800 bg-slate-900 transition-all duration-300 ${currentBanner.linkUrl ? 'cursor-pointer hover:shadow-card-hover hover:scale-[1.002]' : ''
+        className={`relative w-full aspect-[2.1/1] sm:aspect-[2.3/1] md:aspect-[2.5/1] min-h-[160px] sm:min-h-[250px] max-h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-card border border-sky-100/90 dark:border-slate-800 bg-slate-900 transition-all duration-300 ${currentBanner.linkUrl ? 'cursor-pointer hover:shadow-card-hover hover:scale-[1.002]' : ''
           }`}
       >
         {/* Slides Track */}
@@ -88,21 +116,28 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
               className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
                 }`}
             >
-              {/* Banner Image with Ken Burns zoom effect */}
+              {/* Banner Image with Full Mobile Visibility & Desktop Ken Burns */}
               <img
                 src={banner.imageUrl}
                 alt={banner.title || 'Promotional Banner'}
-                className={`w-full h-full object-cover object-center ${isCurrent ? 'animate-ken-burns' : ''
+                className={`w-full h-full object-cover object-left sm:object-center ${isCurrent ? 'hidden sm:block sm:animate-ken-burns' : ''
                   }`}
                 key={`${banner.id || index}-${isCurrent ? currentIndex : 'inactive'}`}
+                loading={index === 0 ? 'eager' : 'lazy'}
+              />
+              {/* Mobile Static View without Ken Burns cropping */}
+              <img
+                src={banner.imageUrl}
+                alt={banner.title || 'Promotional Banner'}
+                className="w-full h-full object-cover object-left sm:hidden"
                 loading={index === 0 ? 'eager' : 'lazy'}
               />
 
               {/* Gradient overlay for readability if title exists */}
               {banner.title && (
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-5 sm:p-7 md:p-8">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end p-4 sm:p-7 md:p-8">
                   <div className="max-w-xl text-white">
-                    <h2 className="text-base sm:text-xl md:text-2xl font-black drop-shadow-md tracking-tight line-clamp-2">
+                    <h2 className="text-sm sm:text-xl md:text-2xl font-black drop-shadow-md tracking-tight line-clamp-2">
                       {banner.title}
                     </h2>
                     {banner.subtitle && (
@@ -117,14 +152,14 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
           );
         })}
 
-        {/* Navigation Arrows */}
+        {/* Navigation Arrows (Hidden on mobile touchscreens for unhindered visibility) */}
         {activeBanners.length > 1 && (
           <>
             <button
               type="button"
               onClick={handlePrev}
               aria-label="Previous Slide"
-              className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-950/60 hover:bg-slate-950/85 text-white backdrop-blur-md flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer hover:scale-105 active:scale-95"
+              className="hidden sm:flex absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-950/60 hover:bg-slate-950/85 text-white backdrop-blur-md items-center justify-center transition-all duration-200 shadow-md cursor-pointer hover:scale-105 active:scale-95"
             >
               <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
@@ -133,7 +168,7 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
               type="button"
               onClick={handleNext}
               aria-label="Next Slide"
-              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-950/60 hover:bg-slate-950/85 text-white backdrop-blur-md flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer hover:scale-105 active:scale-95"
+              className="hidden sm:flex absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-950/60 hover:bg-slate-950/85 text-white backdrop-blur-md items-center justify-center transition-all duration-200 shadow-md cursor-pointer hover:scale-105 active:scale-95"
             >
               <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
@@ -142,7 +177,7 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
 
         {/* Bottom Control Pill (Play/Pause + Dots) */}
         {activeBanners.length > 1 && (
-          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-950/60 hover:bg-slate-950/80 backdrop-blur-md border border-white/10 shadow-md transition-colors">
+          <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 sm:gap-2 px-2.5 py-0.5 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-950/60 hover:bg-slate-950/80 backdrop-blur-md border border-white/10 shadow-md transition-colors">
             {/* Play/Pause Button */}
             <button
               type="button"
@@ -150,13 +185,13 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
               aria-label={isPlaying ? 'Pause banner slideshow' : 'Play banner slideshow'}
               className="text-white hover:text-cyan-300 transition-colors cursor-pointer p-0.5"
             >
-              {isPlaying ? <Pause className="w-3 h-3 fill-current" /> : <Play className="w-3 h-3 fill-current" />}
+              {isPlaying ? <Pause className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" /> : <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />}
             </button>
 
-            <div className="w-[1px] h-3 bg-white/30 mx-0.5" />
+            <div className="w-[1px] h-2.5 sm:h-3 bg-white/30 mx-0.5" />
 
             {/* Indicator Dots */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1 sm:gap-1.5">
               {activeBanners.map((_, index) => {
                 const isActive = index === currentIndex;
                 return (
@@ -166,8 +201,8 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
                     onClick={(e) => handleDotClick(index, e)}
                     aria-label={`Go to slide ${index + 1}`}
                     className={`transition-all duration-300 rounded-full cursor-pointer ${isActive
-                        ? 'w-4 sm:w-5 h-1.5 sm:h-2 bg-white shadow-xs'
-                        : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/50 hover:bg-white/80'
+                        ? 'w-3.5 sm:w-5 h-1 sm:h-2 bg-white shadow-xs'
+                        : 'w-1 sm:w-2 h-1 sm:h-2 bg-white/50 hover:bg-white/80'
                       }`}
                   />
                 );

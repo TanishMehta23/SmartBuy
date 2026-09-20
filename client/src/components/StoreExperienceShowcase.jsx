@@ -111,20 +111,20 @@ export const StoreExperienceShowcase = () => {
             {isPortuguese ? details.descriptionPt || details.descriptionEn : details.descriptionEn}
           </p>
 
-          {/* Quick Info Grid */}
+          {/* Quick Info Grid - Balanced 2-Column Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
             {/* Address */}
             <a
               href={details.mapUrl || "https://www.google.com/maps"}
               target="_blank"
               rel="noreferrer"
-              className="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/80 hover:border-cyan-400 transition-all group/item cursor-pointer"
+              className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 hover:border-cyan-400 dark:hover:border-cyan-500 transition-all group/item cursor-pointer h-full"
             >
-              <div className="w-7 h-7 rounded-xl bg-cyan-100/70 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
-                <MapPin className="w-3.5 h-3.5" />
+              <div className="w-8 h-8 rounded-xl bg-cyan-100/80 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:scale-110 transition-transform">
+                <MapPin className="w-4 h-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider block">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-0.5">
                   {isPortuguese ? 'Morada' : 'Address'}
                 </span>
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug block">
@@ -134,38 +134,41 @@ export const StoreExperienceShowcase = () => {
             </a>
 
             {/* Opening Hours */}
-            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/80">
-              <div className="w-7 h-7 rounded-xl bg-emerald-100/70 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                <Clock className="w-3.5 h-3.5" />
+            <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 h-full">
+              <div className="w-8 h-8 rounded-xl bg-emerald-100/80 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                <Clock className="w-4 h-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider block">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-0.5">
                   {isPortuguese ? 'Horário' : 'Hours'}
                 </span>
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug block">
                   {isPortuguese ? details.hoursPt || details.hoursEn : details.hoursEn}
                 </span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-0.5">
+                  {isPortuguese ? 'Aberto todos os dias' : 'Open 7 days a week'}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-2.5">
+          {/* Action Buttons - Aligned 2-Column Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1.5">
             <a
               href={details.mapUrl || "https://www.google.com/maps"}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold shadow-sm shadow-cyan-500/25 transition-all cursor-pointer group active:scale-97 text-center"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold shadow-sm shadow-cyan-500/20 transition-all cursor-pointer group active:scale-98 text-center"
             >
               <MapPin className="w-3.5 h-3.5" />
-              <span>{isPortuguese ? 'Ver Localização no Mapa' : 'View Store on Google Maps'}</span>
+              <span>{isPortuguese ? 'Ver no Google Maps' : 'View on Google Maps'}</span>
               <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
             </a>
 
             {details.phone && (
               <a
                 href={`tel:${details.phone.replace(/\s+/g, '')}`}
-                className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold transition-colors cursor-pointer text-center"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold transition-all cursor-pointer text-center hover:border-cyan-300 dark:hover:border-cyan-600 active:scale-98"
               >
                 <Phone className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                 <span>{details.phone}</span>
