@@ -58,46 +58,46 @@
 |  CLIENT LAYER                                                      |
 |                                                                    |
 |  +----------------------------+  +-----------------------------+   |
-|  |  Customer Catalog (/)      |  |  Admin Portal (/admin/*)   |   |
-|  |  React 18 + Vite           |  |  React 18 + Vite           |   |
-|  |  Public — No Auth          |  |  Protected — JWT Cookie    |   |
-|  |  Bilingual (EN / PT)       |  |  CRUD + Cloudinary         |   |
-|  |  Dark / Light Theme        |  |  Banners + Store Settings  |   |
-|  |  Wishlist + Quick View     |  |                            |   |
+|  |  Customer Catalog (/)      |  |  Admin Portal (/admin/*)    |   |
+|  |  React 18 + Vite           |  |  React 18 + Vite            |   |
+|  |  Public — No Auth          |  |  Protected — JWT Cookie     |   |
+|  |  Bilingual (EN / PT)       |  |  CRUD + Cloudinary          |   |
+|  |  Dark / Light Theme        |  |  Banners + Store Settings   |   |
+|  |  Wishlist + Quick View     |  |                             |   |
 |  +----------------------------+  +-----------------------------+   |
 +----------------------------------+---------------------------------+
                                    |
                        HTTPS REST (Cookie / Bearer JWT)
                                    |
 +----------------------------------v---------------------------------+
-|  API LAYER  (Express 4, Node.js ES Modules)                       |
+|  API LAYER  (Express 4, Node.js ES Modules)                        |
 |                                                                    |
-|  +----------+  +----------+  +----------+  +----------+           |
-|  | /api/auth|  |/api/prod.|  |/api/cat. |  |/api/ban. |           |
-|  +----------+  +----------+  +----------+  +----------+           |
+|  +----------+  +----------+  +----------+  +----------+            |
+|  | /api/auth|  |/api/prod.|  |/api/cat. |  |/api/ban. |            |
+|  +----------+  +----------+  +----------+  +----------+            |
 |                                                                    |
 |  Middleware Chain:                                                 |
-|  [helmet] -> [cors] -> [cookieParser] -> [generalApiLimiter]      |
-|  -> [authLimiter (auth routes)] -> [protectAdmin (admin routes)]  |
+|  [helmet] -> [cors] -> [cookieParser] -> [generalApiLimiter]       |
+|  -> [authLimiter (auth routes)] -> [protectAdmin (admin routes)]   |
 +----------------------------------+---------------------------------+
                                    |
 +----------------------------------v---------------------------------+
 |  INTEGRATION LAYER                                                 |
 |                                                                    |
-|  +------------------+  +------------------+                       |
-|  | Cloudinary SDK   |  | Multer Upload    |                       |
-|  | Image upload,    |  | Middleware       |                       |
-|  | optimization,    |  | (in-memory buf) |                       |
-|  | deletion         |  +------------------+                       |
-|  +------------------+                                             |
+|  +------------------+  +------------------+                        |
+|  | Cloudinary SDK   |  | Multer Upload    |                        |
+|  | Image upload,    |  | Middleware       |                        |
+|  | optimization,    |  | (in-memory buf)  |                        |
+|  | deletion         |  +------------------+                        |
+|  +------------------+                                              |
 +----------------------------------+---------------------------------+
                                    |
 +----------------------------------v---------------------------------+
 |  DATABASE LAYER                                                    |
-|  PostgreSQL + Prisma ORM (hosted on Neon / Supabase / Railway)   |
+|  PostgreSQL + Prisma ORM (hosted on Neon / Supabase / Railway)     |
 |                                                                    |
-|  [admins] -> [categories] -> [products]                           |
-|  [banners] (independent)                                          |
+|  [admins] -> [categories] -> [products]                            |
+|  [banners] (independent)                                           |
 +--------------------------------------------------------------------+
 ```
 
@@ -292,7 +292,7 @@ Core catalog entity. Each product belongs to exactly one category. Cloudinary pu
 | id | String UUID | Primary key, auto-generated |
 | name | String | Product display name; indexed |
 | imageUrl | String | Cloudinary delivery URL |
-| imagePublicId | String? | Cloudinary public ID for deletion; nullable for seeded items |
+| imagePublicId | String | Cloudinary public ID for deletion; nullable for seeded items |
 | categoryId | String | Foreign key to Category; indexed |
 | createdAt | DateTime | Record creation timestamp; indexed (used for sort) |
 | updatedAt | DateTime | Last update timestamp |
@@ -304,10 +304,10 @@ Admin-managed hero banners displayed in the storefront carousel. Banners can be 
 | Field | Type | Notes |
 |---|---|---|
 | id | String UUID | Primary key, auto-generated |
-| title | String? | Optional banner headline text |
-| linkUrl | String? | Optional click-through URL |
+| title | String | Optional banner headline text |
+| linkUrl | String | Optional click-through URL |
 | imageUrl | String | Cloudinary delivery URL |
-| imagePublicId | String? | Cloudinary public ID for deletion |
+| imagePublicId | String | Cloudinary public ID for deletion |
 | order | Int | Display sequence, default 0; indexed |
 | isActive | Boolean | Controls storefront visibility; indexed |
 | createdAt | DateTime | Record creation timestamp |
