@@ -5,65 +5,13 @@ import {
   ArrowRight,
   Flame,
   LayoutGrid,
-  Apple,
-  Wheat,
-  Milk,
-  Wine,
-  Cookie,
-  Snowflake,
-  Fish,
-  ShoppingBasket,
-  Sparkles,
-  Home,
   Package,
 } from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { useLanguage } from '../context/LanguageContext';
 import { categoryTranslations } from '../utils/translations';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
-
-const categoryIconMap = {
-  'All Products': LayoutGrid,
-  'Fruits': Apple,
-  'Vegetables': ShoppingBasket,
-  'Bakery': Wheat,
-  'Dairy': Milk,
-  'Beverages': Wine,
-  'Drinks': Wine,
-  'Snacks': Cookie,
-  'Frozen': Snowflake,
-  'Meat': Fish,
-  'Seafood': Fish,
-  'Meat & Seafood': Fish,
-  'Pantry': ShoppingBasket,
-  'Groceries': ShoppingBasket,
-  'Personal Care': Sparkles,
-  'Beauty': Sparkles,
-  'Health': Sparkles,
-  'Household': Home,
-  'Electronics': Package,
-  'Clothing': Package,
-  'Toys': Package,
-  'Other': Package,
-};
-
-const categoryBadgeGradients = {
-  'All Products': 'from-rose-500 via-orange-500 to-amber-500 shadow-orange-500/25',
-  'Bakery': 'from-amber-500 to-orange-600 shadow-amber-500/30',
-  'Dairy': 'from-blue-500 to-indigo-600 shadow-blue-500/30',
-  'Electronics': 'from-purple-500 to-indigo-600 shadow-purple-500/30',
-  'Drinks': 'from-rose-500 to-pink-600 shadow-rose-500/30',
-  'Beverages': 'from-rose-500 to-pink-600 shadow-rose-500/30',
-  'Fruits': 'from-emerald-500 to-teal-600 shadow-emerald-500/30',
-  'Snacks': 'from-amber-500 to-yellow-600 shadow-amber-500/30',
-  'Vegetables': 'from-green-500 to-emerald-600 shadow-green-500/30',
-  'Seafood': 'from-teal-500 to-cyan-600 shadow-teal-500/30',
-  'Meat': 'from-red-500 to-rose-600 shadow-red-500/30',
-  'Meat & Seafood': 'from-teal-500 to-cyan-600 shadow-teal-500/30',
-  'Personal Care': 'from-fuchsia-500 to-pink-600 shadow-fuchsia-500/30',
-  'Household': 'from-indigo-500 to-violet-600 shadow-indigo-500/30',
-  'Other': 'from-slate-600 to-slate-800 shadow-slate-500/30',
-};
+import { getCategoryIcon, getCategoryColors } from '../utils/categoryIcons';
 
 /**
  * Featured Products Section with inline category filter tabs.
@@ -109,13 +57,9 @@ export const FeaturedProductsSection = ({
       ? getCategoryDisplayName(currentCategoryObj)
       : (t('categoryProducts') || 'Category');
 
-  const IconComponent = activeTab === 'all'
-    ? LayoutGrid
-    : categoryIconMap[currentCategoryObj?.name] || Package;
-
-  const badgeGradient = activeTab === 'all'
-    ? 'from-cyan-500 to-blue-600 shadow-cyan-500/25'
-    : categoryBadgeGradients[currentCategoryObj?.name] || 'from-cyan-500 to-blue-600 shadow-cyan-500/25';
+  const IconComponent = getCategoryIcon(activeTab === 'all' ? 'All Products' : currentCategoryObj?.name);
+  const colorStyle = getCategoryColors(activeTab === 'all' ? 'All Products' : currentCategoryObj?.name);
+  const badgeGradient = colorStyle.activeGrad;
 
   return (
     <section

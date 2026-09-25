@@ -44,6 +44,15 @@ export const WishlistProvider = ({ children }) => {
     setWishlist([]);
   }, []);
 
+  const syncWithValidProducts = useCallback((validProducts = []) => {
+    if (!validProducts || validProducts.length === 0) return;
+    const validIdSet = new Set(validProducts.map((p) => p.id));
+    setWishlist((prev) => {
+      const filtered = prev.filter((id) => validIdSet.has(id));
+      return filtered.length !== prev.length ? filtered : prev;
+    });
+  }, []);
+
   return (
     <WishlistContext.Provider
       value={{
@@ -52,6 +61,7 @@ export const WishlistProvider = ({ children }) => {
         isWishlisted,
         toggleWishlist,
         clearWishlist,
+        syncWithValidProducts,
       }}
     >
       {children}

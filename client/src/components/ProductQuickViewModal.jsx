@@ -4,6 +4,7 @@ import { X, Heart, Sparkles, MapPin, Store, ArrowRight, Package, ShieldCheck } f
 import { useLanguage } from '../context/LanguageContext';
 import { useWishlist } from '../context/WishlistContext';
 import { categoryTranslations } from '../utils/translations';
+import { getCategoryIcon } from '../utils/categoryIcons';
 
 export const ProductQuickViewModal = ({
   product,
@@ -49,6 +50,8 @@ export const ProductQuickViewModal = ({
     ? categoryTranslations[categoryName]
     : categoryName;
 
+  const HeaderCategoryIcon = getCategoryIcon(categoryName);
+
   // Filter 4 related products in same category
   const related = allProducts
     .filter((p) => p.id !== product.id && (p.categoryId === product.categoryId || p.category?.name === categoryName))
@@ -56,17 +59,17 @@ export const ProductQuickViewModal = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 dark:bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 bg-slate-950/70 dark:bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-sky-100 dark:border-slate-800 animate-in zoom-in-95 duration-200 relative z-[10000]">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[94vh] flex flex-col shadow-2xl overflow-hidden border border-sky-100 dark:border-slate-800 animate-in zoom-in-95 duration-200 relative z-[10000]">
         {/* Modal Header */}
-        <div className="px-5 py-3 sm:px-6 sm:py-4 border-b border-sky-100 dark:border-slate-800 flex items-center justify-between bg-sky-50/50 dark:bg-slate-800/50">
+        <div className="px-4 py-2.5 sm:px-6 sm:py-3 border-b border-sky-100 dark:border-slate-800 flex items-center justify-between bg-sky-50/50 dark:bg-slate-800/50">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
-              <Package className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+              <HeaderCategoryIcon className="w-4 h-4" />
             </div>
             <span className="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">
               {t('productQuickViewTitle')}
@@ -74,19 +77,19 @@ export const ProductQuickViewModal = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-700/60 transition-colors cursor-pointer"
+            className="p-1 sm:p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-700/60 transition-colors cursor-pointer"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
-        {/* Modal Scrollable Body */}
-        <div className="p-5 sm:p-7 overflow-y-auto space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-            {/* Left: Product Large Image */}
-            <div className="md:col-span-6 flex flex-col items-center">
-              <div className="relative aspect-square w-full max-w-[280px] sm:max-w-[320px] rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 p-4 flex items-center justify-center overflow-hidden group shadow-xs">
+        {/* Modal Body - compact without scrolling on typical screens */}
+        <div className="p-3.5 sm:p-5 overflow-y-auto space-y-3.5 sm:space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 sm:gap-5 items-center">
+            {/* Left: Product Image */}
+            <div className="md:col-span-5 flex flex-col items-center">
+              <div className="relative aspect-square w-full max-w-[200px] sm:max-w-[240px] rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 p-2.5 flex items-center justify-center overflow-hidden group shadow-xs">
                 {activeImage ? (
                   <img
                     src={activeImage}

@@ -118,15 +118,6 @@ export const LoadingScreen = () => {
             </div>
           )}
         </div>
-
-        <p
-          className={`text-[11px] text-sky-600/70 dark:text-slate-400 mt-6 font-semibold animate-on-scroll ${
-            hasMounted ? 'animate-fade-in-up' : ''
-          }`}
-          style={hasMounted ? { animationDelay: '700ms' } : undefined}
-        >
-          {t('loadingBadge')}
-        </p>
       </div>
     </div>
   );

@@ -40,7 +40,7 @@ export const CustomerCatalog = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { wishlist } = useWishlist();
+  const { wishlist, syncWithValidProducts } = useWishlist();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [banners, setBanners] = useState([]);
@@ -128,6 +128,7 @@ export const CustomerCatalog = () => {
       if (homeProdRes.status === 'fulfilled' && homeProdRes.value.success) {
         initialHomeProducts = homeProdRes.value.data || [];
         setAllProductsForHome(initialHomeProducts);
+        syncWithValidProducts(initialHomeProducts);
         setProducts(initialHomeProducts.slice(0, itemsPerPage));
         setPaginationInfo(
           homeProdRes.value.pagination || {

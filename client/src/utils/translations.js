@@ -567,6 +567,16 @@ export const translations = {
 
 // Known common product category name translations for instant responsiveness
 export const categoryTranslations = {
+  'Eatables & Pantry': 'Mercearia & Despensa',
+  'Bathroom & Hygiene': 'Higiene & Banho',
+  'Makeup & Beauty': 'Maquilhagem & Beleza',
+  'Fresh Fruits': 'Frutas Frescas',
+  'Fresh Vegetables': 'Legumes & Verduras',
+  'Artisan Bakery': 'Padaria Artesanal',
+  'Dairy & Eggs': 'Laticínios & Ovos',
+  'Drinks & Beverages': 'Bebidas & Sumos',
+  'Snacks & Sweets': 'Snacks & Doces',
+  'Household & Cleaning': 'Limpeza & Casa',
   Bakery: 'Padaria',
   Clothing: 'Vestuário',
   Dairy: 'Laticínios',

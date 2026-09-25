@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Award, ArrowRight, ShieldCheck, CheckCircle2, ChevronRight, Sparkles, Play, Pause } from 'lucide-react';
+import { Award, ArrowRight, ShieldCheck, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
@@ -270,8 +270,7 @@ const BRANDS = [
 export const BrandsShowcaseSection = () => {
   const navigate = useNavigate();
   const { t, isPortuguese } = useLanguage();
-  const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
-  const [isPaused, setIsPaused] = useState(false);
+  const { ref } = useScrollAnimation({ threshold: 0.1 });
 
   const handleBrandClick = (brandName) => {
     navigate(`/catalog?search=${encodeURIComponent(brandName)}`);
@@ -302,27 +301,7 @@ export const BrandsShowcaseSection = () => {
             </p>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-1 sm:pt-0 shrink-0">
-            {/* Play / Pause Toggle */}
-            <button
-              type="button"
-              onClick={() => setIsPaused(!isPaused)}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-bold text-slate-600 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs"
-              title={isPaused ? 'Resume auto-scroll' : 'Pause auto-scroll'}
-            >
-              {isPaused ? (
-                <>
-                  <Play className="w-3 h-3 text-emerald-600" />
-                  <span>{isPortuguese ? 'Reproduzir' : 'Play'}</span>
-                </>
-              ) : (
-                <>
-                  <Pause className="w-3 h-3 text-slate-500" />
-                  <span>{isPortuguese ? 'Pausar' : 'Pause'}</span>
-                </>
-              )}
-            </button>
-
+          <div className="flex items-center justify-end gap-2 w-full sm:w-auto pt-1 sm:pt-0 shrink-0">
             {/* Explore All Brands */}
             <button
               type="button"
@@ -344,10 +323,7 @@ export const BrandsShowcaseSection = () => {
           <div className="absolute left-0 top-0 bottom-0 w-4 sm:w-16 bg-gradient-to-r from-white dark:from-slate-900 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-4 sm:w-16 bg-gradient-to-l from-white dark:from-slate-900 to-transparent z-10 pointer-events-none" />
 
-          <div
-            className="animate-marquee gap-2.5 sm:gap-4 items-center"
-            style={isPaused ? { animationPlayState: 'paused' } : undefined}
-          >
+          <div className="animate-marquee gap-2.5 sm:gap-4 items-center">
             {marqueeList.map((brand, idx) => (
               <button
                 key={`marquee-${brand.name}-${idx}`}
