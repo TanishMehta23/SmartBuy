@@ -36,7 +36,7 @@ export const FreshProduceSection = ({ products = [], categories = [], onSelectCa
   if (produceProducts.length === 0) return null;
 
   return (
-    <section ref={ref} className="my-6 sm:my-10">
+    <section ref={ref} className="my-0">
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950/90 via-teal-950/80 to-slate-900/95 text-white p-5 sm:p-7 border border-emerald-500/20 shadow-xl">
         {/* Background Ambient Glow */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -45,11 +45,7 @@ export const FreshProduceSection = ({ products = [], categories = [], onSelectCa
         <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-5 sm:mb-6">
           {/* Title & Badge Group */}
           <div className="min-w-0">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 mb-2">
-              <Leaf className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>{isPortuguese ? 'Colheita Fresca Diária' : 'Daily Farm Fresh Harvest'}</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-white">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
               {t('freshProduceTitle')}
             </h2>
             <p className="text-xs sm:text-sm text-emerald-100/80 font-medium mt-1">

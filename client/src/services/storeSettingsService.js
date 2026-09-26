@@ -1,7 +1,7 @@
 import api from './api';
 
 const DEFAULT_STORE_DETAILS = {
-  badgeTextEn: 'Visit Our Flagship Store in Cascais',
+  badgeTextEn: 'Visit Our Store in Cascais',
   badgeTextPt: 'Visite a Nossa Loja em Cascais',
   headlineEn: 'Your Smart, Premium & Fresh Supermarket',
   headlinePt: 'A Sua Experiência de Compras Inteligente & Fresca',

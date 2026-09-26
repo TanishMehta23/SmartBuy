@@ -51,7 +51,7 @@ export const FeatureBadgesStrip = () => {
   ];
 
   return (
-    <div ref={ref} className="my-5 sm:my-7">
+    <div ref={ref} className="my-0">
       {/* 2x2 on Mobile, 4-Column on Desktop Feature Highlights Ribbon */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {features.map((item, idx) => {

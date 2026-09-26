@@ -27,16 +27,12 @@ export const JustArrivedSection = ({ products = [], onSelectProduct, onSeeAll })
   if (recentProducts.length === 0) return null;
 
   return (
-    <section ref={ref} className="my-6 sm:my-10">
-      <div className="bg-gradient-to-br from-white/95 via-sky-50/40 to-white/95 dark:from-slate-900/95 dark:via-slate-900/60 dark:to-slate-900/95 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-sky-100 dark:border-slate-800 shadow-xs">
+    <section ref={ref} className="my-0">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-sky-100/90 dark:border-slate-800 p-4 sm:p-6 shadow-sm shadow-sky-950/5 dark:shadow-slate-950/40">
         {/* Section Header */}
         <div className="flex items-center justify-between gap-3 mb-4 sm:mb-5">
           <div className="min-w-0">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/60 mb-1">
-              <Sparkles className="w-3 h-3 text-rose-500" />
-              <span>{t('justArrivedTitle')}</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
               {t('justArrivedTitle')}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5 truncate">

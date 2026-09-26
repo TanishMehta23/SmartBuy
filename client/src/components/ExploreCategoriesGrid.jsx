@@ -200,15 +200,11 @@ export const ExploreCategoriesGrid = ({ categories = [], onSelectCategory }) => 
   const displayCategories = categories.slice(0, 4);
 
   return (
-    <section ref={ref} className="my-6 sm:my-10">
+    <section ref={ref} className="my-0">
       {/* Section Header */}
-      <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+      <div className="flex items-center justify-between gap-3 mb-3 sm:mb-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/60 mb-1">
-            <Sparkles className="w-3 h-3" />
-            <span>{t('exploreCategoriesTitle')}</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
             {t('exploreCategoriesTitle')}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">
@@ -229,8 +225,8 @@ export const ExploreCategoriesGrid = ({ categories = [], onSelectCategory }) => 
         </button>
       </div>
 
-      {/* 2x2 Categories Visual Cards Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-6">
+      {/* 4-in-a-Row Categories Visual Cards Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 md:gap-4">
         {displayCategories.map((cat, idx) => {
           const visual = categoryVisuals[cat.name] || defaultVisual;
           const Icon = visual.icon;
@@ -245,7 +241,7 @@ export const ExploreCategoriesGrid = ({ categories = [], onSelectCategory }) => 
               key={cat.id}
               type="button"
               onClick={() => handleCardClick(cat)}
-              className={`relative overflow-hidden rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-left text-white shadow-lg shadow-slate-900/10 dark:shadow-slate-950/40 cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98] group min-h-[175px] sm:min-h-[220px] flex flex-col justify-between border border-white/15 dark:border-slate-800 animate-on-scroll ${
+              className={`relative overflow-hidden rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 text-left text-white shadow-lg shadow-slate-900/10 dark:shadow-slate-950/40 cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98] group min-h-[160px] sm:min-h-[185px] md:min-h-[195px] flex flex-col justify-between border border-white/15 dark:border-slate-800 animate-on-scroll ${
                 isVisible ? 'animate-fade-in-up' : ''
               }`}
               style={isVisible ? { animationDelay: `${delayMs}ms` } : undefined}

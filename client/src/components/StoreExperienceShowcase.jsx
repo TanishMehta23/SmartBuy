@@ -12,10 +12,13 @@ import { storeSettingsService } from '../services/storeSettingsService';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export const StoreExperienceShowcase = () => {
-  const { isPortuguese } = useLanguage();
+  const { isPortuguese, translateDynamic } = useLanguage();
   const [activePhoto, setActivePhoto] = useState(0);
+  const [translatedHours, setTranslatedHours] = useState('');
+  const [translatedCaption, setTranslatedCaption] = useState('');
+  const [translatedTag, setTranslatedTag] = useState('');
   const [details, setDetails] = useState({
-    badgeTextEn: 'Visit Our Flagship Store in Cascais',
+    badgeTextEn: 'Visit Our Store in Cascais',
     badgeTextPt: 'Visite a Nossa Loja em Cascais',
     headlineEn: 'Your Smart, Premium & Fresh Supermarket',
     headlinePt: 'A Sua Experiência de Compras Inteligente & Fresca',
@@ -72,172 +75,222 @@ export const StoreExperienceShowcase = () => {
     return () => window.removeEventListener('store_details_updated', loadData);
   }, []);
 
-  if (!details) return null;
-
   const photos = details.photos || [];
   const activeItem = photos[activePhoto] || photos[0];
 
+  // Dynamic automatic translation to Portuguese when language is set to PT
+  useEffect(() => {
+    let isMounted = true;
+    if (isPortuguese) {
+      if (details.hoursEn) {
+        translateDynamic(details.hoursEn, 'pt').then((t) => {
+          if (isMounted) setTranslatedHours(t);
+        });
+      }
+      if (activeItem?.captionEn) {
+        translateDynamic(activeItem.captionEn, 'pt').then((t) => {
+          if (isMounted) setTranslatedCaption(t);
+        });
+      }
+      if (activeItem?.tagEn) {
+        translateDynamic(activeItem.tagEn, 'pt').then((t) => {
+          if (isMounted) setTranslatedTag(t);
+        });
+      }
+    } else {
+      setTranslatedHours('');
+      setTranslatedCaption('');
+      setTranslatedTag('');
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [isPortuguese, details.hoursEn, activeItem?.captionEn, activeItem?.tagEn, translateDynamic]);
+
+  if (!details) return null;
+
   return (
-    <div
+    <section
       ref={sectionRef}
-      className="my-6 sm:my-10 relative overflow-hidden rounded-3xl border border-sky-100/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-5 sm:p-7 lg:p-9 shadow-soft dark:shadow-slate-950/40 backdrop-blur-md"
+      className={`w-full my-0 animate-on-scroll ${isVisible ? 'animate-fade-in-up' : ''}`}
+      aria-label={isPortuguese ? 'Informações da Loja e Localização' : 'Store Information and Location'}
     >
-      {/* Subtle Ambient Decorative Gradient — now with floating animation */}
-      <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-400/5 dark:bg-cyan-500/5 rounded-full blur-3xl pointer-events-none animate-float-slow" />
-      <div className="absolute bottom-0 left-0 w-56 h-56 bg-sky-400/5 dark:bg-sky-500/5 rounded-full blur-3xl pointer-events-none animate-float-slow-reverse" />
+      <div className="w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-6 lg:p-7 shadow-xs transition-colors">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          
+          {/* ========================================================================= */}
+          {/* LEFT / MAIN COLUMN: Store Info, Hours, Address & CTA Buttons              */}
+          {/* Mobile: Header on top, then Gallery (via order), then Info & CTAs below   */}
+          {/* ========================================================================= */}
+          <div className="lg:col-span-6 flex flex-col justify-center gap-3 sm:gap-3.5 order-1 lg:order-1 min-w-0">
+            {/* Header Block: Title & Description */}
+            <div className="space-y-1.5">
+              <h2 className="text-lg sm:text-xl lg:text-[1.5rem] font-bold text-slate-900 dark:text-white tracking-tight leading-snug">
+                {isPortuguese ? (
+                  details.headlinePt || details.headlineEn
+                ) : (
+                  details.headlineEn
+                )}
+              </h2>
 
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-        {/* Left Column: Store Story & Contact Badges — fade in from left */}
-        <div
-          className={`lg:col-span-6 space-y-3.5 sm:space-y-4 animate-on-scroll ${isVisible ? 'animate-fade-in-left' : ''
-            }`}
-        >
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/60">
-            <Store className="w-3.5 h-3.5" />
-            <span className="uppercase tracking-wider">
-              {isPortuguese ? details.badgeTextPt || details.badgeTextEn : details.badgeTextEn}
-            </span>
-          </div>
-
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-            {isPortuguese ? (
-              details.headlinePt || details.headlineEn
-            ) : (
-              details.headlineEn
-            )}
-          </h2>
-
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-            {isPortuguese ? details.descriptionPt || details.descriptionEn : details.descriptionEn}
-          </p>
-
-          {/* Quick Info Grid - Balanced 2-Column Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-            {/* Address */}
-            <a
-              href={details.mapUrl || "https://www.google.com/maps"}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 hover:border-cyan-400 dark:hover:border-cyan-500 transition-all group/item cursor-pointer h-full"
-            >
-              <div className="w-8 h-8 rounded-xl bg-cyan-100/80 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:scale-110 transition-transform">
-                <MapPin className="w-4 h-4" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-0.5">
-                  {isPortuguese ? 'Morada' : 'Address'}
-                </span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug block">
-                  {details.address}
-                </span>
-              </div>
-            </a>
-
-            {/* Opening Hours */}
-            <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 h-full">
-              <div className="w-8 h-8 rounded-xl bg-emerald-100/80 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                <Clock className="w-4 h-4" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-0.5">
-                  {isPortuguese ? 'Horário' : 'Hours'}
-                </span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug block">
-                  {isPortuguese ? details.hoursPt || details.hoursEn : details.hoursEn}
-                </span>
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-0.5">
-                  {isPortuguese ? 'Aberto todos os dias' : 'Open 7 days a week'}
-                </span>
-              </div>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
+                {isPortuguese ? details.descriptionPt || details.descriptionEn : details.descriptionEn}
+              </p>
             </div>
-          </div>
 
-          {/* Action Buttons - Aligned 2-Column Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1.5">
-            <a
-              href={details.mapUrl || "https://www.google.com/maps"}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 text-white text-xs font-bold shadow-sm shadow-cyan-500/20 transition-all cursor-pointer group active:scale-98 text-center"
-            >
-              <MapPin className="w-3.5 h-3.5" />
-              <span>{isPortuguese ? 'Ver no Google Maps' : 'View on Google Maps'}</span>
-              <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-            </a>
-
-            {details.phone && (
+            {/* Quick Info Grid: Address & Opening Hours Cards (Equal Height) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 order-3 lg:order-2">
+              {/* Address Card */}
               <a
-                href={`tel:${details.phone.replace(/\s+/g, '')}`}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-xs font-bold transition-all cursor-pointer text-center hover:border-cyan-300 dark:hover:border-cyan-600 active:scale-98"
+                href={details.mapUrl || "https://www.google.com/maps"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-2.5 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 hover:border-cyan-400 dark:hover:border-cyan-500/60 hover:bg-slate-100/70 dark:hover:bg-slate-800/90 transition-all duration-200 group/addr cursor-pointer h-full"
+                aria-label={`${isPortuguese ? 'Abrir no Google Maps' : 'Open in Google Maps'}: ${details.address}`}
               >
-                <Phone className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-                <span>{details.phone}</span>
-              </a>
-            )}
-          </div>
-        </div>
-
-        {/* Right Column: Photo Gallery Display — fade in from right */}
-        <div
-          className={`lg:col-span-6 flex flex-col gap-2.5 animate-on-scroll ${isVisible ? 'animate-fade-in-right' : ''
-            }`}
-          style={isVisible ? { animationDelay: '150ms' } : undefined}
-        >
-          {/* Main Selected Image Showcase */}
-          {activeItem && (
-            <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-md border border-slate-200/80 dark:border-slate-800 group">
-              <img
-                src={activeItem.url}
-                alt={isPortuguese ? activeItem.captionPt || activeItem.captionEn : activeItem.captionEn}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
-              />
-              {/* Tag Badge */}
-              {(activeItem.tagEn || activeItem.tagPt) && (
-                <div className="absolute top-3 left-3">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-900/80 text-white backdrop-blur-md shadow-xs border border-white/20">
-                    <Sparkles className="w-3 h-3 text-amber-300" />
-                    {isPortuguese ? activeItem.tagPt || activeItem.tagEn : activeItem.tagEn}
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-cyan-100/90 dark:bg-cyan-950/70 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 mt-0.5 group-hover/addr:scale-105 transition-transform">
+                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-0.5">
+                    {isPortuguese ? 'Morada' : 'Address'}
+                  </span>
+                  <span className="text-xs sm:text-[13px] font-semibold text-slate-800 dark:text-slate-100 leading-snug block">
+                    {details.address}
                   </span>
                 </div>
-              )}
-              {/* Bottom Caption Overlay */}
-              {(activeItem.captionEn || activeItem.captionPt) && (
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-3.5 sm:p-4 text-white">
-                  <p className="text-xs font-medium drop-shadow-sm">
-                    {isPortuguese ? activeItem.captionPt || activeItem.captionEn : activeItem.captionEn}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+              </a>
 
-          {/* Interactive Thumbnails Ribbon */}
-          {photos.length > 1 && (
-            <div className="grid grid-cols-4 gap-2">
-              {photos.map((photo, index) => {
-                const isSelected = index === activePhoto;
-                return (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={() => setActivePhoto(index)}
-                    className={`relative aspect-[16/10] rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer ${isSelected
-                        ? 'border-cyan-500 ring-2 ring-cyan-400/30 shadow-xs scale-101'
-                        : 'border-transparent opacity-65 hover:opacity-100 hover:scale-103'
-                      }`}
-                  >
-                    <img
-                      src={photo.url}
-                      alt={photo.tagEn || 'Photo'}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                );
-              })}
+              {/* Opening Hours Card */}
+              <div className="flex items-start gap-2.5 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 h-full">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-100/90 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-0.5">
+                    {isPortuguese ? 'Horário' : 'Hours'}
+                  </span>
+                  <span className="text-xs sm:text-[13px] font-semibold text-slate-800 dark:text-slate-100 leading-snug block">
+                    {isPortuguese
+                      ? translatedHours || details.hoursPt || details.hoursEn
+                      : details.hoursEn}
+                  </span>
+                  <span className="text-[10.5px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-0.5">
+                    {isPortuguese ? 'Aberto todos os dias' : 'Open 7 days a week'}
+                  </span>
+                </div>
+              </div>
             </div>
-          )}
+
+            {/* CTA Buttons: Google Maps (Primary) & Phone (Secondary) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 order-4 lg:order-3">
+              <a
+                href={details.mapUrl || "https://www.google.com/maps"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 sm:py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:bg-cyan-800 dark:bg-cyan-500 dark:hover:bg-cyan-600 text-white text-xs sm:text-[13px] font-bold shadow-xs transition-all duration-200 cursor-pointer group active:scale-[0.99] text-center whitespace-nowrap min-h-[38px] sm:min-h-[40px]"
+              >
+                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                <span className="truncate">{isPortuguese ? 'Ver no Google Maps' : 'View on Google Maps'}</span>
+                <ExternalLink className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
+              </a>
+
+              {details.phone && (
+                <a
+                  href={`tel:${details.phone.replace(/\s+/g, '')}`}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 sm:py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700 text-xs sm:text-[13px] font-bold transition-all duration-200 cursor-pointer text-center hover:border-cyan-400/60 dark:hover:border-cyan-500/50 active:scale-[0.99] whitespace-nowrap min-h-[38px] sm:min-h-[40px]"
+                >
+                  <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
+                  <span className="truncate">{details.phone}</span>
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* RIGHT COLUMN: Premium Supermarket Photo Gallery Showcase                  */}
+          {/* Mobile: Sits directly below heading/description before address cards      */}
+          {/* ========================================================================= */}
+          <div className="lg:col-span-6 flex flex-col justify-between gap-3 order-2 lg:order-2 w-full min-w-0">
+            {/* Main Featured Photo Display */}
+            {activeItem && (
+              <div className="relative aspect-[16/10] sm:aspect-[16/9.5] w-full rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/90 dark:border-slate-800 bg-slate-900 group shadow-xs">
+                <img
+                  src={activeItem.url}
+                  alt={isPortuguese ? translatedCaption || activeItem.captionPt || activeItem.captionEn : activeItem.captionEn}
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                  loading="lazy"
+                />
+
+                {/* Subtle, Tasteful Image Tag Overlay */}
+                {(activeItem.tagEn || activeItem.tagPt) && (
+                  <div className="absolute top-3 left-3 z-10 pointer-events-none">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-900/80 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                      <Sparkles className="w-2.5 h-2.5 text-amber-300" />
+                      <span>
+                        {isPortuguese
+                          ? translatedTag || activeItem.tagPt || activeItem.tagEn
+                          : activeItem.tagEn}
+                      </span>
+                    </span>
+                  </div>
+                )}
+
+                {/* Subtle Image Bottom Caption Overlay */}
+                {(activeItem.captionEn || activeItem.captionPt) && (
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent p-3 sm:p-3.5 text-white pointer-events-none">
+                    <p className="text-xs font-medium text-slate-100 drop-shadow-sm truncate">
+                      {isPortuguese
+                        ? translatedCaption || activeItem.captionPt || activeItem.captionEn
+                        : activeItem.captionEn}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Thumbnail Navigation Strip */}
+            {photos.length > 1 && (
+              <div
+                className="grid grid-cols-4 gap-2 sm:gap-2.5 w-full"
+                role="tablist"
+                aria-label={isPortuguese ? 'Fotos da loja' : 'Store photo gallery'}
+              >
+                {photos.map((photo, index) => {
+                  const isSelected = index === activePhoto;
+                  const photoTag = isPortuguese
+                    ? photo.tagPt || photo.tagEn
+                    : photo.tagEn;
+
+                  return (
+                    <button
+                      key={index}
+                      type="button"
+                      role="tab"
+                      aria-selected={isSelected}
+                      aria-label={`${isPortuguese ? 'Ver foto' : 'View photo'} ${index + 1}: ${photoTag || 'Supermarket'}`}
+                      onClick={() => setActivePhoto(index)}
+                      className={`relative aspect-[16/10] rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 ${
+                        isSelected
+                          ? 'border-cyan-500 shadow-sm opacity-100 ring-2 ring-cyan-400/20'
+                          : 'border-slate-200/80 dark:border-slate-700/80 opacity-70 hover:opacity-100 hover:scale-[1.03] hover:border-slate-300 dark:hover:border-slate-600'
+                      }`}
+                    >
+                      <img
+                        src={photo.url}
+                        alt={photoTag || 'Supermarket Photo'}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
-    </div>
+    </section>
   );
 };

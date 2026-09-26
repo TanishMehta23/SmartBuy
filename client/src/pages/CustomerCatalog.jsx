@@ -369,16 +369,22 @@ export const CustomerCatalog = () => {
       />
 
       {/* Main Content Area - Centered max-w-7xl Layout */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 relative z-10">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-5 relative z-10">
         {/* Category Header or Home Showcase */}
         {isHomeView ? (
           /* HOMEPAGE VIEW: Feature-Rich Supermarket Showcase */
-          <div className="flex flex-col gap-6 sm:gap-10">
+          <div className="flex flex-col gap-5 sm:gap-7">
             {/* 1. Hero Banner Carousel */}
             <HeroBannerCarousel banners={banners} />
 
+            {/* Divider */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
+
             {/* 2. Feature Badges Strip (Quality & Physical Store Highlights) */}
             <FeatureBadgesStrip />
+
+            {/* Divider */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
 
             {/* 3. Explore Categories Visual Showcase Cards */}
             <ExploreCategoriesGrid
@@ -388,14 +394,18 @@ export const CustomerCatalog = () => {
 
             {/* 4. Just Arrived Products Carousel */}
             {allProductsForHome.length > 0 && (
-              <JustArrivedSection
-                products={allProductsForHome}
-                onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
-                onSeeAll={() => handleCategorySelect('all-catalog')}
-              />
+              <>
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
+                <JustArrivedSection
+                  products={allProductsForHome}
+                  onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
+                  onSeeAll={() => handleCategorySelect('all-catalog')}
+                />
+              </>
             )}
 
             {/* 5. Unified Category Selector & Live Featured Showcase */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
             <UnifiedCategoryShowcase
               categories={categories}
               products={allProductsForHome}
@@ -407,33 +417,40 @@ export const CustomerCatalog = () => {
 
             {/* 6. Fresh Produce Spotlight */}
             {allProductsForHome.length > 0 && (
-              <FreshProduceSection
-                products={allProductsForHome}
-                categories={categories}
-                onSelectCategory={handleCategorySelect}
-                onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
-              />
+              <>
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
+                <FreshProduceSection
+                  products={allProductsForHome}
+                  categories={categories}
+                  onSelectCategory={handleCategorySelect}
+                  onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
+                />
+              </>
             )}
 
             {/* 7. Dedicated Artisan Bakery Spotlight */}
             {allProductsForHome.length > 0 && (
-              <BakeryShowcaseSection
-                products={allProductsForHome}
-                categories={categories}
-                onSelectCategory={handleCategorySelect}
-                onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
-              />
+              <>
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
+                <BakeryShowcaseSection
+                  products={allProductsForHome}
+                  categories={categories}
+                  onSelectCategory={handleCategorySelect}
+                  onSelectProduct={(prod) => setSelectedQuickViewProduct(prod)}
+                />
+              </>
             )}
 
             {/* 8. Curated Featured Collections */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
             <FeaturedCollectionsSection onSelectCategory={handleCategorySelect} />
 
             {/* 9. Meet Our Brands Discovery */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
             <BrandsShowcaseSection />
 
-
-
-            {/* 11. Discover Our Store & Photo Gallery */}
+            {/* 10. Discover Our Store & Photo Gallery */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-sky-200/80 dark:via-slate-800 to-transparent my-1" />
             <StoreExperienceShowcase />
           </div>
         ) : (

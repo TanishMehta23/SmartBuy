@@ -74,15 +74,11 @@ export const FeaturedCollectionsSection = ({ onSelectCategory }) => {
   };
 
   return (
-    <section ref={ref} className="my-6 sm:my-10">
+    <section ref={ref} className="my-0">
       {/* Section Header */}
-      <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+      <div className="flex items-center justify-between gap-3 mb-3 sm:mb-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/60 mb-1">
-            <Award className="w-3 h-3" />
-            <span>{t('featuredCollectionsTitle')}</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">
             {t('featuredCollectionsTitle')}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">
@@ -91,8 +87,8 @@ export const FeaturedCollectionsSection = ({ onSelectCategory }) => {
         </div>
       </div>
 
-      {/* 2x2 Collections Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-6">
+      {/* 4-in-a-Row Collections Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 md:gap-4">
         {collections.map((col, idx) => {
           const Icon = col.icon;
           const delayMs = idx * 100;
@@ -101,7 +97,7 @@ export const FeaturedCollectionsSection = ({ onSelectCategory }) => {
               key={col.id}
               type="button"
               onClick={() => handleCollectionClick(col.target)}
-              className={`relative overflow-hidden rounded-2xl sm:rounded-3xl p-4 sm:p-7 text-left text-white shadow-lg shadow-slate-900/10 dark:shadow-slate-950/50 cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98] group min-h-[175px] sm:min-h-[235px] flex flex-col justify-between border border-white/15 dark:border-slate-800 animate-on-scroll ${
+              className={`relative overflow-hidden rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 text-left text-white shadow-md shadow-slate-900/10 dark:shadow-slate-950/40 cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] group min-h-[165px] sm:min-h-[185px] md:min-h-[200px] flex flex-col justify-between border border-sky-100/80 dark:border-slate-800 animate-on-scroll ${
                 isVisible ? 'animate-fade-in-up' : ''
               }`}
               style={isVisible ? { animationDelay: `${delayMs}ms` } : undefined}
@@ -113,24 +109,23 @@ export const FeaturedCollectionsSection = ({ onSelectCategory }) => {
                 className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
               />
 
-              {/* Dynamic Gradient Contrast Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/70 to-slate-950/20" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/30" />
+              {/* Dynamic Gradient Contrast Overlay — Clean, Rich & Light-Mode Friendly */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-slate-950/20 group-hover:opacity-90 transition-opacity" />
 
-              {/* Top Tag Pill */}
+              {/* Top Tag Pill with Modern Frosted Glass Look */}
               <div className="relative z-10 flex items-center justify-between">
-                <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-extrabold bg-white/20 backdrop-blur-md border border-white/20 text-white shadow-sm">
-                  <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-300" />
-                  {isPortuguese ? col.tagPt : col.tagEn}
+                <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold bg-white/25 dark:bg-black/40 backdrop-blur-md border border-white/30 text-white shadow-xs">
+                  <Icon className="w-3 h-3 text-white shrink-0" />
+                  <span>{isPortuguese ? col.tagPt : col.tagEn}</span>
                 </span>
               </div>
 
               {/* Bottom Content */}
-              <div className="relative z-10 mt-3 sm:mt-8 max-w-md">
-                <h3 className="text-sm sm:text-xl md:text-2xl font-black text-white tracking-tight mb-0.5 sm:mb-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">
+              <div className="relative z-10 mt-3 sm:mt-4 max-w-md">
+                <h3 className="text-sm sm:text-base md:text-lg font-bold text-white tracking-normal mb-1 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]">
                   {isPortuguese ? col.titlePt : col.titleEn}
                 </h3>
-                <p className="text-[10px] sm:text-xs md:text-sm text-slate-100 font-medium mb-2.5 sm:mb-3.5 leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] line-clamp-2 hidden xs:block">
+                <p className="text-[10px] sm:text-xs text-slate-100/90 font-medium mb-2.5 leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] line-clamp-2 hidden xs:block">
                   {isPortuguese ? col.descPt : col.descEn}
                 </p>
 

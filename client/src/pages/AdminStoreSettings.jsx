@@ -150,7 +150,7 @@ export const AdminStoreSettings = () => {
           </h1>
           <p className="text-xs sm:text-sm text-sky-800/70 dark:text-slate-400 font-medium mt-0.5">
             {t('storeSettingsSubtitle') ||
-              'Customize the Cascais flagship store showcase, photos, address, opening hours, and phone number'}
+              'Customize the Cascais store showcase, photos, address, opening hours, and phone number'}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -175,92 +175,7 @@ export const AdminStoreSettings = () => {
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
-        {/* Section 1: Headlines & Descriptions */}
-        <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-sky-100 dark:border-slate-800 shadow-soft space-y-4">
-          <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2 border-b border-sky-100 dark:border-slate-800 pb-3">
-            <Store className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-            <span>Story, Headlines & Badges</span>
-          </h3>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Badge EN */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Top Pill Badge (English)
-              </label>
-              <input
-                type="text"
-                value={formData.badgeTextEn}
-                onChange={(e) => handleChange('badgeTextEn', e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
-              />
-            </div>
-            {/* Badge PT */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Top Pill Badge (Português)
-              </label>
-              <input
-                type="text"
-                value={formData.badgeTextPt}
-                onChange={(e) => handleChange('badgeTextPt', e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
-              />
-            </div>
-
-            {/* Headline EN */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Main Headline (English)
-              </label>
-              <input
-                type="text"
-                value={formData.headlineEn}
-                onChange={(e) => handleChange('headlineEn', e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
-              />
-            </div>
-            {/* Headline PT */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Main Headline (Português)
-              </label>
-              <input
-                type="text"
-                value={formData.headlinePt}
-                onChange={(e) => handleChange('headlinePt', e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
-              />
-            </div>
-
-            {/* Description EN */}
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Store Bio / Story Description (English)
-              </label>
-              <textarea
-                rows={2}
-                value={formData.descriptionEn}
-                onChange={(e) => handleChange('descriptionEn', e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
-              />
-            </div>
-            {/* Description PT */}
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Store Bio / Story Description (Português)
-              </label>
-              <textarea
-                rows={2}
-                value={formData.descriptionPt}
-                onChange={(e) => handleChange('descriptionPt', e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: Contact & Location */}
+        {/* Section 1: Contact & Location */}
         <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-sky-100 dark:border-slate-800 shadow-soft space-y-4">
           <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2 border-b border-sky-100 dark:border-slate-800 pb-3">
             <MapPin className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
@@ -290,25 +205,15 @@ export const AdminStoreSettings = () => {
                 className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
               />
             </div>
-            <div>
+            <div className="sm:col-span-2">
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Opening Hours (English)
+                Opening Hours
               </label>
               <input
                 type="text"
+                placeholder="e.g. Open Daily • Closes 8:00 PM"
                 value={formData.hoursEn}
                 onChange={(e) => handleChange('hoursEn', e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Opening Hours (Português)
-              </label>
-              <input
-                type="text"
-                value={formData.hoursPt}
-                onChange={(e) => handleChange('hoursPt', e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-sky-50/50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white"
               />
             </div>
@@ -394,10 +299,10 @@ export const AdminStoreSettings = () => {
                 </div>
 
                 {/* Tags & Captions */}
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2">
                   <div>
                     <label className="block text-[10.5px] font-bold text-slate-600 dark:text-slate-400 mb-0.5">
-                      Tag (EN)
+                      Tag Badge
                     </label>
                     <input
                       type="text"
@@ -409,19 +314,7 @@ export const AdminStoreSettings = () => {
                   </div>
                   <div>
                     <label className="block text-[10.5px] font-bold text-slate-600 dark:text-slate-400 mb-0.5">
-                      Tag (PT)
-                    </label>
-                    <input
-                      type="text"
-                      value={photo.tagPt || ''}
-                      onChange={(e) => handlePhotoChange(index, 'tagPt', e.target.value)}
-                      placeholder="e.g. Corredores Modernos"
-                      className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-sky-200 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-900 dark:text-white"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <label className="block text-[10.5px] font-bold text-slate-600 dark:text-slate-400 mb-0.5">
-                      Caption Description (EN)
+                      Caption Description
                     </label>
                     <input
                       type="text"

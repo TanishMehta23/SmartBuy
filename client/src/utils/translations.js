@@ -237,7 +237,7 @@ export const translations = {
     noClickAction: 'Display only (no link)',
     // Store Settings
     storeSettingsTitle: 'Store Info & Photos',
-    storeSettingsSubtitle: 'Customize the Cascais flagship store showcase, photos, address, opening hours, and phone number',
+    storeSettingsSubtitle: 'Customize the Cascais store showcase, photos, address, opening hours, and phone number',
     resetDefaults: 'Reset Defaults',
     saveStoreChanges: 'Save Store Changes',
 

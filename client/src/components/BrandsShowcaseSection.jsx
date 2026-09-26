@@ -281,19 +281,15 @@ export const BrandsShowcaseSection = () => {
   const marqueeList = [...BRANDS, ...BRANDS];
 
   return (
-    <section ref={ref} className="my-6 sm:my-10">
-      <div className="relative overflow-hidden rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-sky-100 dark:border-slate-800 p-4 sm:p-6 shadow-xs">
+    <section ref={ref} className="my-0">
+      <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-sky-100/90 dark:border-slate-800 p-4 sm:p-6 shadow-sm shadow-sky-950/5 dark:shadow-slate-950/40">
         {/* Ambient Subtle Cyan Glow */}
         <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-cyan-400/10 via-sky-400/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
         {/* Section Top Header */}
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/60 mb-1.5">
-              <Award className="w-3 h-3 text-cyan-600 dark:text-cyan-400" />
-              <span>{t('brandsBadge')}</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
               {t('brandsTitle')}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">

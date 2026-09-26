@@ -93,7 +93,7 @@ export const HeroBannerCarousel = ({ banners = [] }) => {
   return (
     <div
       ref={sectionRef}
-      className={`relative w-full mb-4 sm:mb-7 select-none group animate-on-scroll ${isVisible ? 'animate-scale-in' : ''
+      className={`relative w-full mb-0 select-none group animate-on-scroll ${isVisible ? 'animate-scale-in' : ''
         }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
