@@ -46,11 +46,21 @@ export const CustomerCatalog = () => {
   const [banners, setBanners] = useState([]);
   const [allProductsForHome, setAllProductsForHome] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState('all');
-  const [searchInput, setSearchInput] = useState('');
+  const queryParam = new URLSearchParams(location.search).get('search') || '';
+  const [searchInput, setSearchInput] = useState(queryParam);
   const [sortOption, setSortOption] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [featuredCategoryTab, setFeaturedCategoryTab] = useState('all');
   const [selectedQuickViewProduct, setSelectedQuickViewProduct] = useState(null);
+
+  // Sync search input when URL query param changes
+  useEffect(() => {
+    const urlQuery = new URLSearchParams(location.search).get('search') || '';
+    setSearchInput(urlQuery);
+    if (urlQuery) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [location.search]);
 
   // 24 for mobile (perfect 2-col grid), 25 for laptop (perfect 5-col grid)
   const [itemsPerPage, setItemsPerPage] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 24 : 25));

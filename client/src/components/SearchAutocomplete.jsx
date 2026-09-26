@@ -123,6 +123,9 @@ export const SearchAutocomplete = ({
           onChange={(e) => {
             onSearchChange(e.target.value);
             setIsOpen(true);
+            if (e.target.value) {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
           }}
           onKeyDown={handleKeyDown}
           placeholder={t('searchPlaceholder')}
@@ -134,6 +137,7 @@ export const SearchAutocomplete = ({
             onClick={() => {
               onSearchChange('');
               setIsOpen(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
             title={t('clearSearch')}
