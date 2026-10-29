@@ -2,7 +2,10 @@ import prisma from '../config/db.js';
 import {
   createCategorySchema,
   updateCategorySchema,
+  reorderCategoriesSchema,
 } from '../utils/validators.js';
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /**
  * Get all categories with product counts (ordered by custom order, then name)
@@ -49,14 +52,8 @@ export const getCategories = async (req, res, next) => {
  */
 export const reorderCategories = async (req, res, next) => {
   try {
-    const { categoryIds } = req.body;
-
-    if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'categoryIds array is required',
-      });
-    }
+    const validatedData = reorderCategoriesSchema.parse(req.body);
+    const { categoryIds } = validatedData;
 
     // Update each category with its new sequence index
     const updates = categoryIds.map((id, index) =>
@@ -76,6 +73,7 @@ export const reorderCategories = async (req, res, next) => {
     next(error);
   }
 };
+
 
 /**
  * Create a new category
@@ -126,6 +124,10 @@ export const createCategory = async (req, res, next) => {
 export const updateCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (!UUID_REGEX.test(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid category ID format' });
+    }
+
     const validatedData = updateCategorySchema.parse(req.body);
     const { name } = validatedData;
 
@@ -180,6 +182,10 @@ export const updateCategory = async (req, res, next) => {
 export const deleteCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (!UUID_REGEX.test(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid category ID format' });
+    }
+
     const { reassignToCategoryId } = req.query;
 
     const category = await prisma.category.findUnique({
@@ -210,6 +216,13 @@ export const deleteCategory = async (req, res, next) => {
         });
       }
 
+      if (!UUID_REGEX.test(reassignToCategoryId)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid reassignToCategoryId parameter format',
+        });
+      }
+
       // Verify reassignment target category
       if (reassignToCategoryId === id) {
         return res.status(400).json({
@@ -217,6 +230,7 @@ export const deleteCategory = async (req, res, next) => {
           message: 'Cannot reassign products to the category being deleted.',
         });
       }
+
 
       const targetCategory = await prisma.category.findUnique({
         where: { id: reassignToCategoryId },

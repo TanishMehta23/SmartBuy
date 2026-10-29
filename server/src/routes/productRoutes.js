@@ -8,7 +8,8 @@ import {
   getDashboardStats,
 } from '../controllers/productController.js';
 import { protectAdmin } from '../middleware/authMiddleware.js';
-import { upload } from '../middleware/uploadMiddleware.js';
+import { upload, validateImageBuffer } from '../middleware/uploadMiddleware.js';
+import { adminMutationLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
@@ -22,8 +23,25 @@ router.get('/stats', protectAdmin, getDashboardStats);
 router.get('/:id', getProductById);
 
 // Admin CRUD routes
-router.post('/', protectAdmin, upload.single('image'), createProduct);
-router.put('/:id', protectAdmin, upload.single('image'), updateProduct);
-router.delete('/:id', protectAdmin, deleteProduct);
+router.post(
+  '/',
+  protectAdmin,
+  adminMutationLimiter,
+  upload.single('image'),
+  validateImageBuffer,
+  createProduct
+);
+
+router.put(
+  '/:id',
+  protectAdmin,
+  adminMutationLimiter,
+  upload.single('image'),
+  validateImageBuffer,
+  updateProduct
+);
+
+router.delete('/:id', protectAdmin, adminMutationLimiter, deleteProduct);
 
 export default router;
+

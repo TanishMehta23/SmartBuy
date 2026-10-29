@@ -8,6 +8,8 @@ import {
   updateProductSchema,
 } from '../utils/validators.js';
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 /**
  * Get paginated products with search, category filtering, and sorting
  * GET /api/products
@@ -17,7 +19,7 @@ import {
 export const getProducts = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-    const limit = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 25));
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 24));
     const skip = (page - 1) * limit;
 
     const { search, categoryId, sort } = req.query;
@@ -25,16 +27,22 @@ export const getProducts = async (req, res, next) => {
     // Build Prisma Where Clause
     const where = {};
 
-    if (categoryId && categoryId.trim() !== '' && categoryId !== 'all') {
+    if (categoryId && typeof categoryId === 'string' && categoryId.trim() !== '' && categoryId !== 'all') {
       if (categoryId.includes(',')) {
-        where.categoryId = { in: categoryId.split(',').map((id) => id.trim()).filter(Boolean) };
-      } else {
+        const ids = categoryId
+          .split(',')
+          .map((id) => id.trim())
+          .filter((id) => UUID_REGEX.test(id));
+        if (ids.length > 0) {
+          where.categoryId = { in: ids };
+        }
+      } else if (UUID_REGEX.test(categoryId.trim())) {
         where.categoryId = categoryId.trim();
       }
     }
 
-    if (search && search.trim() !== '') {
-      const searchTerm = search.trim();
+    if (search && typeof search === 'string' && search.trim() !== '') {
+      const searchTerm = search.trim().slice(0, 100);
       where.OR = [
         {
           name: {
@@ -118,6 +126,12 @@ export const getProducts = async (req, res, next) => {
 export const getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (!UUID_REGEX.test(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID format',
+      });
+    }
 
     const product = await prisma.product.findUnique({
       where: { id },
@@ -222,6 +236,13 @@ export const createProduct = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (!UUID_REGEX.test(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID format',
+      });
+    }
+
     const validatedData = updateProductSchema.parse(req.body);
     const { name, categoryId } = validatedData;
 
@@ -299,6 +320,12 @@ export const updateProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (!UUID_REGEX.test(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID format',
+      });
+    }
 
     const product = await prisma.product.findUnique({
       where: { id },

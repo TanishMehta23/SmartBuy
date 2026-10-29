@@ -1,5 +1,10 @@
 import prisma from '../config/db.js';
 import { uploadImageToCloudinary, deleteImageFromCloudinary } from '../services/cloudinaryService.js';
+import {
+  createBannerSchema,
+  updateBannerSchema,
+  reorderBannersSchema,
+} from '../utils/validators.js';
 
 // In-memory fallback store if database is initializing or offline
 let memoryBanners = [
@@ -79,8 +84,9 @@ export const getAllBannersAdmin = async (req, res, next) => {
  */
 export const createBanner = async (req, res, next) => {
   try {
-    const { title, linkUrl, isActive } = req.body;
-    let imageUrl = req.body.imageUrl;
+    const validatedData = createBannerSchema.parse(req.body);
+    const { title, linkUrl, isActive } = validatedData;
+    let imageUrl = validatedData.imageUrl;
     let imagePublicId = null;
 
     if (req.file) {
@@ -92,11 +98,11 @@ export const createBanner = async (req, res, next) => {
     if (!imageUrl) {
       return res.status(400).json({
         success: false,
-        message: 'Banner image is required. Please upload an image file or provide an imageUrl.',
+        message: 'Banner image is required. Please upload an image file or provide a valid imageUrl.',
       });
     }
 
-    const activeBool = isActive === 'true' || isActive === true;
+    const activeBool = isActive === true || isActive === 'true';
 
     if (prisma.banner) {
       try {
@@ -135,19 +141,29 @@ export const createBanner = async (req, res, next) => {
   }
 };
 
+
 /**
  * Admin: Update banner
  */
 export const updateBanner = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, linkUrl, isActive, order } = req.body;
+    const validatedData = updateBannerSchema.parse(req.body);
+    const { title, linkUrl, isActive, order } = validatedData;
 
     let updateData = {};
     if (title !== undefined) updateData.title = title ? title.trim() : null;
     if (linkUrl !== undefined) updateData.linkUrl = linkUrl ? linkUrl.trim() : null;
     if (isActive !== undefined) updateData.isActive = isActive === 'true' || isActive === true;
-    if (order !== undefined) updateData.order = parseInt(order, 10);
+    if (order !== undefined) {
+      const parsedOrder = typeof order === 'number' ? order : parseInt(order, 10);
+      if (!isNaN(parsedOrder) && parsedOrder >= 0) {
+        updateData.order = parsedOrder;
+      }
+    }
+    if (validatedData.imageUrl !== undefined && validatedData.imageUrl) {
+      updateData.imageUrl = validatedData.imageUrl;
+    }
 
     if (req.file) {
       const uploadRes = await uploadImageToCloudinary(req.file.buffer, 'store_catalog/banners');
@@ -229,10 +245,8 @@ export const deleteBanner = async (req, res, next) => {
  */
 export const reorderBanners = async (req, res, next) => {
   try {
-    const { bannerIds } = req.body;
-    if (!Array.isArray(bannerIds)) {
-      return res.status(400).json({ success: false, message: 'bannerIds array is required' });
-    }
+    const validatedData = reorderBannersSchema.parse(req.body);
+    const { bannerIds } = validatedData;
 
     if (prisma.banner) {
       try {
@@ -260,3 +274,4 @@ export const reorderBanners = async (req, res, next) => {
     next(error);
   }
 };
+

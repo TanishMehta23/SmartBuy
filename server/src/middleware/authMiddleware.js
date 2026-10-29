@@ -24,11 +24,26 @@ export const protectAdmin = async (req, res, next) => {
       });
     }
 
-    // Verify token
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'fallback_secret_for_dev_mode_only_12345'
-    );
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('[SECURITY ERROR]: JWT_SECRET is not configured in environment variables.');
+      return res.status(500).json({
+        success: false,
+        message: 'Authentication service configuration error.',
+      });
+    }
+
+    // Verify token with explicit algorithm to prevent algorithm confusion attacks
+    const decoded = jwt.verify(token, jwtSecret, {
+      algorithms: ['HS256'],
+    });
+
+    if (!decoded || !decoded.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid session token payload.',
+      });
+    }
 
     let admin = null;
     try {
@@ -37,20 +52,11 @@ export const protectAdmin = async (req, res, next) => {
         select: { id: true, email: true, createdAt: true },
       });
     } catch (dbErr) {
-      console.warn('Database check bypassed in middleware:', dbErr.message);
-      admin = {
-        id: decoded.id,
-        email: process.env.ADMIN_EMAIL || 'mehtatanish2306@gmail.com',
-        createdAt: new Date(),
-      };
-    }
-
-    if (!admin && decoded.id === 'admin-primary-dev-id') {
-      admin = {
-        id: decoded.id,
-        email: process.env.ADMIN_EMAIL || 'mehtatanish2306@gmail.com',
-        createdAt: new Date(),
-      };
+      console.error('[DATABASE AUTH ERROR]: Failed to verify admin in database:', dbErr.message);
+      return res.status(503).json({
+        success: false,
+        message: 'Authentication service temporarily unavailable. Please try again shortly.',
+      });
     }
 
     if (!admin) {
@@ -75,3 +81,4 @@ export const protectAdmin = async (req, res, next) => {
     });
   }
 };
+

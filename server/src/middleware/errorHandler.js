@@ -15,7 +15,7 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Handle Multer Errors
+  // Handle Multer Errors & Upload Filter Errors
   if (err.name === 'MulterError') {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
@@ -26,6 +26,19 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(400).json({
       success: false,
       message: `Upload error: ${err.message}`,
+    });
+  }
+
+  // Handle custom upload errors (like fileFilter rejections)
+  if (
+    err.message &&
+    (err.message.includes('Only JPEG, PNG') ||
+      err.message.includes('Invalid file extension') ||
+      err.message.includes('Invalid image signature'))
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: err.message,
     });
   }
 
@@ -51,14 +64,28 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
+  const isProduction = process.env.NODE_ENV === 'production';
+  const statusCode = err.statusCode || (err.status && typeof err.status === 'number' ? err.status : 500);
 
-  console.error('[Error Details]:', err);
+  // In production, mask internal server error messages to prevent database or path leaks
+  let publicMessage = err.message || 'Internal Server Error';
+  if (statusCode === 500 && isProduction) {
+    publicMessage = 'An unexpected server error occurred. Please try again later.';
+  }
+
+  console.error('[SERVER ERROR LOG]:', {
+    message: err.message,
+    code: err.code,
+    statusCode,
+    url: req.originalUrl,
+    method: req.method,
+    stack: isProduction ? undefined : err.stack,
+  });
 
   res.status(statusCode).json({
     success: false,
-    message,
-    ...(process.env.NODE_ENV === 'development' ? { stack: err.stack } : {}),
+    message: publicMessage,
+    ...(isProduction ? {} : { stack: err.stack }),
   });
 };
+
